@@ -1,16 +1,26 @@
 <template>
-<div class="search-bar">
-            <input type="text" placeholder="buscar">
-            <button><img src="../assets/search.png" alt="Buscar"></button>
-        </div>
+    <div class="search-bar">
+        <input v-model="textSearch" @keyup="handleKeyup" type="text" placeholder="buscar">
+        <button><img src="../assets/search.png" alt="Buscar"></button>
+    </div>
 </template>
 
 <script>
-
-</script>
 export default {
+    data(){
+        return {
+            textSearch: ""
+        }
+    },
+    
+    methods: {
+      handleKeyup(event) {
+        this.$emit('key-up', event); // Emite o evento com o objeto de evento `keyup`
+      }
+    }
+  }
+</script>
 
-}
 <style>
 .search-bar {
     width: 100%;

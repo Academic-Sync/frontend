@@ -1,21 +1,23 @@
 <template>
   <div id="app">
+    <MessageBootstrap/>
     <!-- Exibe o componente correspondente à rota atual -->
     <router-view />
   </div>
 </template>
 
 <script>
+import MessageBootstrap from './components/MessageBootstrap.vue';
 
-
-
-export default {
-  name: 'App',
-  components: {
-
+  export default {
+    name: 'App',
+    components: {
+      MessageBootstrap
+    }
   }
-}
 </script>
+
+
 
 <style>
 @import '/src/assets/style/cores.css';
