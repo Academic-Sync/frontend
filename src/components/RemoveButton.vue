@@ -1,5 +1,5 @@
 <template>
-    <div class="AddButton">
+    <div class="removeButton">
         <span v-if="href">
           <a :href="href"><button>{{ButtonText}}</button></a>
         </span>
@@ -30,14 +30,13 @@ export default {
 
 <style>
 
-.AddButton{
+.removeButton{
   display: flex;
   justify-content: flex-end;
-  /* width: 100%; */
 }
 
-.AddButton Button {
-    background-color: var(--Azul);
+.removeButton Button {
+    background-color: var(--Vermelho);
     color: var(--Branco);
     padding: 1.5rem 2rem;
     border: none;
@@ -48,8 +47,8 @@ export default {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.233);
 }
 
-.AddButton button:hover {
-    background-color: var(--AzulHover);
+.removeButton button:hover {
+    background-color: var(--VermelhoHover);
 }
 
 </style>

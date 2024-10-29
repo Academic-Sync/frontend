@@ -15,7 +15,7 @@
 
               <div class="mb-3 text-start">
                   <label class="form-label">Nome:</label>
-                  <input v-model="student.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
+                  <input :disabled="disabled" v-model="student.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
               </div>
 
               <div class="mb-3 text-start">
@@ -34,10 +34,10 @@
               </div>
           </div>
 
-          <AddButton
-            v-model="titleText"
-            :ButtonText="titleText"
-          ></AddButton>
+          <div class="div-buttons">
+            <RemoveButton @click="handleDelete" type="button" v-model="titleText" :ButtonText="titleText" />
+            <AddButton v-model="titleText" :ButtonText="titleText" />
+          </div>
         </form>
       </main>
     </div>
@@ -55,6 +55,7 @@ import Message from '../../components/Message.vue'
 import { useRoute } from 'vue-router'
 import eventBus from '../../eventBus'
 import { ref, onMounted } from 'vue'
+import RemoveButton from '@/components/RemoveButton.vue'
 
 export default {
   name: 'Turmas',
@@ -63,37 +64,32 @@ export default {
     TheFooter,
     SideBar,
     AddButton,
+    RemoveButton,
     Message
   },
 
   methods: {
     async handleSubmit(e){
       e.preventDefault();
+      const studentId = document.querySelector("#id")
 
+      if(studentId.value != 0)
+        await this.update(e);
+    },
+
+    async handleDelete(){
       try {
-        const data = Object.fromEntries(new FormData(e.target).entries());
         const studentId = document.querySelector("#id")
-
-        if(!data.name || !data.email || !data.code){
-          const errorObject = {
-            title: "",
-            text: "Informe todos os campos"
-          }
-          eventBus.emit("error", errorObject)
-          return;
-        }    
 
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${studentId.value}`, {
-          method: "PUT",
+          method: "DELETE",
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
+          }
         });
 
-        
         const result = await response.json();
 
         if (!response.ok) {
@@ -106,14 +102,64 @@ export default {
         }
         eventBus.emit("success", successObject)
 
-    } catch (error) {
-        console.error(error);
-        const errorObject = {
-          title: "Erro ao listar: ",
-          text: error.message
-        }
-        eventBus.emit("error", errorObject)
-    }
+        setTimeout(()=>{
+          window.location.href = "/Alunos"
+        }, 1000);
+      } catch (error) {
+          console.error(error);
+          const errorObject = {
+            title: "Erro ao listar: ",
+            text: error.message
+          }
+          eventBus.emit("error", errorObject)
+      }
+    },
+
+    async update(e){
+      try {
+          const data = Object.fromEntries(new FormData(e.target).entries());
+          const studentId = document.querySelector("#id")
+
+          if(!data.name || !data.email || !data.code){
+            const errorObject = {
+              title: "",
+              text: "Informe todos os campos"
+            }
+            eventBus.emit("error", errorObject)
+            return;
+          }    
+
+          // eslint-disable-next-line
+          const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${studentId.value}`, {
+            method: "PUT",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+
+          
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.error); // Tratamento de erro
+          }
+
+          const successObject = {
+            title: "",
+            text: result.message
+          }
+          eventBus.emit("success", successObject)
+
+      } catch (error) {
+          console.error(error);
+          const errorObject = {
+            title: "Erro ao listar: ",
+            text: error.message
+          }
+          eventBus.emit("error", errorObject)
+      }
     }
   },
 
@@ -122,6 +168,7 @@ export default {
     const student = ref({})
     const titleText = ref("Adicionar Aluno")
     const studentId = ref(0)
+    const disabled = ref(false)
 
     const fetchAluno = async (id) => {
       try {
@@ -141,6 +188,7 @@ export default {
         titleText.value = 'Salvar Aluno';
 
       } catch (error) {
+        disabled.value = true
         const errorObject = {
           title: "Erro ao listar: ",
           text: error.message
@@ -157,7 +205,7 @@ export default {
     })
 
     return {
-      student, titleText, studentId
+      student, titleText, studentId, disabled
     }
   }
 }

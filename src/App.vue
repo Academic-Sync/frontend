@@ -26,6 +26,12 @@
   color: var(--preto);
 }
 
+.div-buttons{
+  display: flex;
+  justify-content: end;
+  gap: 20px;
+}
+
 .container {
     margin: 2rem auto;
     padding: 2rem;
