@@ -4,6 +4,7 @@
     <div class="layout">
       <SideBar />
       <main class="content">
+        <Message />
         <h1>Alunos</h1>
         <SearchBar @key-up="onKeyup" />
         
@@ -35,6 +36,8 @@ import SideBar from '../components/SideBar.vue'
 import SearchBar from '../components/SearchBar.vue'
 import List1 from '../components/List1.vue'
 import AddButton from '../components/AddButton.vue'
+import Message from '../components/Message.vue'
+import eventBus from '../eventBus'; // Ajuste o caminho conforme necessário
 
 export default {
   name: 'Turmas',
@@ -45,6 +48,7 @@ export default {
     SearchBar,
     List1,
     AddButton,
+    Message,
   },
 
   data() {
@@ -77,7 +81,11 @@ export default {
         }
         this.allStudents = await response.json(); // Define todos os estudantes
       } catch (error) {
-        console.error('Ocorreu um erro:', error);
+        const errorObject = {
+          title: "Erro ao listar: ",
+          text: error.message
+        };
+        eventBus.emit("error", errorObject);
       }
     },
 
