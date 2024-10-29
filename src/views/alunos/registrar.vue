@@ -5,32 +5,40 @@
       <SideBar /> 
       
       <main class="content">
-        <h1>Adicionar Alunos</h1>
-        <div class="Form" >
-            <div class="mb-3 text-start">
-                <label class="form-label">Nome:</label>
-                <input v-model="student.name" type="name" name="nome" class="form-control" id="nome" placeholder="Nome">
-            </div>
+        <Message />
 
-            <div class="mb-3 text-start">
-                <label class="form-label">Email:</label>
-                <input v-model="student.email" type="name" name="Email" class="form-control" id="Email" placeholder="Email">
-            </div>
+        <h1>{{titleText}}</h1>
 
-            <div v-if="!student" class="mb-3 text-start">
-                <label class="form-label">Senha:</label>
-                <input type="name" name="Senha" class="form-control" id="Senha" placeholder="Senha">
-            </div>
+        <form @submit="handleSubmit">
+          <div class="Form">
+            <input v-model="studentId" type="hidden" name="id" id="id">
 
-            <div class="mb-3 text-start">
-                <label class="form-label">RA:</label>
-                <input v-model="student.code" type="name" name="RA" class="form-control" id="RA" placeholder="RA">
-            </div>
-        </div>
-        <AddButton
-        href="/Alunos"
-        ButtonText="Adicionar Aluno"
-        ></AddButton>
+              <div class="mb-3 text-start">
+                  <label class="form-label">Nome:</label>
+                  <input v-model="student.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
+              </div>
+
+              <div class="mb-3 text-start">
+                  <label class="form-label">Email:</label>
+                  <input v-model="student.email" type="name" name="email" class="form-control" id="email" placeholder="Email">
+              </div>
+
+              <div v-if="!student" class="mb-3 text-start">
+                  <label class="form-label">Senha:</label>
+                  <input type="password" name="password" class="form-control" id="password" placeholder="password">
+              </div>
+
+              <div class="mb-3 text-start">
+                  <label class="form-label">RA:</label>
+                  <input v-model="student.code" type="text" name="code" class="form-control" id="code" placeholder="RA">
+              </div>
+          </div>
+
+          <AddButton
+            v-model="titleText"
+            :ButtonText="titleText"
+          ></AddButton>
+        </form>
       </main>
     </div>
 
@@ -43,6 +51,7 @@ import TheNavbar from '../../components/TheNavbar.vue'
 import TheFooter from '../../components/TheFooter.vue'
 import SideBar from '../../components/SideBar.vue'
 import AddButton from '../../components/AddButton.vue'
+import Message from '../../components/Message.vue'
 import { useRoute } from 'vue-router'
 import eventBus from '../../eventBus'
 import { ref, onMounted } from 'vue'
@@ -54,26 +63,82 @@ export default {
     TheFooter,
     SideBar,
     AddButton,
+    Message
+  },
+
+  methods: {
+    async handleSubmit(e){
+      e.preventDefault();
+
+      try {
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        const studentId = document.querySelector("#id")
+
+        if(!data.name || !data.email || !data.code){
+          const errorObject = {
+            title: "",
+            text: "Informe todos os campos"
+          }
+          eventBus.emit("error", errorObject)
+          return;
+        }    
+
+        // eslint-disable-next-line
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${studentId.value}`, {
+          method: "PUT",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error); // Tratamento de erro
+        }
+
+        const successObject = {
+          title: "",
+          text: result.message
+        }
+        eventBus.emit("success", successObject)
+
+    } catch (error) {
+        console.error(error);
+        const errorObject = {
+          title: "Erro ao listar: ",
+          text: error.message
+        }
+        eventBus.emit("error", errorObject)
+    }
+    }
   },
 
   setup() {
     const route = useRoute() // Obtemos a rota atual
     const student = ref({})
+    const titleText = ref("Adicionar Aluno")
+    const studentId = ref(0)
 
     const fetchAluno = async (id) => {
       try {
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`)
-
+        
         if (!response.ok)
-          throw new Error('Erro ao buscar estudantes')
+          throw new Error('Erro ao buscar aluno')
 
         const aluno = await response.json()
         
         if (!aluno)
-          throw new Error('Erro ao buscar estudantes')
+          throw new Error('Aluno não encontrado')
 
         student.value = aluno
+        studentId.value = id
+        titleText.value = 'Salvar Aluno';
 
       } catch (error) {
         const errorObject = {
@@ -86,12 +151,13 @@ export default {
 
     onMounted(() => {
       if (route.params.id) {
-        fetchAluno(route.params.id)
+        studentId.value = route.params.id;
+        fetchAluno(studentId.value)
       }
     })
 
     return {
-      student
+      student, titleText, studentId
     }
   }
 }
@@ -109,6 +175,7 @@ export default {
   text-align: center;
   color: var(--preto);
 }
+
 
 .container {
     margin: 2rem auto;
@@ -133,6 +200,10 @@ export default {
     justify-content: center;
     gap: 3rem;
     margin-bottom: 4rem;
+}
+
+form{
+  width: 100%;;
 }
 
 .Form{

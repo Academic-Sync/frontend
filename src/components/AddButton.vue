@@ -1,7 +1,12 @@
 <template>
-        <div class="AddButton">
-            <a :href="href"><button>{{ButtonText}}</button></a>
-        </div>
+    <div class="AddButton">
+        <span v-if="href">
+          <a :href="href"><button>{{ButtonText}}</button></a>
+        </span>
+        <span v-else>
+          <button :type="type">{{ButtonText}}</button>
+        </span>
+    </div>
 </template>
 
 <script>
@@ -9,11 +14,15 @@ export default {
   props: {
     href: {
       type: String,
-      required: true
+      required: false
     },
     ButtonText: {
       type: String,
       required: true
+    },
+    type: {
+      type: String,
+      required: false
     }
   }
 }
