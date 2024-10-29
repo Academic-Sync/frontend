@@ -31,6 +31,7 @@ export default {
   mounted() {
     // Escuta os eventos de erro e sucesso
     eventBus.on("error", (msg) => {
+      console.error(msg);
       this.errorMessage = msg;
     });
     eventBus.on("success", (msg) => {

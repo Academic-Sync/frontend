@@ -15,7 +15,8 @@
             :text1="student.name" 
             :subtext="student.email" 
             :tipo="'RA: '" 
-            :text2="student.code" 
+            :text2="student.code"
+            :link="student.link"
           />
         </div>
 
@@ -30,14 +31,14 @@
 </template>
 
 <script>
-import TheNavbar from '../components/TheNavbar.vue'
-import TheFooter from '../components/TheFooter.vue'
-import SideBar from '../components/SideBar.vue'
-import SearchBar from '../components/SearchBar.vue'
-import List1 from '../components/List1.vue'
-import AddButton from '../components/AddButton.vue'
-import Message from '../components/Message.vue'
-import eventBus from '../eventBus'; // Ajuste o caminho conforme necessário
+import TheNavbar from '../../components/TheNavbar.vue'
+import TheFooter from '../../components/TheFooter.vue'
+import SideBar from '../../components/SideBar.vue'
+import SearchBar from '../../components/SearchBar.vue'
+import List1 from '../../components/List1.vue'
+import AddButton from '../../components/AddButton.vue'
+import Message from '../../components/Message.vue'
+import eventBus from '../../eventBus'
 
 export default {
   name: 'Turmas',
@@ -53,8 +54,14 @@ export default {
 
   data() {
     return {
-      allStudents: [],
-      searchTerm: '',
+      allStudents: [{
+        id: 0,
+        code: "",
+        name: "",
+        email: "",
+        link: ""
+      }],
+      searchTerm: "",
     }
   },
 
@@ -62,6 +69,7 @@ export default {
     filteredStudents() {
       // Filtra estudantes com base no termo de busca
       return this.allStudents.filter(student => {
+        student.link = `Alunos/editar/${student.id}`
         return (
           student.name.toLowerCase().includes(this.searchTerm) || 
           student.email.toLowerCase().includes(this.searchTerm) ||

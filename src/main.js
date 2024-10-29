@@ -10,8 +10,8 @@ import Turmas from './views/Turmas.vue'
 import AddTurmas from './views/AddTurmas.vue'
 import Cursos from './views/Cursos.vue'
 import AddCursos from './views/AddCursos.vue'
-import Alunos from './views/Alunos.vue'
-import AddAlunos from './views/AddAlunos.vue'
+import Alunos from './views/alunos/listar.vue'
+import AddAlunos from './views/alunos/registrar.vue'
 
 
 // Defina as rotas da aplicação
@@ -22,9 +22,8 @@ const routes = [
   { path: '/Cursos', component: Cursos },
   { path: '/AddCursos', component: AddCursos },
   { path: '/Alunos', component: Alunos },
+  { path: '/Alunos/editar/:id', component: AddAlunos },
   { path: '/AddAlunos', component: AddAlunos },
-
-
 ]
 
 // Crie o router e defina o modo de histórico

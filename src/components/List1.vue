@@ -1,36 +1,49 @@
 <template>
-            <div class="user">
-                <div class="user-info">
-                    <h3>{{text1}}</h3>
-                    <p>{{subtext}}</p>
-                </div>
-                <div class="user-ra">
-                    {{tipo}} {{text2}}
-                </div>
-            </div>
+    <div class="user" @click="redirectToLink">
+        <div class="user-info">
+            <h3>{{text1}}</h3>
+            <p>{{subtext}}</p>
+        </div>
+        <div class="user-ra">
+            {{tipo}} {{text2}}
+        </div>
+    </div>
 </template>
 
 <script>
 export default {
   props: {
-    text1: {
-      type: String,
-      required: true
+        text1: {
+        type: String,
+        required: true
+        },
+        subtext: {
+        type: String,
+        required: true
+        },
+        tipo: {
+        type: String,
+        required: true
+        },
+        text2: {
+        type: String,
+        required: true
+        },
+        link: {
+            type: String,
+            require: false,
+        }
     },
-    subtext: {
-      type: String,
-      required: true
-    },
-    tipo: {
-      type: String,
-      required: true
-    },
-    text2: {
-      type: String,
-      required: true
+
+    methods: {
+        redirectToLink() {
+            if (this.link) {
+                window.location.href = this.link;
+            }
+        }
     }
-  }
 }
+
 </script>
 
 <style>
@@ -51,6 +64,7 @@ export default {
     padding: 2rem;
     text-align: left;
     transition: background-color 0.3s;
+    cursor: pointer;
 }
 
 .user:last-child {

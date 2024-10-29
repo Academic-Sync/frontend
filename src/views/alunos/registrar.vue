@@ -6,10 +6,10 @@
       
       <main class="content">
         <h1>Adicionar Alunos</h1>
-        <div class="Form">
+        <div class="Form" >
             <div class="mb-3 text-start">
                 <label class="form-label">Nome:</label>
-                <input type="name" name="nome" class="form-control" id="nome" placeholder="Nome">
+                <input v-model="student.name" type="name" name="nome" class="form-control" id="nome" placeholder="Nome">
             </div>
 
             <div class="mb-3 text-start">
@@ -39,11 +39,13 @@
 </template>
 
 <script>
-import TheNavbar from '../components/TheNavbar.vue'
-import TheFooter from '../components/TheFooter.vue'
-import SideBar from '../components/SideBar.vue'
-import AddButton from '../components/AddButton.vue'
-
+import TheNavbar from '../../components/TheNavbar.vue'
+import TheFooter from '../../components/TheFooter.vue'
+import SideBar from '../../components/SideBar.vue'
+import AddButton from '../../components/AddButton.vue'
+import { useRoute } from 'vue-router'
+import eventBus from '../../eventBus'
+import { ref } from 'vue'
 export default {
   name: 'Turmas',
   components: {
@@ -51,6 +53,53 @@ export default {
     TheFooter,
     SideBar,
     AddButton,
+  },
+
+  setup() {
+    const student = ref({
+      id: 0,
+      name: '',
+      email: '',
+      code: '',
+      user_type: ''
+    });
+    
+    const route = useRoute(); // Obtemos a rota atual
+
+
+    const fetchAluno = async (id) => {
+      try {
+        // eslint-disable-next-line
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`);
+
+        if (!response.ok) {
+          throw new Error('Erro ao buscar estudantes'); // Tratamento de erro
+        }
+
+        const aluno = await response.json(); // Define todos os estudantes
+        
+        if(!aluno){
+          throw new Error('Erro ao buscar estudantes');
+        }
+
+        student.value = aluno
+        console.log(student.value);
+        
+          
+
+      } catch (error) {
+        const errorObject = {
+          title: "Erro ao listar: ",
+          text: error.message
+        };
+        eventBus.emit("error", errorObject);
+      }
+    };
+
+    // Verifique se há um id na rota e busque o aluno correspondente
+    if (route.params.id) {
+      fetchAluno(route.params.id);
+    }
   }
 }
 </script>
