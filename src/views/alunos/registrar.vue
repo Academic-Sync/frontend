@@ -35,8 +35,8 @@
           </div>
 
           <div class="div-buttons">
-            <RemoveButton @click="handleDelete" type="button" v-model="titleText" :ButtonText="titleText" />
-            <AddButton v-model="titleText" :ButtonText="titleText" />
+            <RemoveButton v-if="student.id" @click="handleDelete" type="button" ButtonText="Apagar aluno" />
+            <AddButton :ButtonText="titleText" />
           </div>
         </form>
       </main>
@@ -68,13 +68,40 @@ export default {
     Message
   },
 
+  data(){
+    return {
+      olaMundo: "Joao"
+    }
+  },
+
   methods: {
     async handleSubmit(e){
       e.preventDefault();
-      const studentId = document.querySelector("#id")
+      if(!this.validateEmail())
+        return
 
+      const studentId = document.querySelector("#id")
       if(studentId.value != 0)
-        await this.update(e);
+        return await this.update(e);
+
+        await this.create(e);
+    },
+
+    validateEmail(){
+      const email = this.student.email;
+
+      // Verifica se o email é do domínio fatec.sp.gov.br
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@fatec\.sp\.gov\.br$/;
+      if (!emailPattern.test(email)) {
+        const errorObject = {
+          title: "",
+          text: "O email precisa ser do domínio @fatec.sp.gov.br"
+        };
+        eventBus.emit("error", errorObject);
+        return 0;
+      }
+
+      return 1;
     },
 
     async handleDelete(){
@@ -155,7 +182,53 @@ export default {
       } catch (error) {
           console.error(error);
           const errorObject = {
-            title: "Erro ao listar: ",
+            title: "Erro ao atualizar: ",
+            text: error.message
+          }
+          eventBus.emit("error", errorObject)
+      }
+    },
+
+    async create(e){
+      try {
+          const data = Object.fromEntries(new FormData(e.target).entries());
+
+          if(!data.name || !data.email || !data.code){
+            const errorObject = {
+              title: "",
+              text: "Informe todos os campos"
+            }
+            eventBus.emit("error", errorObject)
+            return;
+          }    
+
+          // eslint-disable-next-line
+          const response = await fetch(`${process.env.VUE_APP_API_URL}/students`, {
+            method: "POST",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+
+          
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.error); // Tratamento de erro
+          }
+
+          const successObject = {
+            title: "",
+            text: result.message
+          }
+          eventBus.emit("success", successObject)
+
+      } catch (error) {
+          console.error(error);
+          const errorObject = {
+            title: "Erro ao cadastrar: ",
             text: error.message
           }
           eventBus.emit("error", errorObject)

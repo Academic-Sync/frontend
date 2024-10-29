@@ -33,9 +33,11 @@ export default {
     eventBus.on("error", (msg) => {
       console.error(msg);
       this.errorMessage = msg;
+      this.successMessage = null;
     });
     eventBus.on("success", (msg) => {
       this.successMessage = msg;
+      this.errorMessage = null;
     });
   },
   beforeUnmount() {
