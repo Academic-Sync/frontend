@@ -2,45 +2,30 @@
   <TheNavbar></TheNavbar>
     <article>
       <div class="container">
-        <h1>Bem-vindo, Coodernador</h1>
+        <h1>Bem-vindo, Admin</h1>
         <p>O que deseja realizar?</p>
         <div class="action-buttons">
           <TheCard 
-          href="/Admin"
-          alt_image="Usuarios"
+          href="/Professores"
+          alt_image="Professores"
           :image="require('../assets/grupo.png')" 
-          Titulo="Usuarios" 
-          text="Gerencie usuarios no sistema" 
+          Titulo="Professores" 
+          text="Gerencie professores no sistema" 
         />
         <TheCard 
-          href="/Relatorio"
-          alt_image="Relatorio"
-          :image="require('../assets/Relatorio.png')" 
-          Titulo="Relatorio" 
-          text="Acompanhe o relatório do andamento dos trabalhos" 
-        />
-        <TheCard 
-          href="/Alunos"
-          alt_image="Alunos"
-          :image="require('../assets/alunos.png')" 
-          Titulo="Alunos" 
-          text="Gerencie suas os alunos da instituição" 
-        />
-        <TheCard 
-          href="/Turmas"
-          alt_image="Turmas"
+          href="/Coordenadores"
+          alt_image="Coordenadores"
           :image="require('../assets/grupo.png')" 
-          Titulo="Turmas" 
-          text="Gerencie suas turmas ou adicione novas" 
+          Titulo="Coordenadores" 
+          text="Gerencie coordenadores no sistema" 
         />
         <TheCard 
-          href="/Cursos"
-          alt_image="Cursos"
-          :image="require('../assets/curso.png')" 
-          Titulo="Curso" 
-          text="Acompanhe o relatório do andamento dos trabalhos" 
+          href="/Orientadores"
+          alt_image="Orientadores"
+          :image="require('../assets/grupo.png')" 
+          Titulo="Orientadores" 
+          text="Gerencie orientadores no sistema" 
         />
-
       </div>
       </div>
     </article>
@@ -54,7 +39,7 @@ import TheCard from '../components/TheCard.vue'
 
 
 export default {
-  name: 'HomeCoord',
+  name: 'HomeAdmin',
   components: {
     TheNavbar,
     TheFooter,

@@ -12,6 +12,9 @@ import Cursos from './views/cursos/listar.vue'
 import AddCursos from './views/cursos/registrar.vue'
 import Alunos from './views/alunos/listar.vue'
 import AddAlunos from './views/alunos/registrar.vue'
+import HomeAdmin from './views/HomeAdmin.vue'
+import Professores from './views/professores/listar.vue'
+import AddProfessor from './views/professores/registrar.vue'
 
 
 // Defina as rotas da aplicação
@@ -29,6 +32,12 @@ const routes = [
   { path: '/Alunos', component: Alunos },
   { path: '/Alunos/editar/:id', component: AddAlunos },
   { path: '/AddAlunos', component: AddAlunos },
+
+  { path: '/Admin', component: HomeAdmin },
+
+  { path: '/Professores', component: Professores },
+  { path: '/Professores/editar/:id', component: AddProfessor },
+  { path: '/AddProfessores', component: AddProfessor },
 ]
 
 // Crie o router e defina o modo de histórico
