@@ -225,6 +225,10 @@ export default {
           }
           eventBus.emit("success", successObject)
 
+          setTimeout(()=>{
+            window.location.href = `/Alunos/editar/${result.student.id}`
+          }, 1000);
+
       } catch (error) {
           console.error(error);
           const errorObject = {
