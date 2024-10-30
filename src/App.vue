@@ -28,6 +28,7 @@
 /* plugin de acessibilidade */
 body .uwy.userway_p1 .userway_buttons_wrapper{
   top: calc(50% + 20px)!important;
+  right: 0!important;
 }
 body .uwy .uai, body .uwy .ulsti{
   width: 40px!important;
