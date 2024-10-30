@@ -6,8 +6,8 @@ createApp(App).mount('#app')
 
 // Importe os componentes das páginas
 import HomeCoord from './views/HomeCoord.vue'
-import Turmas from './views/Turmas.vue'
-import AddTurmas from './views/AddTurmas.vue'
+import Turmas from './views/turmas/listar.vue'
+import AddTurmas from './views/turmas/registrar.vue'
 import Cursos from './views/cursos/listar.vue'
 import AddCursos from './views/cursos/registrar.vue'
 import Alunos from './views/alunos/listar.vue'
@@ -17,7 +17,9 @@ import AddAlunos from './views/alunos/registrar.vue'
 // Defina as rotas da aplicação
 const routes = [
   { path: '/', component: HomeCoord },
+
   { path: '/Turmas', component: Turmas },
+  { path: '/Turmas/editar/:id', component: AddTurmas },
   { path: '/AddTurmas', component: AddTurmas },
 
   { path: '/Cursos', component: Cursos },

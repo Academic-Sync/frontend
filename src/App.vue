@@ -12,7 +12,6 @@
 </script>
 
 
-
 <style>
 @import '/src/assets/style/cores.css';
 
@@ -24,6 +23,15 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: var(--preto);
+}
+
+body .uwy.userway_p1 .userway_buttons_wrapper{
+  top: 50%!important;
+}
+
+body .uwy .uai, body .uwy .ulsti{
+  width: 54px!important;
+  height: 54px!important;
 }
 
 .div-buttons{
