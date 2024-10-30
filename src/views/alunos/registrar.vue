@@ -98,6 +98,32 @@ export default {
       return 1;
     },
 
+    validateData(e){
+      const data = Object.fromEntries(new FormData(e.target).entries());
+
+      if(!data.name || !data.email || !data.code){
+          const errorObject = {
+            title: "",
+            text: "Informe todos os campos"
+          };
+          eventBus.emit("error", errorObject);
+          return;
+      }
+
+      // Validação para verificar se o código tem 13 caracteres numéricos
+      const isValidCode = /^\d{13}$/.test(data.code);
+
+      if (!isValidCode) {
+          const errorObject = {
+            title: "",
+            text: "O RA deve ter exatamente 13 caracteres numéricos"
+          };
+          eventBus.emit("error", errorObject);
+          return;
+      }
+      return data;
+    },
+
     async handleDelete(){
       try {
         const studentId = document.querySelector("#id")
@@ -138,17 +164,12 @@ export default {
 
     async update(e){
       try {
-          const data = Object.fromEntries(new FormData(e.target).entries());
           const studentId = document.querySelector("#id")
 
-          if(!data.name || !data.email || !data.code){
-            const errorObject = {
-              title: "",
-              text: "Informe todos os campos"
-            }
-            eventBus.emit("error", errorObject)
+          const data = this.validateData(e);
+          if(!data)
             return;
-          }    
+ 
 
           // eslint-disable-next-line
           const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${studentId.value}`, {
@@ -185,7 +206,9 @@ export default {
 
     async create(e){
       try {
-          const data = Object.fromEntries(new FormData(e.target).entries());
+          const data = this.validateData(e);
+          if(!data)
+            return;
 
           if(!data.name || !data.email || !data.code){
             const errorObject = {
