@@ -25,13 +25,24 @@
   color: var(--preto);
 }
 
+/* plugin de acessibilidade */
 body .uwy.userway_p1 .userway_buttons_wrapper{
-  top: 50%!important;
+  top: calc(50% + 20px)!important;
+}
+body .uwy .uai, body .uwy .ulsti{
+  width: 40px!important;
+  height: 40px!important;
+  border-radius: 8px!important;
+}
+.uwy .uai, .uwy .ulsti{
+  border-radius: 8px!important;
 }
 
-body .uwy .uai, body .uwy .ulsti{
-  width: 54px!important;
-  height: 54px!important;
+/* v-libras */
+[vw].enabled{
+  /* min-height: 100px!important;
+  right: -6px; */
+  top: calc(50% - 20px)!important;
 }
 
 .div-buttons{
