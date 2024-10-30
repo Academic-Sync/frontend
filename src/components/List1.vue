@@ -23,7 +23,7 @@ export default {
         },
         tipo: {
         type: String,
-        required: true
+        required: false
         },
         text2: {
         type: String,

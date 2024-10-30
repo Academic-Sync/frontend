@@ -30,6 +30,7 @@
   display: flex;
   justify-content: end;
   gap: 20px;
+  width: 100%;
 }
 
 .container {

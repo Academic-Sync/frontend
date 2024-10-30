@@ -8,35 +8,46 @@
         <Message />
 
         <h1>{{titleText}}</h1>
-
         <form @submit="handleSubmit">
           <div class="Form">
-            <input v-model="studentId" type="hidden" name="id" id="id">
+            <input v-model="id" type="hidden" name="id" id="id">
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Nome:</label>
-                  <input :disabled="disabled" v-model="student.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
-              </div>
-
-              <div class="mb-3 text-start">
-                  <label class="form-label">Email:</label>
-                  <input v-model="student.email" type="name" name="email" class="form-control" id="email" placeholder="Email">
-              </div>
-
-              <div v-if="!student" class="mb-3 text-start">
-                  <label class="form-label">Senha:</label>
-                  <input type="password" name="password" class="form-control" id="password" placeholder="password">
+                  <label class="form-label">Coordenador:</label>
+                  <input v-model="curso.coordinator_id" type="name" name="coordinator_id" class="form-control" id="coordinator_id" placeholder="Coordenador">
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">RA:</label>
-                  <input v-model="student.code" type="text" name="code" class="form-control" id="code" placeholder="RA">
+                  <label class="form-label">Nome do curso:</label>
+                  <input v-model="curso.name" type="name" name="name" class="form-control" id="name" placeholder="Nome do curso">
               </div>
+
+              <div class="mb-3 text-start">
+                  <label class="form-label">Periodo:</label>
+                  <input v-model="curso.period" type="text" name="period" class="form-control" id="period" placeholder="Manhã/Tarde/Noite">
+              </div>
+
+              <div class="mb-3 text-start">
+                  <label class="form-label">Tipo de trabalho final:</label>
+                  <input v-model="curso.type_work" type="name" name="type_work" class="form-control" id="type_work" placeholder="Tipo de trabalho final">
+              </div>
+
+              <label class="form-label">Curso anual ou bimestral:</label>
+              <div class="radio-group">
+                <label class="radio-option">
+                    <input v-model="curso.is_annual" type="radio" name="is_annual" :value="true">
+                    Bimestral
+                </label>
+                <label class="radio-option">
+                    <input v-model="curso.is_annual" type="radio" name="is_annual" :value="false">
+                    Anual
+                </label>
+            </div>
           </div>
 
           <div class="div-buttons">
-            <RemoveButton v-if="student.id" @click="handleDelete" type="button" ButtonText="Apagar aluno" />
-            <AddButton :ButtonText="titleText" />
+            <RemoveButton v-if="curso.id" @click="handleDelete" type="button" ButtonText="Apagar Curso" />
+            <AddButton :ButtonText="titleText" ></AddButton>
           </div>
         </form>
       </main>
@@ -51,11 +62,11 @@ import TheNavbar from '../../components/TheNavbar.vue'
 import TheFooter from '../../components/TheFooter.vue'
 import SideBar from '../../components/SideBar.vue'
 import AddButton from '../../components/AddButton.vue'
+import RemoveButton from '../../components/RemoveButton.vue'
 import Message from '../../components/Message.vue'
-import { useRoute } from 'vue-router'
 import eventBus from '../../eventBus'
+import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
-import RemoveButton from '@/components/RemoveButton.vue'
 
 export default {
   name: 'Turmas',
@@ -71,31 +82,11 @@ export default {
   methods: {
     async handleSubmit(e){
       e.preventDefault();
-      if(!this.validateEmail())
-        return
-
-      const studentId = document.querySelector("#id")
-      if(studentId.value != 0)
+      const id = document.querySelector("#id")
+      if(id.value != 0)
         return await this.update(e);
 
         await this.create(e);
-    },
-
-    validateEmail(){
-      const email = this.student.email;
-
-      // Verifica se o email é do domínio fatec.sp.gov.br
-      const emailPattern = /^[a-zA-Z0-9._%+-]+@fatec\.sp\.gov\.br$/;
-      if (!emailPattern.test(email)) {
-        const errorObject = {
-          title: "",
-          text: "O email precisa ser do domínio @fatec.sp.gov.br"
-        };
-        eventBus.emit("error", errorObject);
-        return 0;
-      }
-
-      return 1;
     },
 
     async handleDelete(){
@@ -103,7 +94,7 @@ export default {
         const studentId = document.querySelector("#id")
 
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${studentId.value}`, {
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/courses/${studentId.value}`, {
           method: "DELETE",
           headers: {
             'Accept': 'application/json',
@@ -124,7 +115,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Alunos"
+          window.location.href = "/Cursos"
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -136,22 +127,29 @@ export default {
       }
     },
 
+    validateDate(e){
+      const data = Object.fromEntries(new FormData(e.target).entries());
+
+      if(!data.coordinator_id || !data.name || !data.period || !data.type_work || !data.is_annual){
+        const errorObject = {
+          title: "",
+          text: "Informe todos os campos"
+        }
+        eventBus.emit("error", errorObject)
+        return 0;
+      }    
+
+      return data;
+    },
+
     async update(e){
       try {
-          const data = Object.fromEntries(new FormData(e.target).entries());
-          const studentId = document.querySelector("#id")
-
-          if(!data.name || !data.email || !data.code){
-            const errorObject = {
-              title: "",
-              text: "Informe todos os campos"
-            }
-            eventBus.emit("error", errorObject)
-            return;
-          }    
+        const data = this.validateDate(e);
+        if(!data)
+          return;
 
           // eslint-disable-next-line
-          const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${studentId.value}`, {
+          const response = await fetch(`${process.env.VUE_APP_API_URL}/courses/${id.value}`, {
             method: "PUT",
             headers: {
               'Accept': 'application/json',
@@ -185,19 +183,13 @@ export default {
 
     async create(e){
       try {
-          const data = Object.fromEntries(new FormData(e.target).entries());
+          const data = this.validateDate(e);
 
-          if(!data.name || !data.email || !data.code){
-            const errorObject = {
-              title: "",
-              text: "Informe todos os campos"
-            }
-            eventBus.emit("error", errorObject)
+          if(!data)
             return;
-          }    
 
           // eslint-disable-next-line
-          const response = await fetch(`${process.env.VUE_APP_API_URL}/students`, {
+          const response = await fetch(`${process.env.VUE_APP_API_URL}/courses`, {
             method: "POST",
             headers: {
               'Accept': 'application/json',
@@ -220,7 +212,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Alunos/editar/${result.student.id}`
+            window.location.href = `/Cursos/editar/${result.course.id}`
           }, 1000);
 
       } catch (error) {
@@ -236,26 +228,26 @@ export default {
 
   setup() {
     const route = useRoute()
-    const student = ref({})
-    const titleText = ref("Adicionar Aluno")
-    const studentId = ref(0)
+    const curso = ref({})
+    const titleText = ref("Adicionar Curso")
+    const id = ref(0)
     const disabled = ref(false)
 
-    const fetchAluno = async (id) => {
+    const fetchData = async (cursoId) => {
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`)
-        const aluno = await response.json()
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/courses/${cursoId}`)
+        const cursoData = await response.json()
 
         if (!response.ok)
-          throw new Error(aluno.error)
-        
-        if (!aluno)
-          throw new Error('Aluno não encontrado')
+          throw new Error(cursoData.error)
 
-        student.value = aluno
-        studentId.value = id
-        titleText.value = 'Salvar Aluno';
+        if (!cursoData)
+          throw new Error("Curso não encontrado")
+
+        curso.value = cursoData
+        id.value = cursoId
+        titleText.value = 'Salvar Curso';
 
       } catch (error) {
         disabled.value = true
@@ -269,13 +261,13 @@ export default {
 
     onMounted(() => {
       if (route.params.id) {
-        studentId.value = route.params.id;
-        fetchAluno(studentId.value)
+        id.value = route.params.id;
+        fetchData(id.value)
       }
     })
 
     return {
-      student, titleText, studentId, disabled
+      curso, titleText, id, disabled
     }
   }
 }
@@ -294,7 +286,6 @@ export default {
   color: var(--preto);
 }
 
-
 .container {
     margin: 2rem auto;
     padding: 2rem;
@@ -312,21 +303,9 @@ export default {
     margin-bottom: 2rem;
 }
 
-.action-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 3rem;
-    margin-bottom: 4rem;
-}
-
-form{
-  width: 100%;;
-}
 
 .Form{
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
     width: 100%;
     background-color: var(--Branco);
@@ -334,11 +313,12 @@ form{
     padding: 2rem;
     font-size: 2rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
+    margin-bottom: 2rem;
 }
 .Form label{
-    font-size: 2rem;
-    
+  display: flex;
+  font-size: 2rem;
+  text-align: left;
 }
 .Form input{
     width: 100%;
@@ -350,5 +330,23 @@ form{
     font-size: 1.7rem;
     padding: 1rem;
     margin-bottom: 2rem;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+    align-items: flex-start;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.radio-option input[type="radio"] {
+    margin: 0;
+    accent-color: var(--Azul); 
 }
 </style>

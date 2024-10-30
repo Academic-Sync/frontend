@@ -8,8 +8,8 @@ createApp(App).mount('#app')
 import HomeCoord from './views/HomeCoord.vue'
 import Turmas from './views/Turmas.vue'
 import AddTurmas from './views/AddTurmas.vue'
-import Cursos from './views/Cursos.vue'
-import AddCursos from './views/AddCursos.vue'
+import Cursos from './views/cursos/listar.vue'
+import AddCursos from './views/cursos/registrar.vue'
 import Alunos from './views/alunos/listar.vue'
 import AddAlunos from './views/alunos/registrar.vue'
 
@@ -19,8 +19,11 @@ const routes = [
   { path: '/', component: HomeCoord },
   { path: '/Turmas', component: Turmas },
   { path: '/AddTurmas', component: AddTurmas },
+
   { path: '/Cursos', component: Cursos },
+  { path: '/Cursos/editar/:id', component: AddCursos },
   { path: '/AddCursos', component: AddCursos },
+
   { path: '/Alunos', component: Alunos },
   { path: '/Alunos/editar/:id', component: AddAlunos },
   { path: '/AddAlunos', component: AddAlunos },
