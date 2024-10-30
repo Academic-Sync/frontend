@@ -195,7 +195,6 @@ export default {
           eventBus.emit("success", successObject)
 
       } catch (error) {
-          console.error(error);
           const errorObject = {
             title: "Erro ao atualizar: ",
             text: error.message
