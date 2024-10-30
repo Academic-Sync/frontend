@@ -5,24 +5,24 @@
       <SideBar />
       <main class="content">
         <Message />
-        <h1>Alunos</h1>
+        <h1>Professores</h1>
         <SearchBar @key-up="onKeyup" />
         
         <div class="users-list">
           <List1 
-            v-for="student in filteredStudents" 
-            :key="student.id" 
-            :text1="student.name" 
-            :subtext="student.email" 
-            :tipo="'RA: '" 
-            :text2="student.code"
-            :link="student.link"
+            v-for="professor in filteredData" 
+            :key="professor.id" 
+            :text1="professor.name" 
+            :subtext="professor.email" 
+            :tipo="'RM: '" 
+            :text2="professor.code"
+            :link="professor.link"
           />
         </div>
         <div class="div-buttons">
           <AddButton
-            href="/AddAlunos"
-            ButtonText="Adicionar Alunos"
+            href="/AddProfessores"
+            ButtonText="Adicionar Professores"
           />
         </div>
       </main>
@@ -42,7 +42,7 @@ import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 
 export default {
-  name: 'Turmas',
+  name: 'Professores',
   components: {
     TheNavbar,
     TheFooter,
@@ -55,7 +55,7 @@ export default {
 
   data() {
     return {
-      allStudents: [{
+      allTeacher: [{
         id: 0,
         code: "",
         name: "",
@@ -67,10 +67,10 @@ export default {
   },
 
   computed: {
-    filteredStudents() {
-      // Filtra estudantes com base no termo de busca
-      return this.allStudents.filter(student => {
-        student.link = `/Alunos/editar/${student.id}`
+    filteredData() {
+      // Filtra professores com base no termo de busca
+      return this.allTeacher.filter(student => {
+        student.link = `/Professores/editar/${student.id}`
         return (
           student.name.toLowerCase().includes(this.searchTerm) || 
           student.email.toLowerCase().includes(this.searchTerm) ||
@@ -84,11 +84,11 @@ export default {
     async fetchStudents() {
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/students`);
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/teachers`);
         if (!response.ok) {
-          throw new Error('Erro ao buscar estudantes'); // Tratamento de erro
+          throw new Error('Erro ao buscar professores'); // Tratamento de erro
         }
-        this.allStudents = await response.json(); // Define todos os estudantes
+        this.allTeacher = await response.json(); // Define todos os professores
       } catch (error) {
         const errorObject = {
           title: "Erro ao listar: ",
@@ -105,7 +105,7 @@ export default {
   },
 
   mounted() {
-    this.fetchStudents(); // Busca estudantes ao montar o componente
+    this.fetchStudents(); // Busca professores ao montar o componente
   },
 }
 </script>

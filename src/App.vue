@@ -12,7 +12,6 @@
 </script>
 
 
-
 <style>
 @import '/src/assets/style/cores.css';
 
@@ -26,10 +25,54 @@
   color: var(--preto);
 }
 
+/* plugin de acessibilidade */
+body .uwy.userway_p1 .userway_buttons_wrapper{
+  top: calc(50% + 20px)!important;
+}
+body .uwy .uai, body .uwy .ulsti{
+  width: 40px!important;
+  height: 40px!important;
+  border-radius: 8px!important;
+}
+.uwy .uai, .uwy .ulsti{
+  border-radius: 8px!important;
+}
+
+/* v-libras */
+[vw].enabled{
+  /* min-height: 100px!important;
+  right: -6px; */
+  top: calc(50% - 20px)!important;
+}
+
 .div-buttons{
   display: flex;
   justify-content: end;
   gap: 20px;
+  width: 100%;
+}
+.Form input{
+    width: 100%;
+    background-color: var(--Branco2);
+    display: flex;
+    justify-content: center;
+    border: none;
+    border-radius: 1rem;
+    font-size: 1.7rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.Form select{
+    width: 100%;
+    background-color: var(--Branco2);
+    display: flex;
+    justify-content: center;
+    border: none;
+    border-radius: 1rem;
+    font-size: 1.7rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
 }
 
 .container {
