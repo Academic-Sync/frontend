@@ -29,8 +29,8 @@
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">RM:</label>
-                  <input v-model="teacher.code" type="text" name="code" class="form-control" id="code" placeholder="RA">
+                  <label class="form-label">Código:</label>
+                  <input v-model="teacher.code" type="text" name="code" class="form-control" id="code" placeholder="Código">
               </div>
           </div>
 
@@ -101,26 +101,15 @@ export default {
     validateData(e){
       const data = Object.fromEntries(new FormData(e.target).entries());
 
-      if(!data.name || !data.email || !data.code){
+      if(!data.name || !data.email){
           const errorObject = {
             title: "",
-            text: "Informe todos os campos"
+            text: "Informe o nome e email"
           };
           eventBus.emit("error", errorObject);
           return;
       }
 
-      // Validação para verificar se o código tem 13 caracteres numéricos
-      const isValidCode = /^\d{13}$/.test(data.code);
-
-      if (!isValidCode) {
-          const errorObject = {
-            title: "",
-            text: "O RM deve ter exatamente 13 caracteres numéricos"
-          };
-          eventBus.emit("error", errorObject);
-          return;
-      }
       return data;
     },
 
@@ -129,7 +118,7 @@ export default {
         const id = document.querySelector("#id")
 
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/teachers/${id.value}`, {
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/advisors/${id.value}`, {
           method: "DELETE",
           headers: {
             'Accept': 'application/json',
@@ -150,7 +139,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Professores"
+          window.location.href = "/Orientadores"
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -169,9 +158,10 @@ export default {
           const data = this.validateData(e);
           if(!data)
             return;
+ 
 
           // eslint-disable-next-line
-          const response = await fetch(`${process.env.VUE_APP_API_URL}/teachers/${id.value}`, {
+          const response = await fetch(`${process.env.VUE_APP_API_URL}/advisors/${id.value}`, {
             method: "PUT",
             headers: {
               'Accept': 'application/json',
@@ -209,8 +199,8 @@ export default {
           if(!data)
             return;
 
-          // eslint-disable-next-line
-          const response = await fetch(`${process.env.VUE_APP_API_URL}/teachers`, {
+            // eslint-disable-next-line
+          const response = await fetch(`${process.env.VUE_APP_API_URL}/advisors`, {
             method: "POST",
             headers: {
               'Accept': 'application/json',
@@ -233,7 +223,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Professores/editar/${result.teacher.id}`
+            window.location.href = `/Orientadores/editar/${result.advisor.id}`
           }, 1000);
 
       } catch (error) {
@@ -250,25 +240,25 @@ export default {
   setup() {
     const route = useRoute()
     const teacher = ref({})
-    const titleText = ref("Adicionar Professor")
+    const titleText = ref("Adicionar Orientador")
     const id = ref(0)
     const disabled = ref(false)
 
-    const fetchProfessor = async (teacherId) => {
+    const fetchData = async (teacherId) => {
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/teachers/${teacherId}`)
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/advisors/${teacherId}`)
         const professor = await response.json()
 
         if (!response.ok)
           throw new Error(professor.error)
         
         if (!professor)
-          throw new Error('Professor não encontrado')
+          throw new Error('Orientador não encontrado')
 
         teacher.value = professor
         id.value = teacherId
-        titleText.value = 'Salvar Professor';
+        titleText.value = 'Salvar Orientador';
 
       } catch (error) {
         disabled.value = true
@@ -283,7 +273,7 @@ export default {
     onMounted(() => {
       if (route.params.id) {
         id.value = route.params.id;
-        fetchProfessor(id.value)
+        fetchData(id.value)
       }
     })
 
