@@ -6,7 +6,7 @@
         <p>O que deseja realizar?</p>
         <div class="action-buttons">
           <TheCard 
-          href="/Admin"
+          href="/Usuarios"
           alt_image="Usuarios"
           :image="require('../assets/grupo.png')" 
           Titulo="Usuarios" 

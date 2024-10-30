@@ -36,6 +36,7 @@ const routes = [
   { path: '/AddAlunos', component: AddAlunos },
 
   { path: '/Admin', component: HomeAdmin },
+  { path: '/Usuarios', component: HomeAdmin },
 
   { path: '/Professores', component: Professores },
   { path: '/Professores/editar/:id', component: AddProfessor },
