@@ -51,6 +51,29 @@ body .uwy .uai, body .uwy .ulsti{
   gap: 20px;
   width: 100%;
 }
+.Form input{
+    width: 100%;
+    background-color: var(--Branco2);
+    display: flex;
+    justify-content: center;
+    border: none;
+    border-radius: 1rem;
+    font-size: 1.7rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.Form select{
+    width: 100%;
+    background-color: var(--Branco2);
+    display: flex;
+    justify-content: center;
+    border: none;
+    border-radius: 1rem;
+    font-size: 1.7rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
 
 .container {
     margin: 2rem auto;

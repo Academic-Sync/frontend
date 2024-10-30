@@ -5,33 +5,37 @@
       <SideBar /> 
       
       <main class="content">
+        <Message />
+
         <h1>Adicionar Turmas</h1>
        <form @submit="handleSubmit">
         <div class="Form">
+          <input v-model="id" type="hidden" name="id" id="id">
               <div class="mb-3 text-start">
-                  <label class="form-label">Código do professor:</label>
-                  <input type="name" name="Coordenador" class="form-control" id="Coordenador" placeholder="Coordenador">
-              </div>
-
-              <div class="mb-3 text-start">
-                  <label class="form-label">Código do turma:</label>
-                  <select v-model="turma.coordinator_id" name="course_id" id="course_id">
-                    <option v-for="coordenador in coordenadores" :key="coordenador.id" value="coordenador.id">{{ coordenador.name }}</option>
+                  <label class="form-label">Professor:</label>
+                  <select v-model="turma.teacher_id" name="teacher_id" id="teacher_id">
+                    <option value="0">Selecione o Professor</option>
+                    <option class="form-control" v-for="professor in professores" :key="professor.id" :value="professor.id">{{ professor.name }}</option>
                   </select>
-                  <input type="name" name="Nome do turma" class="form-control" id="Nome do turma" placeholder="Nome do turma">
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Semestre:</label>
-                  <input type="name" name="Periodo" class="form-control" id="Periodo" placeholder="Periodo">
+                  <label class="form-label">Curso:</label>
+                  <select @change="onSelectCurso" v-model="turma.course_id" name="course_id" id="course_id">
+                    <option value="0">Selecione o Curso</option>
+                    <option class="form-control" v-for="curso in cursos" :key="curso.id" :value="curso.id">{{ curso.name }}</option>
+                  </select>
+              </div>
+
+              <div class="mb-3 text-start">
+                  <label class="form-label">{{ textSemestre }}</label>
+                  <input v-model="turma.semester" type="number" name="semester" class="form-control" id="semester" placeholder="1">
               </div>
           </div>
         
           <div class="div-buttons">
-            <AddButton
-          href="/Turmas"
-          ButtonText="Adicionar Turma"
-          ></AddButton>
+            <RemoveButton v-if="turma.semester" @click="handleDelete" type="button" ButtonText="Apagar Turma" />
+            <AddButton ButtonText="Adicionar Turma" ></AddButton>
           </div>
        </form>
       </main>
@@ -46,6 +50,8 @@ import TheNavbar from '../../components/TheNavbar.vue'
 import TheFooter from '../../components/TheFooter.vue'
 import SideBar from '../../components/SideBar.vue'
 import AddButton from '../../components/AddButton.vue'
+import RemoveButton from '../../components/RemoveButton.vue'
+import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
@@ -57,6 +63,8 @@ export default {
     TheFooter,
     SideBar,
     AddButton,
+    Message,
+    RemoveButton
   },
 
   methods: {
@@ -110,7 +118,10 @@ export default {
     validateDate(e){
       const data = Object.fromEntries(new FormData(e.target).entries());
 
-      if(!data.coordinator_id || !data.name || !data.period || !data.type_work || !data.is_annual){
+      console.log(data);
+      
+
+      if(!data.teacher_id || !data.course_id || !data.semester){
         const errorObject = {
           title: "",
           text: "Informe todos os campos"
@@ -192,7 +203,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Turmas/editar/${result.course.id}`
+            window.location.href = `/Turmas/editar/${result.class.id}`
           }, 1000);
 
       } catch (error) {
@@ -203,76 +214,88 @@ export default {
           }
           eventBus.emit("error", errorObject)
       }
+    },
+
+    onSelectCurso(){
+      const selectedCurso = this.cursos.find(curso => curso.id === this.turma.course_id);
+      if (selectedCurso) {
+        this.textSemestre = selectedCurso.is_annual ? "Ano: " : "Semestre: ";
+      }
     }
   },
 
   setup() {
     const route = useRoute()
-    const turma = ref({})
+    const turma = ref({
+      teacher_id: 0,
+      course_id: 0,
+      semester: ""
+    })
     const professores = ref([{}])
-    const coordenadores = ref([{}])
+    const cursos = ref([{}])
     const titleText = ref("Adicionar Turma")
     const id = ref(0)
+    const textSemestre = ref("")
     const disabled = ref(false)
 
     const fetchData = async (turmaId) => {
-      console.log("qas");
-      
-      try {
-        // eslint-disable-next-line
-        const [response, responseProfessor, responseCoordenador] = await Promise.all([
-          // eslint-disable-next-line
-          fetch(`${process.env.VUE_APP_API_URL}/classes/${turmaId}`),
-          // eslint-disable-next-line
-          fetch(`${process.env.VUE_APP_API_URL}/teachers`),
-          // eslint-disable-next-line
-          fetch(`${process.env.VUE_APP_API_URL}/coordinators`)
-        ]).catch(e=> {throw new Error(e.error)});
+      /* eslint-disable */
+        try {
+          const [response, responseProfessor, responseCurso] = await Promise.all([
+            fetch(`${process.env.VUE_APP_API_URL}/classes/${turmaId}`),
+            fetch(`${process.env.VUE_APP_API_URL}/teachers`),
+            fetch(`${process.env.VUE_APP_API_URL}/courses`)
+          ]);
 
-        // Obtendo os dados das respostas
-        const turmaData = await response.json();
-        const professoresData = await responseProfessor.json();
-        const coordenadoresData = await responseCoordenador.json();
+          const turmaData = await response.json();
+          const professoresData = await responseProfessor.json();
+          const cursosData = await responseCurso.json();
+
+          // Verificando se todas as respostas foram bem-sucedidas
+          if (!response.ok) throw new Error(turmaData.error);
+          if (!responseProfessor.ok) throw new Error(professoresData.error);
+          if (!responseCurso.ok) throw new Error(cursosData.error);
+
+          if(turmaId != 0)
+            turma.value =  turmaData;
+
+          professores.value = professoresData;
+          cursos.value = cursosData;
+
+          if (!turmaData && turmaId)
+            throw new Error("Turma não encontrada");
+
+          id.value = turmaId;
+          titleText.value = 'Salvar Turma';
 
 
-        // Checando se todas as respostas foram bem-sucedidas
-        if (!response.ok) throw new Error(turmaData.error);
-        if (!responseProfessor.ok) throw new Error(professoresData.error);
-        if (!responseCoordenador.ok) throw new Error(coordenadoresData.error);
+          // verifica se é anual ou semestral
+          const selectedCurso = cursos.value.find(curso => curso.id === turma.value.course_id);
+          if (selectedCurso) {
+            textSemestre.value = selectedCurso.is_annual ? "Ano: " : "Semestre: ";
+          }
 
-        turma.value = turmaData;
-        professores.value = professoresData;
-        coordenadores.value = coordenadoresData;
-
-        console.log(coordenadores);
-        
-
-        if (!turmaData)
-          throw new Error("Turma não encontrado")
-
-        turma.value = turmaData
-        id.value = turmaId
-        titleText.value = 'Salvar Turma';
-
-      } catch (error) {
-        disabled.value = true
-        const errorObject = {
-          title: "Erro ao listar: ",
-          text: error.message
+        } catch (error) {
+          disabled.value = true;
+          console.error("Erro ao buscar dados:", error); // Log do erro
+          const errorObject = {
+            title: "Erro ao listar: ",
+            text: error.message
+          };
+          eventBus.emit("error", errorObject);
         }
-        eventBus.emit("error", errorObject)
-      }
-    }
+    };
 
     onMounted(() => {
+      id.value = 0;
       if (route.params.id) {
         id.value = route.params.id;
-        fetchData(id.value)
       }
+      fetchData(id.value)
     })
 
     return {
-      turma, titleText, id, disabled, coordenadores
+      turma, titleText, id, disabled, professores, cursos, textSemestre
     }
   }
 }

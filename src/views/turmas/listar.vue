@@ -6,16 +6,17 @@
       
       <main class="content">
         <h1>Turmas</h1>
-        <SearchBar></SearchBar>
+        <SearchBar  @key-up="onKeyup"></SearchBar>
 
         <div class="users-list">
           <List1 
-            :key="turmas.id" 
-            v-for="turmas in fetchData" 
-            :text1="turmas.course.name"  
-            subtext="Bruno Costa Rezende" 
-            tipo="Semestre:" 
-            text2="2" >
+            :key="turma.id" 
+            v-for="turma in filteredData" 
+            :text1="turma.course.name"  
+            :subtext="turma.period" 
+            :tipo="turma.textSemestre" 
+            :link="turma.link"
+            :text2="turma.semester" >
           </List1>
         </div>
 
@@ -52,14 +53,16 @@ export default {
 
   data() {
     return {
-      cursos: [{
+      turmas: [{
         id: 0,
-        name: "",
-        coordinator: {
-          name: ''
+        semester: 0,
+        course: {
+          name: '',
+          period: '',
+          is_annual: true
         },
         period: "",
-        type_work: ""
+        textSemestre: "" // semestre ou ano
       }],
       searchTerm: "",
     }
@@ -68,12 +71,16 @@ export default {
   computed: {
     filteredData() {
       // Filtra estudantes com base no termo de busca
-      return this.cursos.filter(curso => {
-        curso.link = `/Turmas/editar/${curso.id}`
+      
+      return this.turmas.filter(turma => {
+        turma.link = `/Turmas/editar/${turma.id}`
+        turma.period = `Periodo: ${turma.course.period}`
+        turma.textSemestre = turma.course.is_annual ? "Ano: " : "Semestre: "
         return (
-          curso.name.toLowerCase().includes(this.searchTerm) || 
-          curso.period.toLowerCase().includes(this.searchTerm) || 
-          curso?.coordinator?.name.toLowerCase().includes(this.searchTerm)
+          turma.period.toString().toLowerCase().includes(this.searchTerm) || 
+          turma?.course?.name.toLowerCase().includes(this.searchTerm) || 
+          turma?.semester?.toString().toLowerCase().includes(this.searchTerm) || 
+          turma?.textSemestre?.toLowerCase().includes(this.searchTerm)
         );
       });
     }
@@ -84,10 +91,13 @@ export default {
       try {
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/classes`);
+        const data = await response.json(); // Define todos os estudantes
+
         if (!response.ok) {
-          throw new Error('Erro ao buscar estudantes'); // Tratamento de erro
+          throw new Error(data.error); // Tratamento de erro
         }
-        this.cursos = await response.json(); // Define todos os estudantes
+
+        this.turmas = data;
       } catch (error) {
         const errorObject = {
           title: "Erro ao listar: ",

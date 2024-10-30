@@ -32,14 +32,14 @@
                   <input v-model="curso.type_work" type="name" name="type_work" class="form-control" id="type_work" placeholder="Tipo de trabalho final">
               </div>
 
-              <label class="form-label">Curso anual ou bimestral:</label>
+              <label class="form-label">Curso anual ou semestral:</label>
               <div class="radio-group">
                 <label class="radio-option">
-                    <input v-model="curso.is_annual" type="radio" name="is_annual" :value="true">
-                    Bimestral
+                    <input v-model="curso.is_annual" type="radio" name="is_annual" :value="false">
+                    Semestral
                 </label>
                 <label class="radio-option">
-                    <input v-model="curso.is_annual" type="radio" name="is_annual" :value="false">
+                    <input v-model="curso.is_annual" type="radio" name="is_annual" :value="true">
                     Anual
                 </label>
             </div>
@@ -319,17 +319,6 @@ export default {
   display: flex;
   font-size: 2rem;
   text-align: left;
-}
-.Form input{
-    width: 100%;
-    background-color: var(--Branco2);
-    display: flex;
-    justify-content: center;
-    border: none;
-    border-radius: 1rem;
-    font-size: 1.7rem;
-    padding: 1rem;
-    margin-bottom: 2rem;
 }
 
 .radio-group {
