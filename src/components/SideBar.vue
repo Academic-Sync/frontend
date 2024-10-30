@@ -20,7 +20,6 @@ export default {
 
 <style>
 .sidebar {
-  
   width: 5rem;
   background-color: var(--Azul);
   color: var(--Branco);

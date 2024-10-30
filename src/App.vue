@@ -27,13 +27,18 @@
 
 /* plugin de acessibilidade */
 body .uwy.userway_p1 .userway_buttons_wrapper{
-  top: calc(50% + 20px)!important;
-  right: 0!important;
+  top: calc(50% + 15px)!important;
+  left: auto!important;
+  right: -30px!important;
+  /* right: 0!important; */
 }
 body .uwy .uai, body .uwy .ulsti{
-  width: 40px!important;
-  height: 40px!important;
+  width: 41px!important;
+  height: 41px!important;
   border-radius: 8px!important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .uwy .uai, .uwy .ulsti{
   border-radius: 8px!important;
@@ -41,9 +46,8 @@ body .uwy .uai, body .uwy .ulsti{
 
 /* v-libras */
 [vw].enabled{
-  /* min-height: 100px!important;
-  right: -6px; */
-  top: calc(50% - 20px)!important;
+  right: 0px !important;
+  top: calc(50% - 15px)!important;
 }
 
 .div-buttons{
@@ -131,6 +135,12 @@ body .uwy .uai, body .uwy .ulsti{
 @media (max-width: 550px) {
   .content {
     padding: 1.5rem 2.5rem;
-}
+  }
+
+  /* v-libras */
+  [vw].enabled{
+    right: -5px !important;
+    top: calc(50% - 20px)!important;
+  }
 }
 </style>
