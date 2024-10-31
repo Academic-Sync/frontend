@@ -35,7 +35,7 @@
           </div>
 
           <div class="div-buttons">
-            <RemoveButton v-if="teacher.id" @click="handleDelete" type="button" ButtonText="Apagar professor" />
+            <RemoveButton v-if="teacher.id" @click="handleDelete" type="button" ButtonText="Apagar Orientador" />
             <AddButton :ButtonText="titleText" />
           </div>
         </form>

@@ -8,50 +8,35 @@
         <Message />
 
         <h1>{{titleText}}</h1>
+
         <form @submit="handleSubmit">
           <div class="Form">
             <input v-model="id" type="hidden" name="id" id="id">
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Coordenador:</label>
-                  <select v-model="curso.coordinator_id" name="coordinator_id" id="coordinator_id">
-                    <option value="0">Selecione o Coordenador</option>
-                    <option class="form-control" v-for="coordenador in coordenadores" :key="coordenador.id" :value="coordenador.id">{{ coordenador.name }}</option>
-                  </select>
-                  <!-- <input v-model="curso.coordinator_id" type="name" name="coordinator_id" class="form-control" id="coordinator_id" placeholder="Coordenador"> -->
+                  <label class="form-label">Nome:</label>
+                  <input :disabled="disabled" v-model="teacher.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Nome do curso:</label>
-                  <input v-model="curso.name" type="name" name="name" class="form-control" id="name" placeholder="Nome do curso">
+                  <label class="form-label">Email:</label>
+                  <input v-model="teacher.email" type="name" name="email" class="form-control" id="email" placeholder="Email">
+              </div>
+
+              <div v-if="!teacher" class="mb-3 text-start">
+                  <label class="form-label">Senha:</label>
+                  <input type="password" name="password" class="form-control" id="password" placeholder="password">
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Periodo:</label>
-                  <input v-model="curso.period" type="text" name="period" class="form-control" id="period" placeholder="Manhã/Tarde/Noite">
+                  <label class="form-label">Código:</label>
+                  <input v-model="teacher.code" type="text" name="code" class="form-control" id="code" placeholder="Código">
               </div>
-
-              <div class="mb-3 text-start">
-                  <label class="form-label">Tipo de trabalho final:</label>
-                  <input v-model="curso.type_work" type="name" name="type_work" class="form-control" id="type_work" placeholder="Tipo de trabalho final">
-              </div>
-
-              <label class="form-label">Curso anual ou semestral:</label>
-              <div class="radio-group">
-                <label class="radio-option">
-                    <input v-model="curso.is_annual" type="radio" name="is_annual" :value="false">
-                    Semestral
-                </label>
-                <label class="radio-option">
-                    <input v-model="curso.is_annual" type="radio" name="is_annual" :value="true">
-                    Anual
-                </label>
-            </div>
           </div>
 
           <div class="div-buttons">
-            <RemoveButton v-if="curso.id" @click="handleDelete" type="button" ButtonText="Apagar Curso" />
-            <AddButton :ButtonText="titleText" ></AddButton>
+            <RemoveButton v-if="teacher.id" @click="handleDelete" type="button" ButtonText="Apagar Coordenador" />
+            <AddButton :ButtonText="titleText" />
           </div>
         </form>
       </main>
@@ -66,14 +51,14 @@ import TheNavbar from '../../components/TheNavbar.vue'
 import TheFooter from '../../components/TheFooter.vue'
 import SideBar from '../../components/SideBar.vue'
 import AddButton from '../../components/AddButton.vue'
-import RemoveButton from '../../components/RemoveButton.vue'
 import Message from '../../components/Message.vue'
-import eventBus from '../../eventBus'
 import { useRoute } from 'vue-router'
+import eventBus from '../../eventBus'
 import { ref, onMounted } from 'vue'
+import RemoveButton from '@/components/RemoveButton.vue'
 
 export default {
-  name: 'Turmas',
+  name: 'Professores',
   components: {
     TheNavbar,
     TheFooter,
@@ -86,6 +71,9 @@ export default {
   methods: {
     async handleSubmit(e){
       e.preventDefault();
+      if(!this.validateEmail())
+        return
+
       const id = document.querySelector("#id")
       if(id.value != 0)
         return await this.update(e);
@@ -93,12 +81,44 @@ export default {
         await this.create(e);
     },
 
+    validateEmail(){
+      const email = this.teacher.email;
+
+      // Verifica se o email é do domínio fatec.sp.gov.br
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@fatec\.sp\.gov\.br$/;
+      if (!emailPattern.test(email)) {
+        const errorObject = {
+          title: "",
+          text: "O email precisa ser do domínio @fatec.sp.gov.br"
+        };
+        eventBus.emit("error", errorObject);
+        return 0;
+      }
+
+      return 1;
+    },
+
+    validateData(e){
+      const data = Object.fromEntries(new FormData(e.target).entries());
+
+      if(!data.name || !data.email){
+          const errorObject = {
+            title: "",
+            text: "Informe o nome e email"
+          };
+          eventBus.emit("error", errorObject);
+          return;
+      }
+
+      return data;
+    },
+
     async handleDelete(){
       try {
-        const studentId = document.querySelector("#id")
+        const id = document.querySelector("#id")
 
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/courses/${studentId.value}`, {
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators/${id.value}`, {
           method: "DELETE",
           headers: {
             'Accept': 'application/json',
@@ -119,7 +139,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Cursos"
+          window.location.href = "/Coordenadores"
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -131,29 +151,17 @@ export default {
       }
     },
 
-    validateDate(e){
-      const data = Object.fromEntries(new FormData(e.target).entries());
-
-      if(!data.coordinator_id || !data.name || !data.period || !data.type_work || !data.is_annual){
-        const errorObject = {
-          title: "",
-          text: "Informe todos os campos"
-        }
-        eventBus.emit("error", errorObject)
-        return 0;
-      }    
-
-      return data;
-    },
-
     async update(e){
       try {
-        const data = this.validateDate(e);
-        if(!data)
-          return;
+          const id = document.querySelector("#id")
+
+          const data = this.validateData(e);
+          if(!data)
+            return;
+ 
 
           // eslint-disable-next-line
-          const response = await fetch(`${process.env.VUE_APP_API_URL}/courses/${id.value}`, {
+          const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators/${id.value}`, {
             method: "PUT",
             headers: {
               'Accept': 'application/json',
@@ -187,13 +195,12 @@ export default {
 
     async create(e){
       try {
-          const data = this.validateDate(e);
-
+          const data = this.validateData(e);
           if(!data)
             return;
 
-          // eslint-disable-next-line
-          const response = await fetch(`${process.env.VUE_APP_API_URL}/courses`, {
+            // eslint-disable-next-line
+          const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators`, {
             method: "POST",
             headers: {
               'Accept': 'application/json',
@@ -216,7 +223,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Cursos/editar/${result.course.id}`
+            window.location.href = `/Coordenadores/editar/${result.advisor.id}`
           }, 1000);
 
       } catch (error) {
@@ -232,47 +239,26 @@ export default {
 
   setup() {
     const route = useRoute()
-    const curso = ref({
-      coordinator_id: 0
-    })
-    const coordenadores = ref({})
-    const titleText = ref("Adicionar Curso")
+    const teacher = ref({})
+    const titleText = ref("Adicionar Coordenador")
     const id = ref(0)
     const disabled = ref(false)
 
-    const fetchData = async (cursoId) => {
+    const fetchData = async (teacherId) => {
       try {
         // eslint-disable-next-line
-        const url = process.env.VUE_APP_API_URL;
-        const [response, responseCoordenador] = await Promise.all([
-            fetch(`${url}/courses/${cursoId}`),
-            fetch(`${url}/coordinators`),
-          ]);
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators/${teacherId}`)
+        const professor = await response.json()
 
-          const cursoData = await response.json();
-          const coordenadorData = await responseCoordenador.json();
-
-          // Verificando se todas as respostas foram bem-sucedidas
-          if (!response.ok) throw new Error(cursoData.error);
-          if (!responseCoordenador.ok) throw new Error(coordenadorData.error);
-
-        // eslint-disable-next-line
         if (!response.ok)
-          throw new Error(cursoData.error)
+          throw new Error(professor.error)
+        
+        if (!professor)
+          throw new Error('Coordenador não encontrado')
 
-          console.log(cursoId);
-          
-
-        if (!cursoData && cursoId)
-          throw new Error("Curso não encontrado")
-
-        if(cursoId != 0){
-          curso.value = cursoData
-          id.value = cursoId
-          titleText.value = 'Salvar Curso';
-        }
-
-        coordenadores.value = coordenadorData;
+        teacher.value = professor
+        id.value = teacherId
+        titleText.value = 'Salvar Coordenador';
 
       } catch (error) {
         disabled.value = true
@@ -285,15 +271,14 @@ export default {
     }
 
     onMounted(() => {
-      const routeId = route.params.id
-      if (routeId) {
-        id.value = routeId;
+      if (route.params.id) {
+        id.value = route.params.id;
+        fetchData(id.value)
       }
-      fetchData(id.value)
     })
 
     return {
-      curso, titleText, id, disabled, coordenadores
+      teacher, titleText, id, disabled
     }
   }
 }
@@ -312,6 +297,7 @@ export default {
   color: var(--preto);
 }
 
+
 .container {
     margin: 2rem auto;
     padding: 2rem;
@@ -329,9 +315,21 @@ export default {
     margin-bottom: 2rem;
 }
 
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 4rem;
+}
+
+form{
+  width: 100%;;
+}
 
 .Form{
     display: flex;
+    flex-wrap: wrap;
     flex-direction: column;
     width: 100%;
     background-color: var(--Branco);
@@ -339,29 +337,21 @@ export default {
     padding: 2rem;
     font-size: 2rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
+
 }
 .Form label{
-  display: flex;
-  font-size: 2rem;
-  text-align: left;
+    font-size: 2rem;
+    
 }
-
-.radio-group {
+.Form input{
+    width: 100%;
+    background-color: var(--Branco2);
     display: flex;
-    flex-direction: column;
-    gap: 1rem; 
-    align-items: flex-start;
-}
-
-.radio-option {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.radio-option input[type="radio"] {
-    margin: 0;
-    accent-color: var(--Azul); 
+    justify-content: center;
+    border: none;
+    border-radius: 1rem;
+    font-size: 1.7rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
 }
 </style>
