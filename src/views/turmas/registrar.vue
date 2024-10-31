@@ -13,23 +13,23 @@
           <input v-model="id" type="hidden" name="id" id="id">
               <div class="mb-3 text-start">
                   <label class="form-label">Professor:</label>
-                  <select v-model="turma.teacher_id" name="teacher_id" id="teacher_id">
-                    <option value="0">Selecione o Professor</option>
+                  <select :disabled="disabled" v-model="turma.teacher_id" name="teacher_id" id="teacher_id">
+                    <option disabled value="0">Selecione o Professor</option>
                     <option class="form-control" v-for="professor in professores" :key="professor.id" :value="professor.id">{{ professor.name }}</option>
                   </select>
               </div>
 
               <div class="mb-3 text-start">
                   <label class="form-label">Curso:</label>
-                  <select @change="onSelectCurso" v-model="turma.course_id" name="course_id" id="course_id">
-                    <option value="0">Selecione o Curso</option>
+                  <select :disabled="disabled" v-model="turma.course_id" name="course_id" id="course_id">
+                    <option disabled value="0">Selecione o Curso</option>
                     <option class="form-control" v-for="curso in cursos" :key="curso.id" :value="curso.id">{{ curso.name }}</option>
                   </select>
               </div>
 
               <div class="mb-3 text-start">
                   <label class="form-label">{{ textSemestre }}</label>
-                  <input v-model="turma.semester" type="number" name="semester" class="form-control" id="semester" placeholder="1">
+                  <input :disabled="disabled" v-model="turma.semester" type="number" name="semester" class="form-control" id="semester" placeholder="1">
               </div>
           </div>
         
@@ -119,6 +119,7 @@ export default {
       const data = Object.fromEntries(new FormData(e.target).entries());
 
       console.log(data);
+      
       
 
       if(!data.teacher_id || !data.course_id || !data.semester){
@@ -221,7 +222,8 @@ export default {
       if (selectedCurso) {
         this.textSemestre = selectedCurso.is_annual ? "Ano: " : "Semestre: ";
       }
-    }
+    },
+
   },
 
   setup() {
@@ -235,16 +237,17 @@ export default {
     const cursos = ref([{}])
     const titleText = ref("Adicionar Turma")
     const id = ref(0)
-    const textSemestre = ref("")
+    const textSemestre = ref("Semestre")
     const disabled = ref(false)
 
     const fetchData = async (turmaId) => {
-      /* eslint-disable */
         try {
+          // eslint-disable-next-line
+          const url = process.env.VUE_APP_API_URL;
           const [response, responseProfessor, responseCurso] = await Promise.all([
-            fetch(`${process.env.VUE_APP_API_URL}/classes/${turmaId}`),
-            fetch(`${process.env.VUE_APP_API_URL}/teachers`),
-            fetch(`${process.env.VUE_APP_API_URL}/courses`)
+            fetch(`${url}/classes/${turmaId}`),
+            fetch(`${url}/teachers`),
+            fetch(`${url}/courses`)
           ]);
 
           const turmaData = await response.json();
@@ -256,18 +259,18 @@ export default {
           if (!responseProfessor.ok) throw new Error(professoresData.error);
           if (!responseCurso.ok) throw new Error(cursosData.error);
 
-          if(turmaId != 0)
-            turma.value =  turmaData;
-
-          professores.value = professoresData;
-          cursos.value = cursosData;
-
           if (!turmaData && turmaId)
             throw new Error("Turma não encontrada");
 
-          id.value = turmaId;
-          titleText.value = 'Salvar Turma';
+          if(turmaId != 0)
+            turma.value =  turmaData;
 
+            
+          professores.value = professoresData;
+          cursos.value = cursosData;
+
+          // id.value = turmaId;
+          titleText.value = 'Salvar Turma';
 
           // verifica se é anual ou semestral
           const selectedCurso = cursos.value.find(curso => curso.id === turma.value.course_id);
@@ -286,12 +289,26 @@ export default {
         }
     };
 
+    
+
     onMounted(() => {
-      id.value = 0;
-      if (route.params.id) {
-        id.value = route.params.id;
+      const routeId = route.params.id ?? 0
+      if (routeId) {
+        id.value = routeId;
       }
-      fetchData(id.value)
+      fetchData(id.value).then(() => {
+        /* eslint-disable */
+        // $("#teacher_id").select2();
+        // $('#teacher_id').val(turma.teacher_id).trigger('change'); // Sincroniza o select2 com o valor inicial
+        // /* eslint-disable */
+        // $("#course_id").select2();
+        // $('#course_id').val(turma.value.course_id).trigger('change'); // Sincroniza o select2 com o valor inicial
+      });
+      
+
+      $(document).ready(function() {
+        // $("#course_id").select2();
+      });
     })
 
     return {
@@ -313,6 +330,20 @@ export default {
   text-align: center;
   color: var(--preto);
 }
+
+select{
+    width: 100%;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center!important;
+    border: none!important;
+    border-radius: 1rem;
+    font-size: 1.7rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+
 
 .container {
     margin: 2rem auto;
