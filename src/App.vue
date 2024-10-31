@@ -25,6 +25,10 @@
   color: var(--preto);
 }
 
+.text-nao-encontrado{
+  margin-top: 10px;
+}
+
 /* plugin de acessibilidade */
 body .uwy.userway_p1 .userway_buttons_wrapper{
   top: calc(50% + 15px)!important;

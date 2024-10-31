@@ -82,6 +82,7 @@ export default {
 
   methods: {
     async fetchStudents() {
+      this.allStudents = [];
       try {
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/students`);
