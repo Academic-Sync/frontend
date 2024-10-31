@@ -73,7 +73,8 @@ body .uwy .uai, body .uwy .ulsti{
 }
 
 .Form select{
-    width: 100%;
+  
+    /* width: 100%; */
     /* background-color: var(--Branco2)!important;
     display: flex;
     justify-content: center;
@@ -85,7 +86,7 @@ body .uwy .uai, body .uwy .ulsti{
 }
 
 .select2-container .select2-selection--single{
-    width: 100%;
+    width: 100%!important;
     background-color: var(--Branco2)!important;
     display: flex;
     justify-content: left;
@@ -95,6 +96,10 @@ body .uwy .uai, body .uwy .ulsti{
     padding: .5rem;
     height: auto;
     margin-bottom: 2rem;
+}
+
+.select2 {
+  width: 100%!important;
 }
 
 .select2-container--open .select2-dropdown--below{

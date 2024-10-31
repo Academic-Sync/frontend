@@ -15,7 +15,7 @@
               <div class="mb-3 text-start">
                   <label class="form-label">Coordenador:</label>
                   <select  v-model="curso.coordinator_id" name="coordinator_id" id="coordinator_id">
-                    <option selected value="0">Selecione o Coordenador</option>
+                    <option disabled value="0">Selecione o Coordenador</option>
                     <option class="form-control" v-for="coordenador in coordenadores" :key="coordenador.id" :value="coordenador.id">{{ coordenador.name }}</option>
                   </select>
               </div>
@@ -59,6 +59,7 @@
     </article>
   <TheFooter></TheFooter>
 </template>
+
 
 <script>
 import TheNavbar from '../../components/TheNavbar.vue'
@@ -258,9 +259,6 @@ export default {
         // eslint-disable-next-line
         if (!response.ok)
           throw new Error(cursoData.error)
-
-          console.log(cursoId);
-          
 
         if (!cursoData && cursoId)
           throw new Error("Curso não encontrado")
