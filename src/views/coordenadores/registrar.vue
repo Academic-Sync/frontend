@@ -35,7 +35,7 @@
           </div>
 
           <div class="div-buttons">
-            <RemoveButton v-if="teacher.id" @click="handleDelete" type="button" ButtonText="Apagar Orientador" />
+            <RemoveButton v-if="teacher.id" @click="handleDelete" type="button" ButtonText="Apagar Coordenador" />
             <AddButton :ButtonText="titleText" />
           </div>
         </form>
@@ -118,7 +118,7 @@ export default {
         const id = document.querySelector("#id")
 
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/advisors/${id.value}`, {
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators/${id.value}`, {
           method: "DELETE",
           headers: {
             'Accept': 'application/json',
@@ -139,7 +139,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Orientadores"
+          window.location.href = "/Coordenadores"
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -161,7 +161,7 @@ export default {
  
 
           // eslint-disable-next-line
-          const response = await fetch(`${process.env.VUE_APP_API_URL}/advisors/${id.value}`, {
+          const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators/${id.value}`, {
             method: "PUT",
             headers: {
               'Accept': 'application/json',
@@ -200,7 +200,7 @@ export default {
             return;
 
             // eslint-disable-next-line
-          const response = await fetch(`${process.env.VUE_APP_API_URL}/advisors`, {
+          const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators`, {
             method: "POST",
             headers: {
               'Accept': 'application/json',
@@ -223,7 +223,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Orientadores/editar/${result.advisor.id}`
+            window.location.href = `/Coordenadores/editar/${result.advisor.id}`
           }, 1000);
 
       } catch (error) {
@@ -240,25 +240,25 @@ export default {
   setup() {
     const route = useRoute()
     const teacher = ref({})
-    const titleText = ref("Adicionar Orientador")
+    const titleText = ref("Adicionar Coordenador")
     const id = ref(0)
     const disabled = ref(false)
 
     const fetchData = async (teacherId) => {
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/advisors/${teacherId}`)
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators/${teacherId}`)
         const professor = await response.json()
 
         if (!response.ok)
           throw new Error(professor.error)
         
         if (!professor)
-          throw new Error('Orientador não encontrado')
+          throw new Error('Coordenador não encontrado')
 
         teacher.value = professor
         id.value = teacherId
-        titleText.value = 'Salvar Orientador';
+        titleText.value = 'Salvar Coordenador';
 
       } catch (error) {
         disabled.value = true

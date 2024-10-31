@@ -5,24 +5,24 @@
       <SideBar />
       <main class="content">
         <Message />
-        <h1>Alunos</h1>
+        <h1>Coordenadores</h1>
         <SearchBar @key-up="onKeyup" />
         
         <div class="users-list">
           <List1 
-            v-for="student in filteredStudents" 
-            :key="student.id" 
-            :text1="student.name" 
-            :subtext="student.email" 
-            :tipo="'RA: '" 
-            :text2="student.code"
-            :link="student.link"
+            v-for="orienador in filteredData" 
+            :key="orienador.id" 
+            :text1="orienador.name" 
+            :subtext="orienador.email" 
+            :tipo="'Código: '" 
+            :text2="orienador.code"
+            :link="orienador.link"
           />
         </div>
         <div class="div-buttons">
           <AddButton
-            href="/AddAlunos"
-            ButtonText="Adicionar Alunos"
+            href="/AddCoordenadores"
+            ButtonText="Adicionar Coordenadores"
           />
         </div>
       </main>
@@ -42,7 +42,7 @@ import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 
 export default {
-  name: 'Turmas',
+  name: 'Coordenadores',
   components: {
     TheNavbar,
     TheFooter,
@@ -55,7 +55,7 @@ export default {
 
   data() {
     return {
-      allStudents: [{
+      allCoordenadores: [{
         id: 0,
         code: "",
         name: "",
@@ -67,29 +67,31 @@ export default {
   },
 
   computed: {
-    filteredStudents() {
-      // Filtra estudantes com base no termo de busca
-      return this.allStudents.filter(student => {
-        student.link = `/Alunos/editar/${student.id}`
+    filteredData() {
+      // Filtra Coordenadores com base no termo de busca
+      return this.allCoordenadores.filter(orientador => {
+        orientador.link = `/Coordenadores/editar/${orientador.id}`
         return (
-          student.name.toLowerCase().includes(this.searchTerm) || 
-          student.email.toLowerCase().includes(this.searchTerm) ||
-          student.code.toLowerCase().includes(this.searchTerm)
+          orientador.name.toLowerCase().includes(this.searchTerm) || 
+          orientador.email.toLowerCase().includes(this.searchTerm) ||
+          orientador.code.toLowerCase().includes(this.searchTerm)
         );
       });
     }
   },
 
   methods: {
-    async fetchStudents() {
-      this.allStudents = [];
+    async fetchData() {
+      this.allCoordenadores = [];
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/students`);
-        if (!response.ok) {
-          throw new Error('Erro ao buscar estudantes'); // Tratamento de erro
-        }
-        this.allStudents = await response.json(); // Define todos os estudantes
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators`);
+        const data = await response.json(); // Define todos os professores
+
+        if (!response.ok)
+          throw new Error(data.error); // Tratamento de erro
+
+        this.allCoordenadores = data;
       } catch (error) {
         const errorObject = {
           title: "Erro ao listar: ",
@@ -106,7 +108,7 @@ export default {
   },
 
   mounted() {
-    this.fetchStudents(); // Busca estudantes ao montar o componente
+    this.fetchData(); // Busca professores ao montar o componente
   },
 }
 </script>

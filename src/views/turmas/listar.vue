@@ -88,10 +88,12 @@ export default {
 
   methods: {
     async fetchData() {
+      this.turmas = []
       try {
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/classes`);
         const data = await response.json(); // Define todos os estudantes
+        
 
         if (!response.ok) {
           throw new Error(data.error); // Tratamento de erro

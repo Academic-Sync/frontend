@@ -17,6 +17,8 @@ import Professores from './views/professores/listar.vue'
 import AddProfessor from './views/professores/registrar.vue'
 import AddOrientador from './views/orientadores/registrar.vue'
 import Orientadores from './views/orientadores/listar.vue'
+import Coordenadores from './views/coordenadores/listar.vue'
+import AddCoordenador from './views/coordenadores/registrar.vue'
 
 
 // Defina as rotas da aplicação
@@ -45,6 +47,10 @@ const routes = [
   { path: '/Orientadores', component: Orientadores },
   { path: '/Orientadores/editar/:id', component: AddOrientador },
   { path: '/AddOrientadores', component: AddOrientador },
+
+  { path: '/Coordenadores', component: Coordenadores },
+  { path: '/Coordenadores/editar/:id', component: AddCoordenador },
+  { path: '/AddCoordenadores', component: AddCoordenador },
 ]
 
 // Crie o router e defina o modo de histórico

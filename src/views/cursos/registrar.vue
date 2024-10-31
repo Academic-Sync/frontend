@@ -14,7 +14,10 @@
 
               <div class="mb-3 text-start">
                   <label class="form-label">Coordenador:</label>
-                  <input v-model="curso.coordinator_id" type="name" name="coordinator_id" class="form-control" id="coordinator_id" placeholder="Coordenador">
+                  <select  v-model="curso.coordinator_id" name="coordinator_id" id="coordinator_id">
+                    <option selected value="0">Selecione o Coordenador</option>
+                    <option class="form-control" v-for="coordenador in coordenadores" :key="coordenador.id" :value="coordenador.id">{{ coordenador.name }}</option>
+                  </select>
               </div>
 
               <div class="mb-3 text-start">
@@ -228,7 +231,10 @@ export default {
 
   setup() {
     const route = useRoute()
-    const curso = ref({})
+    const curso = ref({
+      coordinator_id: 0
+    })
+    const coordenadores = ref({})
     const titleText = ref("Adicionar Curso")
     const id = ref(0)
     const disabled = ref(false)
@@ -236,18 +242,36 @@ export default {
     const fetchData = async (cursoId) => {
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/courses/${cursoId}`)
-        const cursoData = await response.json()
+        const url = process.env.VUE_APP_API_URL;
+        const [response, responseCoordenador] = await Promise.all([
+            fetch(`${url}/courses/${cursoId}`),
+            fetch(`${url}/coordinators`),
+          ]);
 
+          const cursoData = await response.json();
+          const coordenadorData = await responseCoordenador.json();
+
+          // Verificando se todas as respostas foram bem-sucedidas
+          if (!response.ok) throw new Error(cursoData.error);
+          if (!responseCoordenador.ok) throw new Error(coordenadorData.error);
+
+        // eslint-disable-next-line
         if (!response.ok)
           throw new Error(cursoData.error)
 
-        if (!cursoData)
+          console.log(cursoId);
+          
+
+        if (!cursoData && cursoId)
           throw new Error("Curso não encontrado")
 
-        curso.value = cursoData
-        id.value = cursoId
-        titleText.value = 'Salvar Curso';
+        if(cursoId != 0){
+          curso.value = cursoData
+          id.value = cursoId
+          titleText.value = 'Salvar Curso';
+        }
+
+        coordenadores.value = coordenadorData;
 
       } catch (error) {
         disabled.value = true
@@ -260,14 +284,23 @@ export default {
     }
 
     onMounted(() => {
-      if (route.params.id) {
-        id.value = route.params.id;
-        fetchData(id.value)
+      const routeId = route.params.id
+      if (routeId) {
+        id.value = routeId;
       }
+      fetchData(id.value).then(() => {
+        /* eslint-disable */
+        $("#coordinator_id").select2();
+        $('#coordinator_id').val(curso.value.coordinator_id).trigger('change'); // Sincroniza o select2 com o valor inicial
+      });
+
+      $(document).ready(function() {
+        $("#coordinator_id").select2();
+      });
     })
 
     return {
-      curso, titleText, id, disabled
+      curso, titleText, id, disabled, coordenadores
     }
   }
 }

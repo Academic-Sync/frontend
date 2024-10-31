@@ -82,6 +82,7 @@ export default {
 
   methods: {
     async fetchData() {
+      this.allOrientadores = [];
       try {
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/advisors`);
