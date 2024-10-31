@@ -34,7 +34,7 @@
           </div>
         
           <div class="div-buttons">
-            <RemoveButton v-if="turma.semester" @click="handleDelete" type="button" ButtonText="Apagar Turma" />
+            <RemoveButton v-if="turma.id" @click="handleDelete" type="button" ButtonText="Apagar Turma" />
             <AddButton ButtonText="Adicionar Turma" ></AddButton>
           </div>
        </form>
