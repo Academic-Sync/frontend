@@ -56,6 +56,7 @@ import { useRoute } from 'vue-router'
 import eventBus from '../../eventBus'
 import { ref, onMounted } from 'vue'
 import RemoveButton from '@/components/RemoveButton.vue'
+import { getToken } from '../../utils/auth'; // Importa a função de logout
 
 export default {
   name: 'Turmas',
@@ -257,9 +258,16 @@ export default {
     const disabled = ref(false)
 
     const fetchAluno = async (id) => {
+      const token = getToken();
       try {
-        // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`)
+        // eslint-disable-next-line 
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        })
+
         const aluno = await response.json()
 
         if (!response.ok)
