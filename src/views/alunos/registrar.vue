@@ -84,15 +84,17 @@ export default {
     validateEmail(){
       const email = this.student.email;
 
-      // Verifica se o email é do domínio fatec.sp.gov.br
-      const emailPattern = /^[a-zA-Z0-9._%+-]+@fatec\.sp\.gov\.br$/;
-      if (!emailPattern.test(email)) {
-        const errorObject = {
-          title: "",
-          text: "O email precisa ser do domínio @fatec.sp.gov.br"
-        };
-        eventBus.emit("error", errorObject);
-        return 0;
+      if(email){
+        // Verifica se o email é do domínio fatec.sp.gov.br
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@fatec\.sp\.gov\.br$/;
+        if (!emailPattern.test(email)) {
+          const errorObject = {
+            title: "",
+            text: "O email precisa ser do domínio @fatec.sp.gov.br"
+          };
+          eventBus.emit("error", errorObject);
+          return 0;
+        }
       }
 
       return 1;
@@ -101,7 +103,7 @@ export default {
     validateData(e){
       const data = Object.fromEntries(new FormData(e.target).entries());
 
-      if(!data.name || !data.email || !data.code){
+      if(!data.name || !data.code){
           const errorObject = {
             title: "",
             text: "Informe todos os campos"
@@ -205,18 +207,9 @@ export default {
 
     async create(e){
       try {
-          const data = this.validateData(e);
+        const data = this.validateData(e);
           if(!data)
             return;
-
-          if(!data.name || !data.email || !data.code){
-            const errorObject = {
-              title: "",
-              text: "Informe todos os campos"
-            }
-            eventBus.emit("error", errorObject)
-            return;
-          }    
 
           // eslint-disable-next-line
           const response = await fetch(`${process.env.VUE_APP_API_URL}/students`, {

@@ -1,23 +1,35 @@
 <template>
 
-        <header class="header">
-          <div class="icon-button">
-            <a href="/"><img src="../assets/logo.png" alt="Logo"></a>
-          </div>
-            <div class="header-icons">
-              <div class="icon-button">
-                <img src="../assets/notifi.png" alt="Notificações">
-              </div>
-              <div class="icon-button">
-                <img src="../assets/user.png" alt="Perfil">
-              </div>
+      <header class="header">
+        <div class="icon-button">
+          <a href="/"><img src="../assets/logo.png" alt="Logo"></a>
+        </div>
+          <div class="header-icons">
+            <div class="icon-button">
+              <img src="../assets/notifi.png" alt="Notificações">
             </div>
-        </header>
+            <div class="icon-button">
+              <img src="../assets/user.png" alt="Perfil">
+            </div>
+            <div @click="handleLogout" class="icon-button">
+              <p>Sair</p>
+            </div>
+          </div>
+      </header>
 
 </template>
 
 <script>
+import { logout } from '../utils/auth'; // Importa a função de logout
+
 export default {
+  name: 'TheNavbar',
+
+  methods: {
+    handleLogout (){
+      logout();
+    },
+  },
 
 }
 </script>
@@ -40,6 +52,11 @@ export default {
 .icon-button img {
     width: 3.5rem;
     height: auto;
+}
+
+.icon-button p {
+  color: #fff;
+  font-size: 1.5rem;
 }
 
 .header-icons {

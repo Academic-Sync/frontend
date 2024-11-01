@@ -5,20 +5,21 @@
       <SideBar /> 
       
       <main class="content">
-        <h1>Turmas</h1>
+        <h1>Tarefas</h1>
         <SearchBar></SearchBar>
-        <div class="users-list">
-        <List1
-        text1="Analise e desenvolvimento de sistema" 
-        subtext="Bruno Costa Rezende"
-        tipo="Semestre:"
-        text2="2"
-        ></List1>
-
-        </div>
+        <Tarefa
+        :image="require('../assets/Relatorio.png')" 
+        alt_img="atividade imagem" 
+        Nome="Criação do Pré-Projeto" 
+        Entrega="Entrega: 19/06 às 23:59"
+        Nota="Pontos: 100:"
+        link="/AddTarefas"
+        
+        ></Tarefa>
         <AddButton
-        href="/AddTurmas"
-        ButtonText="Adicionar Turmas"
+        v-if="permissaoAdd"
+        href="/AddTarefas"
+        ButtonText="Adicionar Tarefas"
         ></AddButton>
       </main>
     </div>
@@ -32,8 +33,8 @@ import TheNavbar from '../components/TheNavbar.vue'
 import TheFooter from '../components/TheFooter.vue'
 import SideBar from '../components/SideBar.vue'
 import SearchBar from '../components/SearchBar.vue'
-import List1 from '../components/List1.vue'
 import AddButton from '../components/AddButton.vue'
+import Tarefa from '../components/Tarefa.vue'
 
 export default {
   name: 'Turmas',
@@ -42,8 +43,18 @@ export default {
     TheFooter,
     SideBar,
     SearchBar,
-    List1,
     AddButton,
+    Tarefa,
+  },
+  data(){
+    return {
+      permissaoAdd: false
+    }
+  },
+  mounted() {
+    const user = localStorage.getItem('user');
+    const parsedUser = JSON.parse(user);
+    this.permissaoAdd = parsedUser.user_type == 'teacher';
   }
 }
 </script>

@@ -6,11 +6,11 @@
         <p>O que deseja realizar?</p>
         <div class="action-buttons">
         <TheCard 
-          href="#"
-          alt_image="Relatorio"
+          href="/Tarefas"
+          alt_image="Tarefas"
           :image="require('../assets/Relatorio.png')" 
-          Titulo="Relatorio" 
-          text="Acompanhe o relatório do andamento dos trabalhos" 
+          Titulo="Tarefas" 
+          text="Adicione e gerencie suas Tarefas" 
         />
         <TheCard 
           href="/Alunos"
@@ -62,17 +62,6 @@ export default {
   mounted() {
     const user = localStorage.getItem('user');
     const parsedUser = JSON.parse(user);
-
-    if(parsedUser.user_type == 'admin')
-      window.location.href = "/Admin"
-
-    if(parsedUser.user_type == 'student')
-      window.location.href = "/Aluno"
-
-
-    if(parsedUser.user_type == 'teacher')
-      window.location.href = "/Professor"
-
     this.name = parsedUser.name || 'Coordenador';
   }
 }

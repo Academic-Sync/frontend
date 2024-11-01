@@ -49,6 +49,8 @@ export default {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 1rem;
     width: 100%; 
+    height: auto;
+    max-width: 30rem;
     height: 100%;
     max-width: 28rem;
     text-align: center;
