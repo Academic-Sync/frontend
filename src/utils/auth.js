@@ -17,6 +17,11 @@ export function hasPermission(requiredUserType) {
     return requiredUserType.includes(userType) || userType == 'admin'
 }
 
+export function getToken() {
+    const token = localStorage.getItem('token');
+    return token ? token : null; // Retorna o tipo de usuário, se existir
+}
+
 export function logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

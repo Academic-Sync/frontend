@@ -40,7 +40,7 @@ import List1 from '../../components/List1.vue'
 import AddButton from '../../components/AddButton.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
-
+import { getToken } from '../../utils/auth'; // Importa a função de logout
 export default {
   name: 'Turmas',
   components: {
@@ -82,10 +82,17 @@ export default {
 
   methods: {
     async fetchStudents() {
+      const token = getToken();
+      
       this.allStudents = [];
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/students`);
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/students`, {
+          headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+        });
         if (!response.ok) {
           throw new Error('Erro ao buscar estudantes'); // Tratamento de erro
         }
