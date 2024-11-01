@@ -50,7 +50,7 @@ export default {
     border-radius: 1rem;
     width: 100%; 
     height: auto;
-    max-width: 28rem;
+    max-width: 30rem;
     text-align: center;
     transition: transform 0.3s, box-shadow 0.3s;
 }

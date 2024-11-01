@@ -33,14 +33,22 @@ export default {
     padding: 1.5rem 2rem;
     border: none;
     border-radius: 3rem;
-    cursor: pointer;
     font-size: 2rem;
+    cursor: pointer;
     transition: background-color 0.3s;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.233);
 }
 
 .AddButton button:hover {
     background-color: var(--AzulHover);
+}
+
+@media (max-width: 550px) {
+  .AddButton Button {
+    font-size: 1.5rem;
+    padding: 1.2rem 1.5rem;
+
+}
 }
 
 </style>
