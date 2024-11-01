@@ -1,33 +1,9 @@
 <template>
   <TheNavbar></TheNavbar>
     <article>
-      <div class="container">
-        <h1>Bem-vindo, Admin</h1>
-        <p>O que deseja realizar?</p>
-        <div class="action-buttons">
-          <TheCard 
-          href="/Professores"
-          alt_image="Professores"
-          :image="require('../assets/grupo.png')" 
-          Titulo="Professores" 
-          text="Gerencie professores no sistema" 
-        />
-        <TheCard 
-          href="/Coordenadores"
-          alt_image="Coordenadores"
-          :image="require('../assets/grupo.png')" 
-          Titulo="Coordenadores" 
-          text="Gerencie coordenadores no sistema" 
-        />
+      <div class="content">
+        <h1>Acessibilidade</h1>
         
-        <TheCard 
-          href="/Orientadores"
-          alt_image="Orientadores"
-          :image="require('../assets/grupo.png')" 
-          Titulo="Orientadores" 
-          text="Gerencie orientadores no sistema" 
-        />
-      </div>
       </div>
     </article>
   <TheFooter></TheFooter>
@@ -36,15 +12,13 @@
 <script>
 import TheNavbar from '../components/TheNavbar.vue'
 import TheFooter from '../components/TheFooter.vue'
-import TheCard from '../components/TheCard.vue'
 
 
 export default {
-  name: 'HomeAdmin',
+  name: 'HomeCoord',
   components: {
     TheNavbar,
     TheFooter,
-    TheCard,
   }
 }
 </script>

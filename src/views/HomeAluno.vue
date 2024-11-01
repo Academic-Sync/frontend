@@ -5,35 +5,13 @@
         <h1>Bem-vindo, {{ name }}</h1>
         <p>O que deseja realizar?</p>
         <div class="action-buttons">
-        <TheCard 
-          href="#"
-          alt_image="Relatorio"
-          :image="require('../assets/Relatorio.png')" 
-          Titulo="Relatorio" 
-          text="Acompanhe o relatório do andamento dos trabalhos" 
-        />
-        <TheCard 
-          href="/Alunos"
-          alt_image="Alunos"
-          :image="require('../assets/alunos.png')" 
-          Titulo="Alunos" 
-          text="Gerencie suas os alunos da instituição" 
-        />
-        <TheCard 
-          href="/Turmas"
-          alt_image="Turmas"
+          <TheCard 
+          href="/Tarefas"
+          alt_image="Tarefas"
           :image="require('../assets/grupo.png')" 
-          Titulo="Turmas" 
-          text="Gerencie suas turmas ou adicione novas" 
+          Titulo="Tarefas" 
+          text="Visualize as suas tarefas" 
         />
-        <TheCard 
-          href="/Cursos"
-          alt_image="Cursos"
-          :image="require('../assets/curso.png')" 
-          Titulo="Curso" 
-          text="Acompanhe o relatório do andamento dos trabalhos" 
-        />
-
       </div>
       </div>
     </article>
@@ -47,7 +25,7 @@ import TheCard from '../components/TheCard.vue'
 
 
 export default {
-  name: 'HomeCoord',
+  name: 'HomeAdmin',
   components: {
     TheNavbar,
     TheFooter,
@@ -62,18 +40,7 @@ export default {
   mounted() {
     const user = localStorage.getItem('user');
     const parsedUser = JSON.parse(user);
-
-    if(parsedUser.user_type == 'admin')
-      window.location.href = "/Admin"
-
-    if(parsedUser.user_type == 'student')
-      window.location.href = "/Aluno"
-
-
-    if(parsedUser.user_type == 'teacher')
-      window.location.href = "/Professor"
-
-    this.name = parsedUser.name || 'Coordenador';
+    this.name = parsedUser.name || 'Aluno';
   }
 }
 </script>
