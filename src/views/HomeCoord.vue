@@ -1,6 +1,6 @@
 <template>
   <TheNavbar></TheNavbar>
-    <article>
+    <article v-if="userTypeVerified">
       <div class="container">
         <h1>Bem-vindo, {{ name }}</h1>
         <p>O que deseja realizar?</p>
@@ -54,27 +54,38 @@ export default {
     TheCard,
   },
 
-  data(){
-    return {
-      name: ''
-    }
+  data() {
+  return {
+    name: '',
+    userTypeVerified: false, // controle de exibição da tela
+    };
   },
   mounted() {
     const user = localStorage.getItem('user');
-    const parsedUser = JSON.parse(user);
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      
+      switch (parsedUser.user_type) {
+        case 'admin':
+          window.location.href = "/Admin";
+          break;
+        case 'student':
+          window.location.href = "/Aluno";
+          break;
+        case 'teacher':
+        case 'advisor':
+          window.location.href = "/Professor";
+          break;
+        default:
+          this.name = parsedUser.name || 'Coordenador';
+      }
+      
+    // Marcar que a verificação está completa
+    if(parsedUser.user_type == "coordinator") this.userTypeVerified = true;
+    }
 
-    if(parsedUser.user_type == 'admin')
-      window.location.href = "/Admin"
-
-    if(parsedUser.user_type == 'student')
-      window.location.href = "/Aluno"
-
-
-    if(parsedUser.user_type == 'teacher')
-      window.location.href = "/Professor"
-
-    this.name = parsedUser.name || 'Coordenador';
   }
+
 }
 </script>
 

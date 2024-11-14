@@ -23,7 +23,7 @@
         <label for="login">Login</label>
         <input v-model="login" type="login" id="login" name="login" placeholder="RA ou email"  />
 
-        <label for="password">SENHA</label>
+        <label for="password">Senha</label>
         <input v-model="password" type="password" id="password" name="password" placeholder="Digite sua senha"  />
 
         <AddButton

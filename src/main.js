@@ -59,25 +59,25 @@ const routes = [
   // TURMAS
   { path: '/Turmas',
     component: Turmas, 
-    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator'] }
+    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] }
   },
   { path: '/Turmas/editar/:id',
     component: AddTurmas, 
-    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator'] }
+    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] }
   },
   { path: '/AddTurmas',
     component: AddTurmas,
-    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator'] }
+    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] }
   },
 
   // CURSOS
   { path: '/Cursos',
     component: Cursos, 
-    meta: { requiresAuth: true,  requiredUserType: ['teacher', 'coordinator']  }
+    meta: { requiresAuth: true,  requiredUserType: ['teacher', 'coordinator', 'advisor']  }
   },
   { path: '/Cursos/editar/:id',
     component: AddCursos,
-    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator'] }
+    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] }
   },
   { path: '/AddCursos',
     component: AddCursos, 
@@ -87,17 +87,17 @@ const routes = [
   {
     path: '/Alunos',
     component: Alunos,
-    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator'] }
+    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] }
   },
   {
     path: '/Alunos/editar/:id',
     component: AddAlunos,
-    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator'] }
+    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] }
   },
   {
     path: '/AddAlunos',
     component: AddAlunos,
-    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator'] }
+    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] }
   },
 
   { path: '/Usuarios', component: HomeAdmin, meta: { requiresAuth: true, requiredUserType: 'admin' } },
@@ -143,6 +143,7 @@ router.beforeEach((to, from, next) => {
   } else {
       // Verifique se o usuário está autenticado e redirecione para a página correspondente
       const userType = getUserType();
+      
       if (isAuthenticated() && userType) {
           switch (userType) {
               case 'admin':
@@ -156,6 +157,9 @@ router.beforeEach((to, from, next) => {
                   break;
               case 'coordinator':
                   next({ path: '/Coordenador' });
+                  break;
+              case 'advisor':
+                  next({ path: '/Professor' });
                   break;
               default:
                   next(); // Se o tipo de usuário não corresponder a nenhuma condição, prossiga normalmente

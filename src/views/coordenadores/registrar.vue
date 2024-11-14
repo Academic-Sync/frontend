@@ -223,7 +223,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Coordenadores/editar/${result.advisor.id}`
+            window.location.href = `/Coordenadores/editar/${result.coordinator.id}`
           }, 1000);
 
       } catch (error) {
