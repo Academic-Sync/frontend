@@ -8,7 +8,7 @@
       <div class="login-form">
         
       <div class="logo">
-        <img src="../assets/logo.png" alt="AcademicSync" />
+        <!--<img src="../assets/logo.png" alt="AcademicSync" />-->
         <h1>AcademicSync</h1>
       </div>
       <h2>Seu grupo está esperando por você!</h2>

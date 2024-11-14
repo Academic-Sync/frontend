@@ -209,11 +209,27 @@ body .uwy .uai, body .uwy .ulsti{
   text-align: left;
   transition: outline 0.3s;
 }
+
 .Form input:focus,
 .Form textarea:focus {
   outline: none;
   border: 1px solid var(--Azul);  
 }
+
+.Form select:focus, .Form select:focus {
+    outline: none;
+    border: 1px solid var(--Azul);
+}
+
+ul{
+  padding: 10px!important;
+}
+
+input[role="textbox"] {
+  outline: none;
+  border: 1px solid var(--Azul);  
+}
+
 
 .Form textarea {
   height: 8rem;

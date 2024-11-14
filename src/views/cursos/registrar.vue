@@ -13,25 +13,25 @@
             <input v-model="id" type="hidden" name="id" id="id">
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Coordenador:</label>
-                  <select  v-model="curso.coordinator_id" name="coordinator_id" id="coordinator_id">
+                  <label for="coordinator_id" class="form-label">Coordenador:</label>
+                  <select v-model="curso.coordinator_id" name="coordinator_id" id="coordinator_id">
                     <option disabled value="0">Selecione o Coordenador</option>
                     <option class="form-control" v-for="coordenador in coordenadores" :key="coordenador.id" :value="coordenador.id">{{ coordenador.name }}</option>
                   </select>
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Nome do curso:</label>
+                  <label for="name" class="form-label">Nome do curso:</label>
                   <input v-model="curso.name" type="name" name="name" class="form-control" id="name" placeholder="Nome do curso">
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Periodo:</label>
+                  <label for="period" class="form-label">Periodo:</label>
                   <input v-model="curso.period" type="text" name="period" class="form-control" id="period" placeholder="Manhã/Tarde/Noite">
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Tipo de trabalho final:</label>
+                  <label for="type_work" class="form-label">Tipo de trabalho final:</label>
                   <input v-model="curso.type_work" type="name" name="type_work" class="form-control" id="type_work" placeholder="Tipo de trabalho final">
               </div>
 
