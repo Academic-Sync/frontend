@@ -12,23 +12,23 @@
         <div class="Form">
           <input v-model="id" type="hidden" name="id" id="id">
               <div class="mb-3 text-start">
-                  <label class="form-label">Professor:</label>
-                  <select :disabled="disabled" v-model="turma.teacher_id" name="teacher_id" id="teacher_id">
+                  <label for="teacher_id" class="form-label">Professor:</label>
+                  <select v-model="turma.teacher_id" name="teacher_id" id="teacher_id">
                     <option disabled value="0">Selecione o Professor</option>
                     <option class="form-control" v-for="professor in professores" :key="professor.id" :value="professor.id">{{ professor.name }}</option>
                   </select>
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Curso:</label>
+                  <label for="course_id" class="form-label">Curso:</label>
                   <select :disabled="disabled" v-model="turma.course_id" name="course_id" id="course_id">
                     <option disabled value="0">Selecione o Curso</option>
-                    <option class="form-control" v-for="curso in cursos" :key="curso.id" :value="curso.id">{{ curso.name }}</option>
+                    <option v-for="curso in cursos" :key="curso.id" :value="curso.id">{{ curso.name }}</option>
                   </select>
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">{{ textSemestre }}</label>
+                  <label for="semester" class="form-label">{{ textSemestre }}</label>
                   <input :disabled="disabled" v-model="turma.semester" type="number" name="semester" class="form-control" id="semester" placeholder="1">
               </div>
           </div>
@@ -229,7 +229,7 @@ export default {
   setup() {
     const route = useRoute()
     const turma = ref({
-      teacher_id: 0,
+      teacher_id: "0",
       course_id: 0,
       semester: ""
     })
@@ -239,6 +239,9 @@ export default {
     const id = ref(0)
     const textSemestre = ref("Semestre")
     const disabled = ref(false)
+
+    console.log(turma.value.teacher_id);
+    
 
     const fetchData = async (turmaId) => {
         try {
@@ -298,16 +301,17 @@ export default {
       }
       fetchData(id.value).then(() => {
         /* eslint-disable */
-        // $("#teacher_id").select2();
-        // $('#teacher_id').val(turma.teacher_id).trigger('change'); // Sincroniza o select2 com o valor inicial
+        $("#teacher_id").select2();
+        $('#teacher_id').val(turma.value.teacher_id).trigger('change'); // Sincroniza o select2 com o valor inicial
         // /* eslint-disable */
-        // $("#course_id").select2();
-        // $('#course_id').val(turma.value.course_id).trigger('change'); // Sincroniza o select2 com o valor inicial
+        $("#course_id").select2();
+        $('#course_id').val(turma.value.course_id).trigger('change'); // Sincroniza o select2 com o valor inicial
       });
       
 
       $(document).ready(function() {
-        // $("#course_id").select2();
+        $("#teacher_id").select2();
+        $("#course_id").select2();
       });
     })
 

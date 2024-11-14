@@ -14,22 +14,22 @@
             <input v-model="id" type="hidden" name="id" id="id">
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Nome:</label>
+                  <label for="name" class="form-label">Nome:</label>
                   <input :disabled="disabled" v-model="teacher.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">Email:</label>
+                  <label for="email" class="form-label">Email:</label>
                   <input v-model="teacher.email" type="name" name="email" class="form-control" id="email" placeholder="Email">
               </div>
 
-              <div v-if="!teacher" class="mb-3 text-start">
-                  <label class="form-label">Senha:</label>
+              <div v-if="!teacher.id" class="mb-3 text-start">
+                  <label for="pasword" class="form-label">Senha:</label>
                   <input type="password" name="password" class="form-control" id="password" placeholder="password">
               </div>
 
               <div class="mb-3 text-start">
-                  <label class="form-label">RM:</label>
+                  <label for="code" class="form-label">RM:</label>
                   <input v-model="teacher.code" type="text" name="code" class="form-control" id="code" placeholder="RA">
               </div>
           </div>
