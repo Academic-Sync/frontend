@@ -118,10 +118,6 @@ export default {
     validateDate(e){
       const data = Object.fromEntries(new FormData(e.target).entries());
 
-      console.log(data);
-      
-      
-
       if(!data.teacher_id || !data.course_id || !data.semester){
         const errorObject = {
           title: "",
@@ -394,7 +390,7 @@ select{
     width: 100%;
     background-color: var(--Branco2);
     display: flex;
-    justify-content: center;
+    justify-content: start;
     border: none;
     border-radius: 1rem;
     font-size: 1.7rem;

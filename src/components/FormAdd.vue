@@ -82,7 +82,7 @@ export default {
     width: 100%;
     background-color: #f5f5f5;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     border: none;
     border-radius: 1rem;
     font-size: 1.7rem;

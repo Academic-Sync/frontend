@@ -1,13 +1,15 @@
 <template>
-    <div id="drop_zone" @drop="dropHandler" @dragover="dragOverHandler">
-      <p>Arraste um ou mais arquivos para esta <i>área de soltar</i> ou clique em "Escolher Arquivo"</p>
-      
-      <!-- Botão customizado -->
-      <label for="actual-btn" class="custom-file-upload">Escolher Arquivo</label>
-      <input type="file" id="actual-btn" @change="fileSelected" hidden />
-      
-      <span id="file-chosen">{{ fileName }}</span>
-    </div>
+  <label for="actual-btn">
+      <div id="drop_zone" @drop="dropHandler" @dragover="dragOverHandler">
+        <p>Arraste um ou mais arquivos para esta <i>área de soltar</i> ou clique em "Escolher Arquivo"</p>
+        
+        <!-- Botão customizado -->
+        <label for="actual-btn" class="custom-file-upload">Escolher Arquivo</label>
+        <input type="file" id="actual-btn" @change="fileSelected" hidden />
+        
+        <span id="file-chosen">{{ fileName }}</span>
+      </div>
+    </label>
   </template>
   
   <script>
@@ -52,6 +54,9 @@
   </script>
   
   <style>
+  label{
+    cursor: pointer;
+  }
   #drop_zone {
     width: 100%;
     padding: 2rem;

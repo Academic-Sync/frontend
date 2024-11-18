@@ -347,7 +347,7 @@ form{
     width: 100%;
     background-color: var(--Branco2);
     display: flex;
-    justify-content: center;
+    justify-content: start;
     border: none;
     border-radius: 1rem;
     font-size: 1.7rem;
