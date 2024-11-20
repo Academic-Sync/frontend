@@ -40,6 +40,7 @@ import List1 from '../../components/List1.vue'
 import AddButton from '../../components/AddButton.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'Coordenadores',
@@ -83,9 +84,16 @@ export default {
   methods: {
     async fetchData() {
       this.allCoordenadores = [];
+      const token = getToken();
+
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators`);
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
         const data = await response.json(); // Define todos os professores
 
         if (!response.ok)

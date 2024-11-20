@@ -32,17 +32,6 @@
     </article>
   <TheFooter></TheFooter>
 </template>
-<!-- 
-data(){
-  return {
-    permissaoAdd: false
-  }
-},
-mounted() {
-  const user = localStorage.getItem('user');
-  const parsedUser = JSON.parse(user);
-  this.permissaoAdd = parsedUser.user_type == 'teacher';
-} -->
 
 <script>
 import TheNavbar from '../../components/TheNavbar.vue'
@@ -53,6 +42,7 @@ import AddButton from '../../components/AddButton.vue'
 import Tarefa from '../../components/Tarefa.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'Turmas',
@@ -102,9 +92,17 @@ export default {
   methods: {
     async fetchData() {
       this.allActivities = [];
+      const token = getToken();
+      
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/activities`);
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/activities`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
         const data = await response.json(); // Define todos os professores
 
         if (!response.ok)

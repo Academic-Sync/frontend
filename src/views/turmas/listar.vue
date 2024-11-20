@@ -39,6 +39,7 @@ import SearchBar from '../../components/SearchBar.vue'
 import List1 from '../../components/List1.vue'
 import AddButton from '../../components/AddButton.vue'
 import eventBus from '../../eventBus'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'Turmas',
@@ -88,10 +89,18 @@ export default {
 
   methods: {
     async fetchData() {
-      this.turmas = []
+      this.turmas = [];
+      const token = getToken();
+
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/classes`);
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/classes`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
         const data = await response.json(); // Define todos os estudantes
         
 

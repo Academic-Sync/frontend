@@ -67,6 +67,7 @@ import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'Turmas',
@@ -150,6 +151,8 @@ export default {
     async update(e){
       try {
         const data = this.validateDate(e);
+        const token = getToken();
+        
         if(!data)
           return;
 
@@ -157,6 +160,7 @@ export default {
           const response = await fetch(`${process.env.VUE_APP_API_URL}/activities/${id.value}`, {
             method: "PUT",
             headers: {
+              'Authorization': `Bearer ${token}`,
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
@@ -189,6 +193,7 @@ export default {
     async create(e){
       try {
           const data = this.validateDate(e);
+          const token = getToken();
 
           if(!data)
             return;
@@ -197,6 +202,7 @@ export default {
           const response = await fetch(`${process.env.VUE_APP_API_URL}/activities`, {
             method: "POST",
             headers: {
+              'Authorization': `Bearer ${token}`,
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
@@ -235,7 +241,7 @@ export default {
   setup() {
     const route = useRoute()
     const activity = ref({
-      name: "0",
+      name: "",
       description: "",
       date: "",
       time: "",
@@ -243,7 +249,7 @@ export default {
     })
     const professores = ref([{}])
     const cursos = ref([{}])
-    const titleText = ref("Adicionar Turma")
+    const titleText = ref("Adicionar Tarefa")
     const id = ref(0)
     const textSemestre = ref("Semestre")
     const disabled = ref(false)
@@ -252,8 +258,16 @@ export default {
         try {
           // eslint-disable-next-line
           const url = process.env.VUE_APP_API_URL;
+          const token = getToken();
+
           const [response] = await Promise.all([
-            fetch(`${url}/activities/${activityId}`),
+            fetch(`${url}/activities/${activityId}`, {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            }),
           ]);
 
           const activityData = await response.json();
@@ -262,12 +276,12 @@ export default {
           if (!response.ok) throw new Error(activityData.error);
 
           if (!activityData && activityId)
-            throw new Error("Turma não encontrada");
+            throw new Error("Tarefa não encontrada");
 
           if(activityId != 0)
             activity.value =  activityData;
             
-          titleText.value = 'Salvar Turma';
+          titleText.value = 'Salvar Tarefa';
 
         } catch (error) {
           disabled.value = true;
