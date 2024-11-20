@@ -10,6 +10,12 @@ export function getUserType() {
     return user ? user.user_type : null; // Retorna o tipo de usuário, se existir
 }
 
+// Função para obter o usuário do localStorage
+export function getUser() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user ? user : null; // Retorna o tipo de usuário, se existir
+}
+
 // Função para verificar se o usuário tem permissão
 export function hasPermission(requiredUserType) {
     const userType = getUserType();

@@ -5,6 +5,8 @@
       <SideBar /> 
       
       <main class="content">
+        <Message />
+
         <h1>Cursos</h1>
         <SearchBar @key-up="onKeyup"></SearchBar>
 
@@ -17,7 +19,7 @@
           ></List1>
         </div>
 
-        <div class="div-buttons">
+        <div class="div-buttons" v-if="user.user_type == 'coordinator'">
           <AddButton href="/AddCursos" ButtonText="Adicionar Curso" ></AddButton>
         </div>
       </main>
@@ -35,6 +37,8 @@ import SearchBar from '../../components/SearchBar.vue'
 import List1 from '../../components/List1.vue'
 import AddButton from '../../components/AddButton.vue'
 import eventBus from '../../eventBus'
+import { getToken, getUser } from '@/utils/auth'
+import Message from '@/components/Message.vue'
 
 export default {
   name: 'Cursos',
@@ -45,6 +49,7 @@ export default {
     SearchBar,
     List1,
     AddButton,
+    Message
   },
 
   data() {
@@ -59,6 +64,12 @@ export default {
         type_work: ""
       }],
       searchTerm: "",
+      user: ({
+        name: '',
+        user_type: '',
+        id: '',
+        token: ''
+      })
     }
   },
 
@@ -78,14 +89,24 @@ export default {
 
   methods: {
     async fetchData() {
+      const token = getToken();
       this.cursos = [];
+
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/courses`);
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/courses`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        const data = await response.json();
+
         if (!response.ok) {
-          throw new Error('Erro ao buscar estudantes'); // Tratamento de erro
+          throw new Error(data.error); // Tratamento de erro
         }
-        this.cursos = await response.json(); // Define todos os estudantes
+        this.cursos = data; // Define todos os estudantes
       } catch (error) {
         const errorObject = {
           title: "Erro ao listar: ",
@@ -102,6 +123,9 @@ export default {
   },
 
   mounted() {
+    this.user = getUser();
+    console.log(getUser());
+    
     this.fetchData(); // Busca estudantes ao montar o componente
   },
 }

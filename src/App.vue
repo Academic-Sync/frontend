@@ -25,6 +25,10 @@
   color: var(--preto);
 }
 
+.cursor-pointer{
+  cursor: pointer;
+}
+
 .text-nao-encontrado{
   margin-top: 10px;
 }
