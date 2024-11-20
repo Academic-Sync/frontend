@@ -69,6 +69,7 @@ export default {
     background-color: var(--Branco);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
 }
 
 .tarefa:last-child {

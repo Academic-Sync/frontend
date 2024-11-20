@@ -5,6 +5,7 @@
       <SideBar />
       <main class="content">
         <Message />
+
         <h1>Professores</h1>
         <SearchBar @key-up="onKeyup" />
         
@@ -40,6 +41,7 @@ import List1 from '../../components/List1.vue'
 import AddButton from '../../components/AddButton.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'Professores',
@@ -83,13 +85,23 @@ export default {
   methods: {
     async fetchStudents() {
       this.allTeacher = [];
+      const token = getToken();
+      
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/teachers`);
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/teachers`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        const data = await response.json();
+
         if (!response.ok) {
-          throw new Error('Erro ao buscar professores'); // Tratamento de erro
+          throw new Error(data.error); // Tratamento de erro
         }
-        this.allTeacher = await response.json(); // Define todos os professores
+        this.allTeacher = data; // Define todos os professores
       } catch (error) {
         const errorObject = {
           title: "Erro ao listar: ",

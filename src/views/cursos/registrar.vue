@@ -71,6 +71,7 @@ import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'Turmas',
@@ -96,11 +97,13 @@ export default {
     async handleDelete(){
       try {
         const studentId = document.querySelector("#id")
+        const token = getToken();
 
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/courses/${studentId.value}`, {
           method: "DELETE",
           headers: {
+            'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           }
@@ -149,6 +152,8 @@ export default {
     async update(e){
       try {
         const data = this.validateDate(e);
+        const token = getToken();
+
         if(!data)
           return;
 
@@ -156,6 +161,7 @@ export default {
           const response = await fetch(`${process.env.VUE_APP_API_URL}/courses/${id.value}`, {
             method: "PUT",
             headers: {
+              'Authorization': `Bearer ${token}`,
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
@@ -188,6 +194,7 @@ export default {
     async create(e){
       try {
           const data = this.validateDate(e);
+          const token = getToken();
 
           if(!data)
             return;
@@ -196,6 +203,7 @@ export default {
           const response = await fetch(`${process.env.VUE_APP_API_URL}/courses`, {
             method: "POST",
             headers: {
+              'Authorization': `Bearer ${token}`,
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
@@ -242,11 +250,25 @@ export default {
 
     const fetchData = async (cursoId) => {
       try {
+        const token = getToken();
+
         // eslint-disable-next-line
         const url = process.env.VUE_APP_API_URL;
         const [response, responseCoordenador] = await Promise.all([
-            fetch(`${url}/courses/${cursoId}`),
-            fetch(`${url}/coordinators`),
+            fetch(`${url}/courses/${cursoId}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+            }),
+            fetch(`${url}/coordinators`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+            }),
           ]);
 
           const cursoData = await response.json();

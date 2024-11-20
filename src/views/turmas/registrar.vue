@@ -14,22 +14,22 @@
               <div class="mb-3 text-start">
                   <label for="teacher_id" class="form-label">Professor:</label>
                   <select v-model="turma.teacher_id" name="teacher_id" id="teacher_id">
-                    <option disabled value="0">Selecione o Professor</option>
+                    <option value="0">Selecione o Professor</option>
                     <option class="form-control" v-for="professor in professores" :key="professor.id" :value="professor.id">{{ professor.name }}</option>
                   </select>
               </div>
 
               <div class="mb-3 text-start">
                   <label for="course_id" class="form-label">Curso:</label>
-                  <select :disabled="disabled" v-model="turma.course_id" name="course_id" id="course_id">
-                    <option disabled value="0">Selecione o Curso</option>
+                  <select v-model="turma.course_id" name="course_id" id="course_id">
+                    <option value="0">Selecione o Curso</option>
                     <option v-for="curso in cursos" :key="curso.id" :value="curso.id">{{ curso.name }}</option>
                   </select>
               </div>
 
               <div class="mb-3 text-start">
                   <label for="semester" class="form-label">{{ textSemestre }}</label>
-                  <input :disabled="disabled" v-model="turma.semester" type="number" name="semester" class="form-control" id="semester" placeholder="1">
+                  <input v-model="turma.semester" type="number" name="semester" class="form-control" id="semester" placeholder="1">
               </div>
           </div>
         
@@ -55,6 +55,7 @@ import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'Turmas',
@@ -118,10 +119,6 @@ export default {
     validateDate(e){
       const data = Object.fromEntries(new FormData(e.target).entries());
 
-      console.log(data);
-      
-      
-
       if(!data.teacher_id || !data.course_id || !data.semester){
         const errorObject = {
           title: "",
@@ -176,6 +173,7 @@ export default {
     async create(e){
       try {
           const data = this.validateDate(e);
+          const token = getToken(); 
 
           if(!data)
             return;
@@ -184,6 +182,7 @@ export default {
           const response = await fetch(`${process.env.VUE_APP_API_URL}/classes`, {
             method: "POST",
             headers: {
+              'Authorization': `Bearer ${token}`,
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
@@ -240,17 +239,31 @@ export default {
     const textSemestre = ref("Semestre")
     const disabled = ref(false)
 
-    console.log(turma.value.teacher_id);
-    
-
     const fetchData = async (turmaId) => {
         try {
           // eslint-disable-next-line
           const url = process.env.VUE_APP_API_URL;
+          const token = getToken();
+          
           const [response, responseProfessor, responseCurso] = await Promise.all([
-            fetch(`${url}/classes/${turmaId}`),
-            fetch(`${url}/teachers`),
-            fetch(`${url}/courses`)
+            fetch(`${url}/classes/${turmaId}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            }),
+            fetch(`${url}/teachers`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            }),
+            fetch(`${url}/courses`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            })
           ]);
 
           const turmaData = await response.json();
@@ -394,7 +407,7 @@ select{
     width: 100%;
     background-color: var(--Branco2);
     display: flex;
-    justify-content: center;
+    justify-content: start;
     border: none;
     border-radius: 1rem;
     font-size: 1.7rem;

@@ -11,7 +11,7 @@
             <div class="icon-button">
               <img src="../assets/user.png" alt="Perfil">
             </div>
-            <div @click="handleLogout" class="icon-button">
+            <div @click="handleLogout" class="cursor-pointer icon-button">
               <p>Sair</p>
             </div>
           </div>

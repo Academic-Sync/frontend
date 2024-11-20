@@ -56,6 +56,8 @@ import { useRoute } from 'vue-router'
 import eventBus from '../../eventBus'
 import { ref, onMounted } from 'vue'
 import RemoveButton from '@/components/RemoveButton.vue'
+import { getToken } from '@/utils/auth'
+import { validateEmailDominian } from '@/utils/user'
 
 export default {
   name: 'Professores',
@@ -71,31 +73,12 @@ export default {
   methods: {
     async handleSubmit(e){
       e.preventDefault();
-      if(!this.validateEmail())
-        return
 
       const id = document.querySelector("#id")
       if(id.value != 0)
         return await this.update(e);
 
         await this.create(e);
-    },
-
-    validateEmail(){
-      const email = this.teacher.email;
-
-      // Verifica se o email é do domínio fatec.sp.gov.br
-      const emailPattern = /^[a-zA-Z0-9._%+-]+@fatec\.sp\.gov\.br$/;
-      if (!emailPattern.test(email)) {
-        const errorObject = {
-          title: "",
-          text: "O email precisa ser do domínio @fatec.sp.gov.br"
-        };
-        eventBus.emit("error", errorObject);
-        return 0;
-      }
-
-      return 1;
     },
 
     validateData(e){
@@ -110,17 +93,22 @@ export default {
           return;
       }
 
+      if(!validateEmailDominian(data.email))
+        return
+
       return data;
     },
 
     async handleDelete(){
       try {
         const id = document.querySelector("#id")
+        const token = getToken();
 
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators/${id.value}`, {
           method: "DELETE",
           headers: {
+            'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           }
@@ -154,6 +142,7 @@ export default {
     async update(e){
       try {
           const id = document.querySelector("#id")
+          const token = getToken();
 
           const data = this.validateData(e);
           if(!data)
@@ -164,6 +153,7 @@ export default {
           const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators/${id.value}`, {
             method: "PUT",
             headers: {
+              'Authorization': `Bearer ${token}`,
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
@@ -196,6 +186,8 @@ export default {
     async create(e){
       try {
           const data = this.validateData(e);
+          const token = getToken();
+
           if(!data)
             return;
 
@@ -203,6 +195,7 @@ export default {
           const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators`, {
             method: "POST",
             headers: {
+              'Authorization': `Bearer ${token}`,
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
@@ -246,8 +239,16 @@ export default {
 
     const fetchData = async (teacherId) => {
       try {
+        
+        const token = getToken();
+
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators/${teacherId}`)
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/coordinators/${teacherId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
         const professor = await response.json()
 
         if (!response.ok)
@@ -347,7 +348,7 @@ form{
     width: 100%;
     background-color: var(--Branco2);
     display: flex;
-    justify-content: center;
+    justify-content: start;
     border: none;
     border-radius: 1rem;
     font-size: 1.7rem;

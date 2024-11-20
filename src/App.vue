@@ -25,6 +25,10 @@
   color: var(--preto);
 }
 
+.cursor-pointer{
+  cursor: pointer;
+}
+
 .text-nao-encontrado{
   margin-top: 10px;
 }
@@ -64,25 +68,12 @@ body .uwy .uai, body .uwy .ulsti{
     width: 100%;
     background-color: var(--Branco2);
     display: flex;
-    justify-content: center;
+    justify-content: start;
     border: none;
     border-radius: 1rem;
     font-size: 1.7rem;
     padding: 1rem;
     margin-bottom: 2rem;
-}
-
-.Form select{
-  
-    /* width: 100%; */
-    /* background-color: var(--Branco2)!important;
-    display: flex;
-    justify-content: center;
-    border: none;
-    border-radius: 1rem;
-    font-size: 1.7rem;
-    padding: 1rem;
-    margin-bottom: 2rem; */
 }
 
 .select2-container .select2-selection--single{

@@ -21,8 +21,8 @@ import AddOrientador from './views/orientadores/registrar.vue'
 import Orientadores from './views/orientadores/listar.vue'
 import Coordenadores from './views/coordenadores/listar.vue'
 import AddCoordenador from './views/coordenadores/registrar.vue'
-import Tarefas from './views/Tarefas.vue'
-import AddTarefas from './views/AddTarefas.vue'
+import Tarefas from './views/tarefas/listar.vue'
+import AddTarefas from './views/tarefas/registrar.vue'
 import HomeProf from './views/HomeProf.vue'
 import HomeAluno from './views/HomeAluno.vue'
 import { hasPermission, isAuthenticated, getUserType } from './utils/auth'
@@ -115,6 +115,7 @@ const routes = [
   { path: '/AddCoordenadores', component: AddCoordenador, meta: { requiresAuth: true, requiredUserType: 'admin' } },
 
   { path: '/Tarefas', component: Tarefas, meta: { requiresAuth: true } },
+  { path: '/Tarefas/editar/:id', component: AddTarefas, meta: { requiresAuth: true, requiredUserType: 'teacher' } },
   { path: '/AddTarefas', component: AddTarefas, meta: { requiresAuth: true, requiredUserType: 'teacher' } },
 ]
 

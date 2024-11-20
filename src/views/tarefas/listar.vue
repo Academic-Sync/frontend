@@ -7,21 +7,25 @@
       <main class="content">
         <Message />
 
-        <h1>Cursos</h1>
-        <SearchBar @key-up="onKeyup"></SearchBar>
+        <h1>Tarefas</h1>
+         <SearchBar @key-up="onKeyup" />
 
-        <div class="users-list">
-          <List1 v-for="curso in filteredData" :key="curso.id"
-          :text1="curso.name" 
-          :subtext="'Cood: ' + curso?.coordinator?.name"
-          :text2="curso.period"
-          :link="curso.link"
-          ></List1>
-        </div>
+        <Tarefa
+          v-for="activity in filteredData" 
+          :key="activity.id" 
+          :image="require('../../assets/Relatorio.png')" 
+          alt_img="atividade imagem" 
+          :Nome="activity.name" 
+          :Entrega="activity.date_formatted"
+          :Nota="activity.note"
+          :link="activity.link"
+        ></Tarefa>
 
-        <div class="div-buttons" v-if="user.user_type == 'coordinator'">
-          <AddButton href="/AddCursos" ButtonText="Adicionar Curso" ></AddButton>
-        </div>
+        <AddButton
+        v-if="permissaoAdd"
+        href="/AddTarefas"
+        ButtonText="Adicionar Tarefas"
+        ></AddButton>
       </main>
     </div>
 
@@ -34,54 +38,52 @@ import TheNavbar from '../../components/TheNavbar.vue'
 import TheFooter from '../../components/TheFooter.vue'
 import SideBar from '../../components/SideBar.vue'
 import SearchBar from '../../components/SearchBar.vue'
-import List1 from '../../components/List1.vue'
 import AddButton from '../../components/AddButton.vue'
+import Tarefa from '../../components/Tarefa.vue'
+import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
-import { getToken, getUser } from '@/utils/auth'
-import Message from '@/components/Message.vue'
+import { getToken } from '@/utils/auth'
 
 export default {
-  name: 'Cursos',
+  name: 'Turmas',
   components: {
     TheNavbar,
     TheFooter,
     SideBar,
     SearchBar,
-    List1,
     AddButton,
+    Tarefa,
     Message
   },
-
   data() {
     return {
-      cursos: [{
+      allActivities: [{
         id: 0,
         name: "",
-        coordinator: {
-          name: ''
-        },
-        period: "",
-        type_work: ""
+        date: "",
+        time: ""
       }],
       searchTerm: "",
-      user: ({
-        name: '',
-        user_type: '',
-        id: '',
-        token: ''
-      })
+      permissaoAdd: false
     }
   },
 
   computed: {
     filteredData() {
-      // Filtra estudantes com base no termo de busca
-      return this.cursos.filter(curso => {
-        curso.link = `/Cursos/editar/${curso.id}`
+      // Filtra activityes com base no termo de busca
+      return this.allActivities.filter(activity => {
+        activity.link = `/Tarefas/editar/${activity.id}`
+        activity.note = `Nota Máxima: ${activity.maximum_grade}`
+
+        const date = new Date(activity.date);
+        const time = new Date(`1970-01-01T${activity.time}`);
+        const dateFormatted = date.toLocaleDateString('pt-BR');
+        const timeFormatted = time.toLocaleTimeString('pt-BR');
+        activity.date_formatted = `${dateFormatted} - ${timeFormatted}`;
         return (
-          curso.name.toLowerCase().includes(this.searchTerm) || 
-          curso.period.toLowerCase().includes(this.searchTerm) || 
-          curso?.coordinator?.name.toLowerCase().includes(this.searchTerm)
+          activity.name.toLowerCase().includes(this.searchTerm) || 
+          activity.date.toLowerCase().includes(this.searchTerm) ||
+          activity.time.toLowerCase().includes(this.searchTerm)
         );
       });
     }
@@ -89,24 +91,24 @@ export default {
 
   methods: {
     async fetchData() {
+      this.allActivities = [];
       const token = getToken();
-      this.cursos = [];
-
+      
       try {
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/courses`, {
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/activities`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
-        const data = await response.json();
+        const data = await response.json(); // Define todos os professores
 
-        if (!response.ok) {
+        if (!response.ok)
           throw new Error(data.error); // Tratamento de erro
-        }
-        this.cursos = data; // Define todos os estudantes
+
+        this.allActivities = data;
       } catch (error) {
         const errorObject = {
           title: "Erro ao listar: ",
@@ -123,10 +125,10 @@ export default {
   },
 
   mounted() {
-    this.user = getUser();
-    console.log(getUser());
-    
-    this.fetchData(); // Busca estudantes ao montar o componente
+    const user = localStorage.getItem('user');
+    const parsedUser = JSON.parse(user);
+    this.permissaoAdd = parsedUser.user_type == 'teacher';
+    this.fetchData(); // Busca professores ao montar o componente
   },
 }
 </script>
