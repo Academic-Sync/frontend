@@ -26,10 +26,13 @@ import AddTarefas from './views/tarefas/registrar.vue'
 import HomeProf from './views/HomeProf.vue'
 import HomeAluno from './views/HomeAluno.vue'
 import { hasPermission, isAuthenticated, getUserType } from './utils/auth'
+import VisuTarefas from './views/VisuTarefas.vue'
 
 
 // Defina as rotas da aplicação
 const routes = [
+  { path: '/visualizarTarefas', component: VisuTarefas },
+
   { path: '/Coordenador',
     component: HomeCoord, 
     meta: { requiresAuth: true, requiredUserType: 'coordinator' }

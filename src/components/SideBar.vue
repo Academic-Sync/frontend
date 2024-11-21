@@ -5,7 +5,7 @@
         <a href="#"><li><img src="../assets/students-icon.png" alt="Alunos"> Alunos</li></a>
         <a href="#"><li><img src="../assets/groups-icon.png" alt="Grupos"> Grupos</li></a>
         <a href="#"><li><img src="../assets/report.png" alt="Relatório"> Relatório</li></a>
-        <a href="#"><li><img src="../assets/plan-icon.png" alt="Plano Aditivo"> Plano Aditivo</li></a>
+        <a href="#"><li><img src="../assets/plan-icon.png" alt="Plano Adaptativo"> Plano Adaptativo</li></a>
         <a href="#"><li><img src="../assets/tasks-icon.png" alt="Tarefas"> Tarefas</li></a>
       </ul>
     </nav>

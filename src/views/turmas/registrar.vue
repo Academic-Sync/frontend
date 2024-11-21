@@ -15,7 +15,7 @@
                   <label for="teacher_id" class="form-label">Professor:</label>
                   <select v-model="turma.teacher_id" name="teacher_id" id="teacher_id">
                     <option value="0">Selecione o Professor</option>
-                    <option class="form-control" v-for="professor in professores" :key="professor.id" :value="professor.id">{{ professor.name }}</option>
+                    <option v-for="professor in professores" :key="professor.id" :value="professor.id">{{ professor.name }}</option>
                   </select>
               </div>
 
@@ -314,17 +314,17 @@ export default {
       }
       fetchData(id.value).then(() => {
         /* eslint-disable */
-        $("#teacher_id").select2();
-        $('#teacher_id').val(turma.value.teacher_id).trigger('change'); // Sincroniza o select2 com o valor inicial
-        // /* eslint-disable */
-        $("#course_id").select2();
-        $('#course_id').val(turma.value.course_id).trigger('change'); // Sincroniza o select2 com o valor inicial
+        // $("#teacher_id").select2();
+        // $('#teacher_id').val(turma.value.teacher_id).trigger('change'); // Sincroniza o select2 com o valor inicial
+        // // /* eslint-disable */
+        // $("#course_id").select2();
+        // $('#course_id').val(turma.value.course_id).trigger('change'); // Sincroniza o select2 com o valor inicial
       });
       
 
       $(document).ready(function() {
-        $("#teacher_id").select2();
-        $("#course_id").select2();
+        // $("#teacher_id").select2();
+        // $("#course_id").select2();
       });
     })
 
@@ -352,7 +352,7 @@ select{
     width: 100%;
     background-color: #f5f5f5;
     display: flex;
-    justify-content: center!important;
+    justify-content: start!important;
     border: none!important;
     border-radius: 1rem;
     font-size: 1.7rem;
