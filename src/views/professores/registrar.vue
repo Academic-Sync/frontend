@@ -114,11 +114,13 @@ export default {
     async handleDelete(){
       try {
         const id = document.querySelector("#id")
+        const token = getToken();
 
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/teachers/${id.value}`, {
           method: "DELETE",
           headers: {
+            'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           }
