@@ -130,11 +130,13 @@ export default {
     async handleDelete(){
       try {
         const studentId = document.querySelector("#id")
+        const token = getToken();
 
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${studentId.value}`, {
           method: "DELETE",
           headers: {
+            "Authorization": `Bearer ${token}`,
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           }
@@ -168,6 +170,7 @@ export default {
     async update(e){
       try {
           const studentId = document.querySelector("#id")
+          const token = getToken();
 
           const data = this.validateData(e);
           if(!data)
@@ -178,6 +181,7 @@ export default {
           const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${studentId.value}`, {
             method: "PUT",
             headers: {
+              "Authorization": `Bearer ${token}`,
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
@@ -209,6 +213,8 @@ export default {
     async create(e){
       try {
         const data = this.validateData(e);
+        const token = getToken();
+
           if(!data)
             return;
 
@@ -216,6 +222,7 @@ export default {
           const response = await fetch(`${process.env.VUE_APP_API_URL}/students`, {
             method: "POST",
             headers: {
+              "Authorization": `Bearer ${token}`,
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
