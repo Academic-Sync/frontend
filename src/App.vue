@@ -30,6 +30,10 @@ h2{
   font-weight: normal;
 }
 
+.invert-color-image{
+  filter: invert(100%);
+}
+
 .cursor-pointer{
   cursor: pointer;
 }

@@ -15,7 +15,6 @@
 
                     <!-- Páginas Públicas -->
                     <li><a href="/">Página Inicial</a></li>
-                    <!-- <li><a href="/Login">Login</a></li> -->
 
                     <!-- Rotas com Permissão de Acesso para Diversos Usuários -->
                     <li><a href="/Turmas">Turmas</a></li>
@@ -24,23 +23,15 @@
                     
 
                     <!-- Páginas Restritas a Professores -->
-                    <div v-if="userType.value == 'teacher'">
+                    <div v-if="userType == 'teacher'">
                         <li><a href="/Tarefas">Tarefas</a></li>
                     </div>
 
                     <!-- Páginas Restritas a Administradores -->
-                    <div v-if="userType.value == 'admin'">
-                        <li><a href="/Admin">Início Administrador</a></li>
-                        <li><a href="/Usuarios">Usuários</a></li>
+                    <div v-if="userType == 'admin'">
                         <li><a href="/Professores">Professores</a></li>
-                        <li><a href="/Professores/editar/:id">Editar Professor</a></li>
-                        <li><a href="/AddProfessores">Adicionar Professor</a></li>
                         <li><a href="/Orientadores">Orientadores</a></li>
-                        <li><a href="/Orientadores/editar/:id">Editar Orientador</a></li>
-                        <li><a href="/AddOrientadores">Adicionar Orientador</a></li>
                         <li><a href="/Coordenadores">Coordenadores</a></li>
-                        <li><a href="/Coordenadores/editar/:id">Editar Coordenador</a></li>
-                        <li><a href="/AddCoordenadores">Adicionar Coordenador</a></li>
                     </div>
                 </ul>
             </div>
@@ -70,23 +61,21 @@
 </template>
 
 <script>
-import { getUserType } from '@/utils/auth';
+import { getUserType } from '@/utils/auth'
 import { ref, onMounted } from 'vue'
 
 export default {
     setup() {
-    const userType = ref("")
+        const userType = ref("")
 
-    onMounted(() => {
-        userType.value = getUserType()
-    })
+        onMounted(() => {
+            userType.value = getUserType()
+        })
 
-
-    return {
-        userType
+        return {
+            userType
+        }
     }
-  }
-
 }
 </script>
 
