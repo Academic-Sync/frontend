@@ -5,6 +5,7 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
         <Message />
 
         <h1>{{titleText}}</h1>
@@ -58,6 +59,7 @@ import { ref, onMounted } from 'vue'
 import RemoveButton from '@/components/RemoveButton.vue'
 import { getToken } from '@/utils/auth'
 import { validateEmailDominian } from '@/utils/user'
+import Breadcrumb from "@/components/Breadcrumb.vue"
 
 export default {
   name: 'Professores',
@@ -67,7 +69,18 @@ export default {
     SideBar,
     AddButton,
     RemoveButton,
-    Message
+    Message,
+    Breadcrumb
+  },
+
+  data(){
+    return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Coordenadores", href: "/coordenadores" },
+        { label: "Adicionar Coordenadores", href: "/coordenadores" },
+      ],
+    }
   },
 
   methods: {

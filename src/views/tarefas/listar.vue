@@ -5,6 +5,8 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
+
         <Message />
 
         <h1>Tarefas</h1>
@@ -43,6 +45,7 @@ import Tarefa from '../../components/Tarefa.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { getToken } from '@/utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
 
 export default {
   name: 'Turmas',
@@ -53,10 +56,15 @@ export default {
     SearchBar,
     AddButton,
     Tarefa,
-    Message
+    Message,
+    Breadcrumb
   },
   data() {
     return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Tarefas", href: "/tarefas" },
+      ],
       allActivities: [{
         id: 0,
         name: "",

@@ -5,6 +5,7 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
         <Message />
 
         <h1>Adicionar Turmas</h1>
@@ -56,6 +57,7 @@ import eventBus from '../../eventBus'
 import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { getToken } from '@/utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
 
 export default {
   name: 'Turmas',
@@ -65,7 +67,18 @@ export default {
     SideBar,
     AddButton,
     Message,
-    RemoveButton
+    RemoveButton,
+    Breadcrumb
+  },
+
+  data(){
+    return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Turmas", href: "/turmas" },
+        { label: "Adicionar Turmas", href: "/turmas" },
+      ],
+    }
   },
 
   methods: {
