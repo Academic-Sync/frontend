@@ -14,9 +14,9 @@
           <li><img src="../assets/students-icon.png" alt="Alunos"> <div class="text">Alunos</div>  </li>
         </a>
 
-        <a href="#" v-if="userType == 'student' || userType == 'teacher' || userType == 'coordinator'">
+        <!-- <a href="#" v-if="userType == 'student' || userType == 'teacher' || userType == 'coordinator'">
           <li><img src="../assets/groups-icon.png" alt="Grupos"> <div class="text">Grupos</div> </li>
-        </a>
+        </a> -->
         <a href="#" v-if="userType == 'admin'">
           <li><img src="../assets/report.png" alt="Relatório"> <div class="text">Relatório</div></li>
         </a>

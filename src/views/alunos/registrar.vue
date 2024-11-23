@@ -35,7 +35,7 @@
                   <label for="course_id" class="form-label">Turma:</label>
                   <select v-model="student.class_id" name="class_id" id="class_id">
                     <option value="0">Selecione a Turma</option> 
-                    <option v-for="thisClass in classes" :key="thisClass.id" :value="thisClass.id">{{ thisClass?.course?.name + " - " + thisClass?.semester + "º" }}</option>
+                    <option v-for="thisClass in classes" :key="thisClass.id" :value="thisClass.id">{{ thisClass?.semester + "º" + " - " + thisClass?.course?.name  }}</option>
                   </select>
               </div>
 

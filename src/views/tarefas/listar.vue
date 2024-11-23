@@ -46,6 +46,7 @@ import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { getToken } from '@/utils/auth'
 import Breadcrumb from "@/components/Breadcrumb.vue"
+import { getUserType } from '@/utils/auth'
 
 export default {
   name: 'Turmas',
@@ -106,8 +107,12 @@ export default {
       const token = getToken();
       
       try {
+        const userType = getUserType();
+        
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/activities`, {
+        const link = userType ? `${process.env.VUE_APP_API_URL}/activities` : `${process.env.VUE_APP_API_URL}/activities`
+
+        const response = await fetch(link, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
