@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- Exibe o componente correspondente à rota atual -->
-    <router-view />
+    <router-view v-if="!showErrorPage" />
   </div>
 </template>
 
