@@ -2,14 +2,14 @@
     <footer>
         <div class="footer-container">
             <div class="footer-column">
-                <h4>ACADEMIC SYNC</h4>
                 <ul>
-                    <li>Academic Sync é uma plataforma gerenciadora de trabalhos de graduação...</li>
+                    <h4>ACADEMIC SYNC</h4>
+                    <li>Academic Sync é uma plataforma gerenciadora de trabalhos de graduação</li>
                 </ul>
             </div>
             <div class="footer-column">
-                <h4>MAPA DO SITE</h4>
                 <ul>
+                    <h4>MAPA DO SITE</h4>
                     <!-- Acessibilidade -->
                     <li><a href="/Acessibilidade">Acessibilidade</a></li>
 
@@ -37,16 +37,16 @@
             </div>
 
             <div class="footer-column">
-                <h4>CONTATO</h4>
                 <ul>
+                    <h4>CONTATO</h4>
                     <li>(11) 2058-4585</li>
                     <li>academicsync@gmail.com</li>
                     <li>Av. Águia de Haia, 2983 </li>
                 </ul>
             </div>
             <div class="footer-column">
-                <h4>PRECISA DE SUPORTE?</h4>
                 <ul>
+                    <h4>PRECISA DE SUPORTE?</h4>
                     <li><a href="#">Chat online</a></li>
                     <li><a href="#">E-mail</a></li>
                     <li><a href="#">Fale conosco</a></li>
