@@ -136,6 +136,9 @@ export default {
           return;
       }
 
+      console.log(data);
+      
+
       // Validação para verificar se o código tem 13 caracteres numéricos
       const isValidCode = /^\d{13}$/.test(data.code);
 
@@ -325,14 +328,21 @@ export default {
 
         if (!response.ok)
           throw new Error(aluno.error)
+
+          
+        if (!responseCurso.ok)
+          throw new Error(cursosData.error)
         
-        if (!aluno)
+        if (!aluno && id)
           throw new Error('Aluno não encontrado')
 
-        student.value = aluno
-        student.value.class_id = student.value.classes[0]?.id
-        studentId.value = id
-        titleText.value = 'Salvar Aluno';
+        if(id){
+          student.value = aluno
+          studentId.value = id
+          titleText.value = 'Salvar Aluno';
+          student.value.class_id = student.value.classes[0]?.id
+        }
+        
 
       } catch (error) {
         disabled.value = true
@@ -345,10 +355,12 @@ export default {
     }
 
     onMounted(() => {
-      if (route.params.id) {
-        studentId.value = route.params.id;
-        fetchAluno(studentId.value)
+      const routeId = route.params.id;
+      if (routeId) {
+        studentId.value = routeId;
       }
+
+      fetchAluno(studentId.value)
     })
 
     return {
