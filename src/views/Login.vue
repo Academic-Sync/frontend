@@ -12,7 +12,7 @@
         <h1>AcademicSync</h1>
       </div>
       <h2>Seu grupo está esperando por você!</h2>
-      <h2>faça login e junte-se a eles!</h2>
+      <h2>Faça login e junte-se a eles!</h2>
 
       
       <div class="Form">

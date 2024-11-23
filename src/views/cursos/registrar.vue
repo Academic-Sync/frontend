@@ -16,7 +16,7 @@
                   <label for="coordinator_id" class="form-label">Coordenador:</label>
                   <select v-model="curso.coordinator_id" name="coordinator_id" id="coordinator_id">
                     <option disabled value="0">Selecione o Coordenador</option>
-                    <option class="form-control" v-for="coordenador in coordenadores" :key="coordenador.id" :value="coordenador.id">{{ coordenador.name }}</option>
+                    <option v-for="coordenador in coordenadores" :key="coordenador.id" :value="coordenador.id">{{ coordenador.name }}</option>
                   </select>
               </div>
 
@@ -310,12 +310,12 @@ export default {
       }
       fetchData(id.value).then(() => {
         /* eslint-disable */
-        $("#coordinator_id").select2();
-        $('#coordinator_id').val(curso.value.coordinator_id).trigger('change'); // Sincroniza o select2 com o valor inicial
+        // $("#coordinator_id").select2();
+        // $('#coordinator_id').val(curso.value.coordinator_id).trigger('change'); // Sincroniza o select2 com o valor inicial
       });
 
       $(document).ready(function() {
-        $("#coordinator_id").select2();
+        // $("#coordinator_id").select2();
       });
     })
 

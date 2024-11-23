@@ -71,8 +71,11 @@ export default {
   computed: {
     filteredData() {
       // Filtra activityes com base no termo de busca
+      const user = localStorage.getItem('user');
+      const parsedUser = JSON.parse(user);
+      
       return this.allActivities.filter(activity => {
-        activity.link = `/Tarefas/editar/${activity.id}`
+        activity.link = parsedUser.user_type == 'student' ? "/visualizarTarefas" : `/Tarefas/editar/${activity.id}`;
         activity.note = `Nota Máxima: ${activity.maximum_grade}`
 
         const date = new Date(activity.date);

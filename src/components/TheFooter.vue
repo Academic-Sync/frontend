@@ -10,17 +10,47 @@
             <div class="footer-column">
                 <h4>MAPA DO SITE</h4>
                 <ul>
-                    <li><a href="#">Xxxxxxx</a></li>
-                    <li><a href="#">Xxxxxxx</a></li>
-                    <li><a href="#">Xxxxxxx</a></li>
+                    <!-- Acessibilidade -->
+                    <li><a href="/Acessibilidade">Acessibilidade</a></li>
+
+                    <!-- Páginas Públicas -->
+                    <li><a href="/">Página Inicial</a></li>
+                    <!-- <li><a href="/Login">Login</a></li> -->
+
+                    <!-- Rotas com Permissão de Acesso para Diversos Usuários -->
+                    <li><a href="/Turmas">Turmas</a></li>
+                    <li><a href="/Cursos">Cursos</a></li>
+                    <li><a href="/Alunos">Alunos</a></li>
+                    
+
+                    <!-- Páginas Restritas a Professores -->
+                    <div v-if="userType.value == 'teacher'">
+                        <li><a href="/Tarefas">Tarefas</a></li>
+                    </div>
+
+                    <!-- Páginas Restritas a Administradores -->
+                    <div v-if="userType.value == 'admin'">
+                        <li><a href="/Admin">Início Administrador</a></li>
+                        <li><a href="/Usuarios">Usuários</a></li>
+                        <li><a href="/Professores">Professores</a></li>
+                        <li><a href="/Professores/editar/:id">Editar Professor</a></li>
+                        <li><a href="/AddProfessores">Adicionar Professor</a></li>
+                        <li><a href="/Orientadores">Orientadores</a></li>
+                        <li><a href="/Orientadores/editar/:id">Editar Orientador</a></li>
+                        <li><a href="/AddOrientadores">Adicionar Orientador</a></li>
+                        <li><a href="/Coordenadores">Coordenadores</a></li>
+                        <li><a href="/Coordenadores/editar/:id">Editar Coordenador</a></li>
+                        <li><a href="/AddCoordenadores">Adicionar Coordenador</a></li>
+                    </div>
                 </ul>
             </div>
+
             <div class="footer-column">
                 <h4>CONTATO</h4>
                 <ul>
                     <li>(11) 2058-4585</li>
                     <li>academicsync@gmail.com</li>
-                    <li>Rua Xxxx Xxxx, 787</li>
+                    <li>Av. Águia de Haia, 2983 </li>
                 </ul>
             </div>
             <div class="footer-column">
@@ -40,7 +70,22 @@
 </template>
 
 <script>
+import { getUserType } from '@/utils/auth';
+import { ref, onMounted } from 'vue'
+
 export default {
+    setup() {
+    const userType = ref("")
+
+    onMounted(() => {
+        userType.value = getUserType()
+    })
+
+
+    return {
+        userType
+    }
+  }
 
 }
 </script>
