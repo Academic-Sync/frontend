@@ -10,17 +10,17 @@
           <li><img class="invert-color-image" src="../assets/coordenacao.png" alt="Coordenadores"> <div class="text">Coordenador</div>  </li>
         </a>
 
-        <a href="/alunos" v-if="userType == 'admin' || userType == 'teacher'">
+        <a href="/alunos" v-if="userType == 'admin' || userType == 'teacher' || userType == 'coordinator'">
           <li><img src="../assets/students-icon.png" alt="Alunos"> <div class="text">Alunos</div>  </li>
         </a>
 
-        <a href="#" v-if="userType == 'student' || userType == 'teacher'">
+        <a href="#" v-if="userType == 'student' || userType == 'teacher' || userType == 'coordinator'">
           <li><img src="../assets/groups-icon.png" alt="Grupos"> <div class="text">Grupos</div> </li>
         </a>
         <a href="#" v-if="userType == 'admin'">
           <li><img src="../assets/report.png" alt="Relatório"> <div class="text">Relatório</div></li>
         </a>
-        <a href="/turmas" v-if="userType == 'teacher' || userType == 'student'">
+        <a href="/turmas" v-if="userType == 'teacher' || userType == 'coordinator'">
           <li><img class="invert-color-image" src="../assets/aulas.png" alt="Plano Adaptativo"> <div class="text">Turmas</div></li>
         </a>
         <!-- <a href="#" v-if="userType == 'teacher' || userType == 'student'">
