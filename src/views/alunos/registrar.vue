@@ -18,7 +18,7 @@
 
               <div class="mb-3 text-start">
                   <label for="name" class="form-label">Nome:</label>
-                  <input :disabled="disabled" v-model="student.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
+                  <input v-model="student.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
               </div>
 
               <div class="mb-3 text-start">
@@ -29,6 +29,14 @@
               <div v-if="!student.id" class="mb-3 text-start">
                   <label for="password" class="form-label">Senha:</label>
                   <input type="password" name="password" class="form-control" id="password" placeholder="Senha">
+              </div>
+
+              <div class="mb-3 text-start">
+                  <label for="course_id" class="form-label">Turma:</label>
+                  <select v-model="student.class_id" name="class_id" id="class_id">
+                    <option value="0">Selecione a Turma</option> 
+                    <option v-for="thisClass in classes" :key="thisClass.id" :value="thisClass.id">{{ thisClass?.course?.name + " - " + thisClass?.semester + "º" }}</option>
+                  </select>
               </div>
 
               <div class="mb-3 text-start">
@@ -119,7 +127,7 @@ export default {
     validateData(e){
       const data = Object.fromEntries(new FormData(e.target).entries());
 
-      if(!data.name || !data.code){
+      if(!data.name || !data.code || !data.class_id){
           const errorObject = {
             title: "",
             text: "Informe todos os campos"
@@ -274,23 +282,46 @@ export default {
 
   setup() {
     const route = useRoute()
-    const student = ref({})
+    const student = ref({
+      class_id: 0,
+    })
     const titleText = ref("Adicionar Aluno")
     const studentId = ref(0)
     const disabled = ref(false)
+    const classes = ref([{}])
 
     const fetchAluno = async (id) => {
       const token = getToken();
+
+      // eslint-disable-next-line 
+      const url = process.env.VUE_APP_API_URL
       try {
-        // eslint-disable-next-line 
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
-        })
+        // const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`, {
+        //   headers: {
+        //     "Authorization": `Bearer ${token}`,
+        //     "Content-Type": "application/json"
+        //   }
+        // })
+
+        const [response, responseCurso] = await Promise.all([
+          fetch(`${url}/students/${id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }),
+          fetch(`${url}/classes`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+        ]);
 
         const aluno = await response.json()
+        const cursosData = await responseCurso.json()
+
+        classes.value = cursosData;
 
         if (!response.ok)
           throw new Error(aluno.error)
@@ -299,6 +330,7 @@ export default {
           throw new Error('Aluno não encontrado')
 
         student.value = aluno
+        student.value.class_id = student.value.classes[0]?.id
         studentId.value = id
         titleText.value = 'Salvar Aluno';
 
@@ -320,7 +352,7 @@ export default {
     })
 
     return {
-      student, titleText, studentId, disabled
+      student, titleText, studentId, disabled, classes
     }
   }
 }
