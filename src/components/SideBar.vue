@@ -47,7 +47,6 @@ export default {
     onMounted(async () => {
       // Se getUserType for assíncrono
       userType.value = await getUserType();
-      console.log(userType.value);
     });
 
     return {

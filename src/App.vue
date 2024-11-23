@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- Exibe o componente correspondente à rota atual -->
-    <router-view v-if="!showErrorPage" />
+    <router-view/>
   </div>
 </template>
 
@@ -161,7 +161,7 @@ body .uwy .uai, body .uwy .ulsti{
 .content p {
     font-size: 2rem;
     color: var(--Cinza);
-    margin-bottom: 2rem;
+    /* margin-bottom: 2rem; */
 }
 
 @media (max-width: 550px) {

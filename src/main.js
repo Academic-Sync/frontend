@@ -45,7 +45,7 @@ const routes = [
   { 
     path: '/visualizarTarefas', 
     component: VisuTarefas,
-    meta: { requiresAuth: true, requiredUserType: 'student' }
+    meta: { requiresAuth: true, requiredUserType: ['student', 'teacher'] }
   },
 
   { path: '/Coordenador',
@@ -165,8 +165,7 @@ router.beforeEach((to, from, next) => {
       }
   } else {
     if (to.matched.length === 0) {
-      app.showErrorPage = true;
-      app.errorType = '404'; // Mostra a página 404
+      
       next(false); // Cancela a navegação
     } else {
       next(); // Prossegue normalmente

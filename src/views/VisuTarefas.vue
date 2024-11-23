@@ -24,7 +24,9 @@
         <div class="arquives_text">
            <h2>ARQUIVOS DA TAREFA</h2>
         </div>
+        
         <AttArquive/>
+
         <div class="arquives_text">
            <h2>Adcionar Arquivos</h2>
         </div>

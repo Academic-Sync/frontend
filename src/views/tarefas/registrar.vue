@@ -42,12 +42,33 @@
               </div>
 
               <label for="actual-btn">Arquivo</label>
-              <Dropdown/>
-          </div>
+              <Dropdown :files="files" @updateFiles="updateFiles"/>
 
-          <div class="div-buttons">
-            <RemoveButton v-if="activity.id" @click="handleDelete" type="button" ButtonText="Apagar Tarefa" />
-            <AddButton :ButtonText="titleText"></AddButton>
+              <div v-if="files.length > 0" class="files-container">
+                <div v-for="(file, index) in files" :key="index" class="file-card">
+                  <div class="file-component">
+                    <div class="div-text-atividade">
+                      <img src="@/assets/tasks-icon.png" alt="Ícone de arquivo" class="file-icon" style="filter: invert(100%);	" />
+                      <span class="file-name">{{file.split("----")[file.split("----").length-1]}}</span>
+                    </div>
+
+                    <div class="div-button-atividade">
+                      <button @click="removeFile(index)" class="remove-btn">Remover</button>
+                    </div>
+                  </div>
+                  
+                  <!-- <p class="file-name">{{ file.split("----")[file.split("----").length-1] }}</p>
+                  <div class="div-buttons-file">
+                    <img src="@/assets/downloads.png" height="20" srcset="">
+                    <button @click="removeFile(index)" class="remove-btn">Remover</button>
+                  </div> -->
+                </div>
+              </div>
+
+              <div class="div-buttons">
+                <RemoveButton v-if="activity.id" @click="handleDelete" type="button" ButtonText="Apagar Tarefa" />
+                <AddButton :ButtonText="titleText"></AddButton>
+              </div>
           </div>
         </form>
 
@@ -82,7 +103,7 @@ export default {
     AddButton,
     Dropdown,
     Message,
-    Breadcrumb
+    Breadcrumb,
   },
 
   data() {
@@ -92,10 +113,21 @@ export default {
         { label: "Listar Tarefas", href: "/tarefas" },
         { label: "Adicionar Tarefa", href: "/tarefas" },
       ],
+      // files: [],
     }
   },
 
   methods: {
+    updateFiles(newFiles) {
+      // eslint-disable-next-line
+      this.files.value = newFiles;
+    },
+
+    removeFile(index) {
+      this.files.splice(index, 1); // Remove o arquivo da lista pelo índice
+      this.$emit("updateFiles", this.files);
+    },
+
     async handleSubmit(e){
       e.preventDefault();
       const id = document.querySelector("#id")
@@ -108,11 +140,13 @@ export default {
     async handleDelete(){
       try {
         const id = document.querySelector("#id")
+        const token = getToken();
 
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/activities/${id.value}`, {
           method: "DELETE",
           headers: {
+            'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           }
@@ -144,13 +178,18 @@ export default {
     },
 
     validateDate(e){
-      const data = Object.fromEntries(new FormData(e.target).entries());
+      const formData = new FormData(e.target);
+
+      // this.files.forEach((file) => {
+      //   formData.append('files[]', file);
+      // });
 
       const user = localStorage.getItem('user');
       const parsedUser = JSON.parse(user);
-      data.teacher_id = parsedUser.id
+      formData.append('teacher_id', parsedUser.id);
 
-      if(!data.name || !data.description || !data.date || !data.time || !data.maximum_grade){
+      
+      if(!formData.get('name') || !formData.get('description') || !formData.get('date') || !formData.get('time') || !formData.get('maximum_grade')){
         const errorObject = {
           title: "",
           text: "Informe todos os campos"
@@ -159,7 +198,7 @@ export default {
         return 0;
       }    
 
-      return data;
+      return formData;
     },
 
     async update(e){
@@ -176,9 +215,8 @@ export default {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Accept': 'application/json',
-              'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data)
+            body: data
           });
 
           
@@ -218,9 +256,8 @@ export default {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Accept': 'application/json',
-              'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data)
+            body: data
           });
 
           
@@ -267,6 +304,7 @@ export default {
     const id = ref(0)
     const textSemestre = ref("Semestre")
     const disabled = ref(false)
+    const files = ref([])
 
     const fetchData = async (activityId) => {
         try {
@@ -297,7 +335,13 @@ export default {
             
           titleText.value = 'Salvar Tarefa';
 
+          if (activityData?.file_path) {
+              files.value = JSON.parse(activityData?.file_path); // Supondo que a lista de arquivos seja 'files'
+          }
+
         } catch (error) {
+          console.log(error);
+          
           disabled.value = true;
           console.error("Erro ao buscar dados:", error); // Log do erro
           const errorObject = {
@@ -320,12 +364,52 @@ export default {
     })
 
     return {
-      activity, titleText, id, disabled, professores, cursos, textSemestre
+      activity, titleText, id, disabled, professores, cursos, textSemestre, files
     }
   }
 }
 </script>
 
 <style>
+.div-buttons-file{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
+.div-text-atividade{
+  flex: 1;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.div-button-atividade{
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.file-component {
+  display: flex;
+  /* align-items: center; */
+  border-radius: 0.5rem;
+  width: 100%;
+  height: 6rem; 
+  background-color: #fff;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.233);
+}
+
+.file-icon {
+  width: 30px; /* Ajustar o tamanho do ícone */
+  height: 30px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.file-name {
+    font-size: 1.5rem;
+
+}
 </style>
