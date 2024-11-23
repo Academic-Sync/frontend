@@ -31,7 +31,11 @@ import VisuTarefas from './views/VisuTarefas.vue'
 
 // Defina as rotas da aplicação
 const routes = [
-  { path: '/visualizarTarefas', component: VisuTarefas },
+  { 
+    path: '/visualizarTarefas', 
+    component: VisuTarefas,
+    meta: { requiresAuth: true, requiredUserType: 'student' }
+  },
 
   { path: '/Coordenador',
     component: HomeCoord, 

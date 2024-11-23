@@ -25,7 +25,7 @@
 
               <div v-if="!teacher.id" class="mb-3 text-start">
                   <label for="password" class="form-label">Senha:</label>
-                  <input type="password" name="password" class="form-control" id="password" placeholder="password">
+                  <input type="password" name="password" class="form-control" id="password" placeholder="Senha">
               </div>
 
               <div class="mb-3 text-start">

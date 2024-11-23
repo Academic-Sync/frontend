@@ -21,8 +21,13 @@
     min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: var(--preto);
+}
+
+h2{
+  text-align: start!important;
+  font-weight: normal;
 }
 
 .cursor-pointer{

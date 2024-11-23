@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   border-radius: 0.5rem;
-  width: 60vw;
+  width: 100%;
   height: 6rem; 
   background-color: #fff;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.233);

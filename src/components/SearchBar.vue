@@ -1,6 +1,6 @@
 <template>
     <div class="search-bar">
-        <input v-model="textSearch" @keyup="handleKeyup" type="text" placeholder="buscar">
+        <input v-model="textSearch" @keyup="handleKeyup" type="text" placeholder="Buscar">
         <button><img src="../assets/search.png" alt="Buscar"></button>
     </div>
 </template>
