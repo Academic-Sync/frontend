@@ -2,11 +2,11 @@
   <aside class="sidebar">
     <nav>
       <ul>
-        <a href="#"><li><img src="../assets/students-icon.png" alt="Alunos"> Alunos</li></a>
-        <a href="#"><li><img src="../assets/groups-icon.png" alt="Grupos"> Grupos</li></a>
-        <a href="#"><li><img src="../assets/report.png" alt="Relatório"> Relatório</li></a>
-        <a href="#"><li><img src="../assets/plan-icon.png" alt="Plano Adaptativo"> Plano Adaptativo</li></a>
-        <a href="#"><li><img src="../assets/tasks-icon.png" alt="Tarefas"> Tarefas</li></a>
+        <a href="Alunos"><li><img src="../assets/students-icon.png" alt="Alunos"> <span>Alunos</span>  </li></a>
+        <a href="#"><li><img src="../assets/groups-icon.png" alt="Grupos"> <span>Grupos</span> </li></a>
+        <a href="#"><li><img src="../assets/report.png" alt="Relatório"> <span>Relatório</span></li></a>
+        <a href="#"><li><img src="../assets/plan-icon.png" alt="Plano Adaptativo"> <span>Plano Adaptativo</span></li></a>
+        <a href="#"><li><img src="../assets/tasks-icon.png" alt="Tarefas"> <span>Tarefas</span></li></a>
       </ul>
     </nav>
   </aside>
@@ -20,7 +20,7 @@ export default {
 
 <style>
 .sidebar {
-  width: 5rem;
+  width: 7rem;
   background-color: var(--Azul);
   color: var(--Branco);
   display: flex;
@@ -59,11 +59,14 @@ export default {
 
 @media (max-width: 550px) {
   .sidebar {
-  
-  width: 4rem;
-}
-.sidebar ul li img {
-    width: 2.5rem;
-}
+    width: 4rem;
+  }
+  .sidebar ul li img {
+      width: 2.5rem;
+  }
+  .sidebar span{
+    display: none;
+  }
+
 }
 </style>

@@ -89,14 +89,16 @@ export default {
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/students`, {
           headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
         });
+        const data = await response.json();
+
         if (!response.ok) {
-          throw new Error('Erro ao buscar estudantes'); // Tratamento de erro
+          throw new Error(data.error); // Tratamento de erro
         }
-        this.allStudents = await response.json(); // Define todos os estudantes
+        this.allStudents = data; // Define todos os estudantes
       } catch (error) {
         const errorObject = {
           title: "Erro ao listar: ",
