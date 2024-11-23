@@ -53,15 +53,17 @@
                     </div>
 
                     <div class="div-button-atividade">
-                      <button @click="removeFile(index)" class="remove-btn">Remover</button>
+                      <a :href="linkDownload + 'activity/' + file.split('/')[file.split('/').length - 1]" 
+                        :download="file.split('/')[file.split('/').length - 1]" 
+                        target="_blank" 
+                        rel="noopener noreferrer">
+                          <img src="@/assets/downloads.png" height="20" class="img-download">
+                      </a>
+                      <button type="button" @click="removeFile(file)" class="remove-btn">Remover</button>
                     </div>
                   </div>
                   
-                  <!-- <p class="file-name">{{ file.split("----")[file.split("----").length-1] }}</p>
-                  <div class="div-buttons-file">
-                    <img src="@/assets/downloads.png" height="20" srcset="">
-                    <button @click="removeFile(index)" class="remove-btn">Remover</button>
-                  </div> -->
+                 
                 </div>
               </div>
 
@@ -113,6 +115,8 @@ export default {
         { label: "Listar Tarefas", href: "/tarefas" },
         { label: "Adicionar Tarefa", href: "/tarefas" },
       ],
+      // eslint-disable-next-line
+      linkDownload: process.env.VUE_APP_API_URL + "/../"
       // files: [],
     }
   },
@@ -123,9 +127,52 @@ export default {
       this.files.value = newFiles;
     },
 
-    removeFile(index) {
-      this.files.splice(index, 1); // Remove o arquivo da lista pelo índice
-      this.$emit("updateFiles", this.files);
+    async removeFile(file_name) {
+      try {
+        console.log(file_name);
+        
+        const id = document.querySelector("#id")
+        const token = getToken();
+
+        // eslint-disable-next-line
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/activities/${id.value}`, {
+        method: "DELETE",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: file_name
+      });
+
+
+        const result = await response.json();
+
+        
+        console.log(result);
+
+        if (!response.ok) {
+          throw new Error(result.error); // Tratamento de erro
+        }
+
+        const successObject = {
+          title: "",
+          text: result.message
+        }
+        eventBus.emit("success", successObject)
+
+        setTimeout(()=>{
+          window.location.href = "/Tarefas"
+        }, 1000);
+      } catch (error) {
+          console.error(error);
+          const errorObject = {
+            title: "Erro ao listar: ",
+            text: error.message
+          }
+          eventBus.emit("error", errorObject)
+      }
+      
     },
 
     async handleSubmit(e){
@@ -180,14 +227,13 @@ export default {
     validateDate(e){
       const formData = new FormData(e.target);
 
-      // this.files.forEach((file) => {
-      //   formData.append('files[]', file);
-      // });
+      this.files.forEach((file) => {
+        formData.append('files[]', file);
+      });
 
       const user = localStorage.getItem('user');
       const parsedUser = JSON.parse(user);
       formData.append('teacher_id', parsedUser.id);
-
       
       if(!formData.get('name') || !formData.get('description') || !formData.get('date') || !formData.get('time') || !formData.get('maximum_grade')){
         const errorObject = {
@@ -411,5 +457,10 @@ export default {
 .file-name {
     font-size: 1.5rem;
 
+}
+
+.img-download{
+  margin-right: 10px;
+  cursor: pointer;
 }
 </style>

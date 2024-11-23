@@ -147,7 +147,7 @@ input[type="file"] {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
-  padding: 1rem;
+  padding: 0 1rem;
   background-color: #f0f0f0;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -158,7 +158,7 @@ input[type="file"] {
   overflow: hidden;
   white-space: nowrap; /* Não quebra linha */
   text-overflow: ellipsis; /* Adiciona '...' caso o texto ultrapasse */
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   margin: 0;
 }
 
@@ -170,6 +170,7 @@ input[type="file"] {
   padding: 0.5rem 1rem;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 1.5rem;
 }
 
 .remove-btn:hover {
