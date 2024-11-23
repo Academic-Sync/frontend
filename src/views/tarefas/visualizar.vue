@@ -14,7 +14,7 @@
           <div class="iten">
             <div class="side_tarefa_info">
               <h2>Entrega: {{ formatDate(activity.date) }} às {{ activity.time }}</h2>
-              <h2>Nota: {{ activity.maximum_grade }}</h2>
+              <h2>Nota Maxima: {{ activity.maximum_grade }}</h2>
             </div>
 
           </div>
