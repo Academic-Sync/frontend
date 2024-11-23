@@ -8,14 +8,14 @@
           <TheCard 
           href="/Professores"
           alt_image="Professores"
-          :image="require('../assets/grupo.png')" 
+          :image="require('../assets/professor-no-quadro.png')" 
           Titulo="Professores" 
           text="Gerencie professores no sistema" 
         />
         <TheCard 
           href="/Coordenadores"
           alt_image="Coordenadores"
-          :image="require('../assets/grupo.png')" 
+          :image="require('../assets/coordenacao.png')" 
           Titulo="Coordenadores" 
           text="Gerencie coordenadores no sistema" 
         />
@@ -23,7 +23,7 @@
         <TheCard 
           href="/Orientadores"
           alt_image="Orientadores"
-          :image="require('../assets/grupo.png')" 
+          :image="require('../assets/orientador.png')" 
           Titulo="Orientadores" 
           text="Gerencie orientadores no sistema" 
         />

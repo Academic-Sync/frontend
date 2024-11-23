@@ -8,7 +8,7 @@
           <TheCard 
           href="/Tarefas"
           alt_image="Tarefas"
-          :image="require('../assets/grupo.png')" 
+          :image="require('../assets/Relatorio.png')" 
           Titulo="Tarefas" 
           text="Visualize as suas tarefas" 
         />
@@ -57,6 +57,7 @@ export default {
   text-align: center;
   color: var(--preto);
 }
+
 
 .container {
     margin: 2rem auto;

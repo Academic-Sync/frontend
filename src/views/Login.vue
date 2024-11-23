@@ -28,6 +28,7 @@
 
         <AddButton
           ButtonText="Fazer Login"
+          :isLoading="isLoading"
         ></AddButton>
       </div>
     </div>
@@ -50,7 +51,8 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      isLoading: false
     };
   },
 
@@ -71,9 +73,11 @@ export default {
     },
 
     async handleLogin(event) {
+      this.isLoading = true;
+
       try {
         event.preventDefault();
-        
+
         const data = this.validateData(event);
         if(!data)
           return;
@@ -86,7 +90,9 @@ export default {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
-          });
+        });
+        
+
 
           const result = await response.json();
 
@@ -106,7 +112,10 @@ export default {
           text: error.message
         }
         eventBus.emit("error", errorObject)
+      } finally {
+        this.isLoading = false;
       }
+
     }
   }
 }

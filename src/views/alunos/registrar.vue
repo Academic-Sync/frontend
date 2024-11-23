@@ -5,7 +5,10 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
+
         <Message />
+        
 
         <h1>{{titleText}}</h1>
 
@@ -15,7 +18,7 @@
 
               <div class="mb-3 text-start">
                   <label for="name" class="form-label">Nome:</label>
-                  <input :disabled="disabled" v-model="student.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
+                  <input v-model="student.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
               </div>
 
               <div class="mb-3 text-start">
@@ -26,6 +29,14 @@
               <div v-if="!student.id" class="mb-3 text-start">
                   <label for="password" class="form-label">Senha:</label>
                   <input type="password" name="password" class="form-control" id="password" placeholder="Senha">
+              </div>
+
+              <div class="mb-3 text-start">
+                  <label for="course_id" class="form-label">Turma:</label>
+                  <select v-model="student.class_id" name="class_id" id="class_id">
+                    <option value="0">Selecione a Turma</option> 
+                    <option v-for="thisClass in classes" :key="thisClass.id" :value="thisClass.id">{{ thisClass?.semester + "º" + " - " + thisClass?.course?.name  }}</option>
+                  </select>
               </div>
 
               <div class="mb-3 text-start">
@@ -56,7 +67,8 @@ import { useRoute } from 'vue-router'
 import eventBus from '../../eventBus'
 import { ref, onMounted } from 'vue'
 import RemoveButton from '@/components/RemoveButton.vue'
-import { getToken } from '../../utils/auth'; // Importa a função de logout
+import { getToken } from '../../utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
 
 export default {
   name: 'Turmas',
@@ -66,7 +78,18 @@ export default {
     SideBar,
     AddButton,
     RemoveButton,
-    Message
+    Message,
+    Breadcrumb
+  },
+
+  data() {
+    return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Alunos", href: "/alunos" },
+        { label: "Adicionar Aluno", href: "/alunos" },
+      ],
+    }
   },
 
   methods: {
@@ -104,7 +127,7 @@ export default {
     validateData(e){
       const data = Object.fromEntries(new FormData(e.target).entries());
 
-      if(!data.name || !data.code){
+      if(!data.name || !data.code || !data.class_id){
           const errorObject = {
             title: "",
             text: "Informe todos os campos"
@@ -112,6 +135,9 @@ export default {
           eventBus.emit("error", errorObject);
           return;
       }
+
+      console.log(data);
+      
 
       // Validação para verificar se o código tem 13 caracteres numéricos
       const isValidCode = /^\d{13}$/.test(data.code);
@@ -259,33 +285,64 @@ export default {
 
   setup() {
     const route = useRoute()
-    const student = ref({})
+    const student = ref({
+      class_id: 0,
+    })
     const titleText = ref("Adicionar Aluno")
     const studentId = ref(0)
     const disabled = ref(false)
+    const classes = ref([{}])
 
     const fetchAluno = async (id) => {
       const token = getToken();
+
+      // eslint-disable-next-line 
+      const url = process.env.VUE_APP_API_URL
       try {
-        // eslint-disable-next-line 
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
-        })
+        // const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`, {
+        //   headers: {
+        //     "Authorization": `Bearer ${token}`,
+        //     "Content-Type": "application/json"
+        //   }
+        // })
+
+        const [response, responseCurso] = await Promise.all([
+          fetch(`${url}/students/${id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }),
+          fetch(`${url}/classes`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+        ]);
 
         const aluno = await response.json()
+        const cursosData = await responseCurso.json()
+
+        classes.value = cursosData;
 
         if (!response.ok)
           throw new Error(aluno.error)
+
+          
+        if (!responseCurso.ok)
+          throw new Error(cursosData.error)
         
-        if (!aluno)
+        if (!aluno && id)
           throw new Error('Aluno não encontrado')
 
-        student.value = aluno
-        studentId.value = id
-        titleText.value = 'Salvar Aluno';
+        if(id){
+          student.value = aluno
+          studentId.value = id
+          titleText.value = 'Salvar Aluno';
+          student.value.class_id = student.value.classes[0]?.id
+        }
+        
 
       } catch (error) {
         disabled.value = true
@@ -298,14 +355,16 @@ export default {
     }
 
     onMounted(() => {
-      if (route.params.id) {
-        studentId.value = route.params.id;
-        fetchAluno(studentId.value)
+      const routeId = route.params.id;
+      if (routeId) {
+        studentId.value = routeId;
       }
+
+      fetchAluno(studentId.value)
     })
 
     return {
-      student, titleText, studentId, disabled
+      student, titleText, studentId, disabled, classes
     }
   }
 }

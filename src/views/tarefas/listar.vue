@@ -5,6 +5,8 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
+
         <Message />
 
         <h1>Tarefas</h1>
@@ -43,6 +45,8 @@ import Tarefa from '../../components/Tarefa.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { getToken } from '@/utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
+import { getUserType } from '@/utils/auth'
 
 export default {
   name: 'Turmas',
@@ -53,10 +57,15 @@ export default {
     SearchBar,
     AddButton,
     Tarefa,
-    Message
+    Message,
+    Breadcrumb
   },
   data() {
     return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Tarefas", href: "/tarefas" },
+      ],
       allActivities: [{
         id: 0,
         name: "",
@@ -75,7 +84,7 @@ export default {
       const parsedUser = JSON.parse(user);
       
       return this.allActivities.filter(activity => {
-        activity.link = parsedUser.user_type == 'student' ? "/visualizarTarefas" : `/Tarefas/editar/${activity.id}`;
+        activity.link = parsedUser.user_type == 'student' ? `/tarefas/visualizar/${activity.id}`: `/tarefas/editar/${activity.id}`;
         activity.note = `Nota Máxima: ${activity.maximum_grade}`
 
         const date = new Date(activity.date);
@@ -98,8 +107,12 @@ export default {
       const token = getToken();
       
       try {
+        const userType = getUserType();
+        
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/activities`, {
+        const link = userType ? `${process.env.VUE_APP_API_URL}/activities` : `${process.env.VUE_APP_API_URL}/activities`
+
+        const response = await fetch(link, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

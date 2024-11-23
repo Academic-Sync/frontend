@@ -5,6 +5,8 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
+
         <h1>Turmas</h1>
         <SearchBar  @key-up="onKeyup"></SearchBar>
 
@@ -40,6 +42,7 @@ import List1 from '../../components/List1.vue'
 import AddButton from '../../components/AddButton.vue'
 import eventBus from '../../eventBus'
 import { getToken } from '@/utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
 
 export default {
   name: 'Turmas',
@@ -50,10 +53,16 @@ export default {
     SearchBar,
     List1,
     AddButton,
+    Breadcrumb
   },
 
   data() {
     return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Turmas", href: "/turmas" },
+      ],
+
       turmas: [{
         id: 0,
         semester: 0,

@@ -4,6 +4,8 @@
     <div class="layout">
       <SideBar />
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
+        
         <Message />
         <h1>Orientadores</h1>
         <SearchBar @key-up="onKeyup" />
@@ -41,6 +43,7 @@ import AddButton from '../../components/AddButton.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { getToken } from '@/utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
 
 export default {
   name: 'Orientadores',
@@ -52,10 +55,16 @@ export default {
     List1,
     AddButton,
     Message,
+    Breadcrumb
   },
 
   data() {
     return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Orientadores", href: "/orientadores" },
+      ],
+
       allOrientadores: [{
         id: 0,
         code: "",

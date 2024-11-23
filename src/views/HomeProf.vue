@@ -22,7 +22,7 @@
         <TheCard 
           href="/Turmas"
           alt_image="Turmas"
-          :image="require('../assets/grupo.png')" 
+          :image="require('../assets/aulas.png')" 
           Titulo="Turmas" 
           text="Gerencie suas turmas ou adicione novas" 
         />

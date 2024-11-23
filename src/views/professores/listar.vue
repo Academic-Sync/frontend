@@ -4,6 +4,7 @@
     <div class="layout">
       <SideBar />
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
         <Message />
 
         <h1>Professores</h1>
@@ -42,6 +43,7 @@ import AddButton from '../../components/AddButton.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { getToken } from '@/utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
 
 export default {
   name: 'Professores',
@@ -53,10 +55,15 @@ export default {
     List1,
     AddButton,
     Message,
+    Breadcrumb
   },
 
   data() {
     return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Professores", href: "/professores" },
+      ],
       allTeacher: [{
         id: 0,
         code: "",
