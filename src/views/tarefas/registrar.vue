@@ -56,18 +56,17 @@
                       <a :href="linkDownload + 'activity/' + file.split('/')[file.split('/').length - 1]" 
                         :download="file.split('/')[file.split('/').length - 1]" 
                         target="_blank" 
-                        rel="noopener noreferrer">
+                        rel="noopener noreferrer"
+                        class="link-download">
                           <img src="@/assets/downloads.png" height="20" class="img-download">
                       </a>
                       <button type="button" @click="removeFile(file)" class="remove-btn">Remover</button>
                     </div>
                   </div>
-                  
-                 
                 </div>
               </div>
 
-              <div class="div-buttons">
+              <div class="div-buttons" style="margin-top: 50px">
                 <RemoveButton v-if="activity.id" @click="handleDelete" type="button" ButtonText="Apagar Tarefa" />
                 <AddButton :ButtonText="titleText"></AddButton>
               </div>
@@ -147,10 +146,7 @@ export default {
 
 
         const result = await response.json();
-
         
-        console.log(result);
-
         if (!response.ok) {
           throw new Error(result.error); // Tratamento de erro
         }
@@ -421,6 +417,10 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.link-download{
+  display: flex;
 }
 
 .div-text-atividade{

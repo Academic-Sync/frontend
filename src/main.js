@@ -26,7 +26,7 @@ import AddTarefas from './views/tarefas/registrar.vue'
 import HomeProf from './views/HomeProf.vue'
 import HomeAluno from './views/HomeAluno.vue'
 import { hasPermission, isAuthenticated } from './utils/auth'
-import VisuTarefas from './views/VisuTarefas.vue'
+import VisuTarefas from './views/tarefas/visualizar.vue'
 import NotFound from '@/views/erros/NotFound.vue';
 import AccessDenied from '@/views/erros/AccessDenied.vue';
 
@@ -40,12 +40,6 @@ const routes = [
   {
     path: '/403',
     component: AccessDenied,
-  },
-
-  { 
-    path: '/visualizarTarefas', 
-    component: VisuTarefas,
-    meta: { requiresAuth: true, requiredUserType: ['student', 'teacher'] }
   },
 
   { path: '/Coordenador',
@@ -135,7 +129,7 @@ const routes = [
   { path: '/Tarefas', component: Tarefas, meta: { requiresAuth: true } },
   { path: '/Tarefas/editar/:id', component: AddTarefas, meta: { requiresAuth: true, requiredUserType: 'teacher' } },
   { path: '/AddTarefas', component: AddTarefas, meta: { requiresAuth: true, requiredUserType: 'teacher' } },
-
+  { path: '/Tarefas/visualizar/:id', component: VisuTarefas, meta: { requiresAuth: true, requiredUserType: ['student', 'teacher'] } },
   {
     path: '/:catchAll(.*)', // Rota curinga para capturar todas as rotas inválidas
     redirect: '/404',

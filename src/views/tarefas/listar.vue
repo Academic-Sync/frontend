@@ -84,7 +84,7 @@ export default {
       const parsedUser = JSON.parse(user);
       
       return this.allActivities.filter(activity => {
-        activity.link = parsedUser.user_type == 'student' ? "/visualizarTarefas" : `/Tarefas/editar/${activity.id}`;
+        activity.link = parsedUser.user_type == 'student' ? `/tarefas/visualizar/${activity.id}`: `/tarefas/editar/${activity.id}`;
         activity.note = `Nota Máxima: ${activity.maximum_grade}`
 
         const date = new Date(activity.date);

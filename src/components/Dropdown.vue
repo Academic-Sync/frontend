@@ -142,12 +142,16 @@ input[type="file"] {
   /* margin-top: 2rem; */
 }
 
+.actual-btn{
+  width: 100%;
+}
+
 .file-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
-  padding: 0 1rem;
+  /* padding: 0 1rem; */
   background-color: #f0f0f0;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

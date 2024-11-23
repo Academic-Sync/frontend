@@ -30,6 +30,10 @@ h2{
   font-weight: normal;
 }
 
+.w-100{
+  width: 100%;
+}
+
 .invert-color-image{
   filter: invert(100%);
 }
