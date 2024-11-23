@@ -4,7 +4,11 @@
     <div class="layout">
       <SideBar />
       <main class="content">
+
+        <Breadcrumb :items="breadcrumbItems" />
+
         <Message />
+
         <h1>Alunos</h1>
         <SearchBar @key-up="onKeyup" />
         
@@ -40,7 +44,9 @@ import List1 from '../../components/List1.vue'
 import AddButton from '../../components/AddButton.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
-import { getToken } from '../../utils/auth'; // Importa a função de logout
+import { getToken } from '../../utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
+
 export default {
   name: 'Turmas',
   components: {
@@ -51,10 +57,16 @@ export default {
     List1,
     AddButton,
     Message,
+    Breadcrumb
   },
 
   data() {
     return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Alunos", href: "/alunos" },
+      ],
+
       allStudents: [{
         id: 0,
         code: "",

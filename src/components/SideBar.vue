@@ -20,7 +20,7 @@ export default {
 
 <style>
 .sidebar {
-  width: 7rem;
+  width: 6rem;
   background-color: var(--Azul);
   color: var(--Branco);
   display: flex;

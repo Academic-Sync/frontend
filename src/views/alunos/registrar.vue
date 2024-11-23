@@ -5,7 +5,10 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
+
         <Message />
+        
 
         <h1>{{titleText}}</h1>
 
@@ -56,7 +59,8 @@ import { useRoute } from 'vue-router'
 import eventBus from '../../eventBus'
 import { ref, onMounted } from 'vue'
 import RemoveButton from '@/components/RemoveButton.vue'
-import { getToken } from '../../utils/auth'; // Importa a função de logout
+import { getToken } from '../../utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
 
 export default {
   name: 'Turmas',
@@ -66,7 +70,18 @@ export default {
     SideBar,
     AddButton,
     RemoveButton,
-    Message
+    Message,
+    Breadcrumb
+  },
+
+  data() {
+    return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Alunos", href: "/alunos" },
+        { label: "Adicionar Aluno", href: "/alunos" },
+      ],
+    }
   },
 
   methods: {

@@ -34,7 +34,7 @@ export default {
 
 .search-bar input {
     width: 90%;
-    padding: 1rem;
+    padding: 1rem 2rem;
     border: none;
     outline: none;
     font-size: 1.5rem;
