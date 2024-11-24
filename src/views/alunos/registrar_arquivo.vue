@@ -14,10 +14,9 @@
 
         <form @submit="handleFileUpload" v-if="!isLoadingDatas"  enctype="multipart/form-data">
           <div class="Form">
-            <input v-model="studentId" type="hidden" name="id" id="id">
               <div class="mb-3 text-start">
                   <label for="course_id" class="form-label">Turma:</label>
-                  <select v-model="student.class_id" name="class_id" id="class_id">
+                  <select v-model="class_id" name="class_id" id="class_id">
                     <option value="0">Selecione a Turma</option> 
                     <option v-for="thisClass in classes" :key="thisClass.id" :value="thisClass.id">{{ thisClass?.semester + "º" + " - " + thisClass?.course?.name  }}</option>
                   </select>
@@ -48,7 +47,6 @@ import TheFooter from '../../components/TheFooter.vue'
 import SideBar from '../../components/SideBar.vue'
 import AddButton from '../../components/AddButton.vue'
 import Message from '../../components/Message.vue'
-import { useRoute } from 'vue-router'
 import eventBus from '../../eventBus'
 import { ref, onMounted } from 'vue'
 import { getToken } from '../../utils/auth'
@@ -81,35 +79,6 @@ export default {
   },
 
   methods: {
-    async handleSubmit(e){
-      e.preventDefault();
-      this.isLoadingInsert = true
-
-      if(!this.validateEmail())
-        return
-
-        await this.create(e);
-    },
-
-    validateEmail(){
-      const email = this.student.email;
-
-      if(email){
-        // Verifica se o email é do domínio fatec.sp.gov.br
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@fatec\.sp\.gov\.br$/;
-        if (!emailPattern.test(email)) {
-          const errorObject = {
-            title: "",
-            text: "O email precisa ser do domínio @fatec.sp.gov.br"
-          };
-          eventBus.emit("error", errorObject);
-          return 0;
-        }
-      }
-
-      return 1;
-    },
-
     async handleFileUpload (event) {
       event.preventDefault()
       this.isLoadingInsert = true
@@ -211,160 +180,23 @@ export default {
           this.isLoadingInsert = false
         }
     },
-
-
-    validateData(e){
-      const data = Object.fromEntries(new FormData(e.target).entries());
-
-      if(!data.name || !data.code || !data.class_id){
-          const errorObject = {
-            title: "",
-            text: "Informe todos os campos"
-          };
-          eventBus.emit("error", errorObject);
-          return;
-      }
-
-      // Validação para verificar se o código tem 13 caracteres numéricos
-      const isValidCode = /^\d{13}$/.test(data.code);
-
-      if (!isValidCode) {
-          const errorObject = {
-            title: "",
-            text: "O RA deve ter exatamente 13 caracteres numéricos"
-          };
-          eventBus.emit("error", errorObject);
-          return;
-      }
-      return data;
-    },
-
-    async update(e){
-      try {
-          const studentId = document.querySelector("#id")
-          const token = getToken();
-
-          const data = this.validateData(e);
-          if(!data)
-            return;
- 
-          // eslint-disable-next-line
-          const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${studentId.value}`, {
-            method: "PUT",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          });
-
-          
-          const result = await response.json();
-
-          if (!response.ok) {
-            throw new Error(result.error); // Tratamento de erro
-          }
-
-          const successObject = {
-            title: "",
-            text: result.message
-          }
-          eventBus.emit("success", successObject)
-
-      } catch (error) {
-          const errorObject = {
-            title: "Erro ao atualizar: ",
-            text: error.message
-          }
-          eventBus.emit("error", errorObject)
-      } finally{
-        this.isLoadingInsert = false
-      }
-    },
-
-    async create(e){
-      try {
-        const data = this.validateData(e);
-        const token = getToken();
-
-          if(!data)
-            return;
-
-          // eslint-disable-next-line
-          const response = await fetch(`${process.env.VUE_APP_API_URL}/students`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          });
-
-          
-          const result = await response.json();
-
-          if (!response.ok) {
-            throw new Error(result.error); // Tratamento de erro
-          }
-
-          const successObject = {
-            title: "",
-            text: result.message
-          }
-          eventBus.emit("success", successObject)
-
-          setTimeout(()=>{
-            window.location.href = `/Alunos/editar/${result.student.id}`
-          }, 1000);
-
-      } catch (error) {
-          console.error(error);
-          const errorObject = {
-            title: "Erro ao cadastrar: ",
-            text: error.message
-          }
-          eventBus.emit("error", errorObject)
-      } finally{
-        this.isLoadingInsert = false
-      }
-    }
   },
 
   setup() {
-    const route = useRoute()
-    const student = ref({
-      class_id: 0,
-    })
     const titleText = ref("Adicionar Aluno")
-    const studentId = ref(0)
-    const disabled = ref(false)
+    const class_id = ref(0)
     const classes = ref([{}])
     const isLoadingDatas = ref(true)
     const isLoadingInsert = ref(false)
     const isLoadingDelete = ref(false)
 
-    const fetchAluno = async (id) => {
+    const fetchAluno = async () => {
       const token = getToken();
 
       // eslint-disable-next-line 
       const url = process.env.VUE_APP_API_URL
       try {
-        // const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`, {
-        //   headers: {
-        //     "Authorization": `Bearer ${token}`,
-        //     "Content-Type": "application/json"
-        //   }
-        // })
-
-        const [response, responseCurso] = await Promise.all([
-          fetch(`${url}/students/${id}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          }),
+        const [responseCurso] = await Promise.all([
           fetch(`${url}/classes`, {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -373,31 +205,14 @@ export default {
           })
         ]);
 
-        const aluno = await response.json()
         const cursosData = await responseCurso.json()
 
         classes.value = cursosData;
 
-        if (!response.ok)
-          throw new Error(aluno.error)
-
-          
         if (!responseCurso.ok)
           throw new Error(cursosData.error)
-        
-        if (!aluno && id)
-          throw new Error('Aluno não encontrado')
-
-        if(id){
-          student.value = aluno
-          studentId.value = id
-          titleText.value = 'Salvar Aluno';
-          student.value.class_id = student.value.classes[0]?.id
-        }
-        
 
       } catch (error) {
-        disabled.value = true
         const errorObject = {
           title: "Erro ao listar: ",
           text: error.message
@@ -409,18 +224,11 @@ export default {
     }
 
     onMounted(() => {
-      const routeId = route.params.id;
-      if (routeId) {
-        studentId.value = routeId;
-      } else{
-        isLoadingDatas.value = false
-      }
-
-      fetchAluno(studentId.value)
+      fetchAluno()
     })
 
     return {
-      student, titleText, studentId, disabled, classes, isLoadingDatas, isLoadingDelete, isLoadingInsert
+      titleText, class_id, classes, isLoadingDatas, isLoadingDelete, isLoadingInsert
     }
   }
 }
