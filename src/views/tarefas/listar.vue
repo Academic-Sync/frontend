@@ -12,16 +12,22 @@
         <h1>Tarefas</h1>
          <SearchBar @key-up="onKeyup" />
 
-        <Tarefa
-          v-for="activity in filteredData" 
-          :key="activity.id" 
-          :image="require('../../assets/Relatorio.png')" 
-          alt_img="atividade imagem" 
-          :Nome="activity.name" 
-          :Entrega="activity.date_formatted"
-          :Nota="activity.note"
-          :link="activity.link"
-        ></Tarefa>
+        <span class="w-100" v-if="!isLoadingDatas">
+          <Tarefa 
+            v-for="activity in filteredData" 
+            :key="activity.id" 
+            :image="require('../../assets/Relatorio.png')" 
+            alt_img="atividade imagem" 
+            :Nome="activity.name" 
+            :Entrega="activity.date_formatted"
+            :Nota="activity.note"
+            :link="activity.link"
+          ></Tarefa>
+        </span>
+
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
         
         <div class="div-buttons">
           <AddButton
@@ -49,6 +55,8 @@ import eventBus from '../../eventBus'
 import { getToken } from '@/utils/auth'
 import Breadcrumb from "@/components/Breadcrumb.vue"
 import { getUserType } from '@/utils/auth'
+import { ref } from 'vue'
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
 
 export default {
   name: 'Turmas',
@@ -60,7 +68,8 @@ export default {
     AddButton,
     Tarefa,
     Message,
-    Breadcrumb
+    Breadcrumb,
+    SpinnerScreen
   },
   data() {
     return {
@@ -133,6 +142,8 @@ export default {
           text: error.message
         };
         eventBus.emit("error", errorObject);
+      } finally{
+        this.isLoadingDatas = false
       }
     },
 
@@ -148,6 +159,14 @@ export default {
     this.permissaoAdd = parsedUser.user_type == 'teacher';
     this.fetchData(); // Busca professores ao montar o componente
   },
+
+  setup(){
+    const isLoadingDatas = ref(true)
+
+    return{
+      isLoadingDatas
+    }
+  }
 }
 </script>
 

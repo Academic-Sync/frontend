@@ -12,7 +12,7 @@
         <h1>Alunos</h1>
         <SearchBar @key-up="onKeyup" />
         
-        <div class="users-list">
+        <div class="users-list" v-if="!isLoadingDatas">
           <List1 
             v-for="student in filteredStudents" 
             :key="student.id" 
@@ -23,6 +23,11 @@
             :link="student.link"
           />
         </div>
+        
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
+
         <div class="div-buttons">
           <AddButton
             href="/AddAlunos"
@@ -46,6 +51,8 @@ import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { getToken } from '../../utils/auth'
 import Breadcrumb from "@/components/Breadcrumb.vue"
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
+import { ref } from 'vue'
 
 export default {
   name: 'Turmas',
@@ -57,7 +64,8 @@ export default {
     List1,
     AddButton,
     Message,
-    Breadcrumb
+    Breadcrumb,
+    SpinnerScreen
   },
 
   data() {
@@ -117,12 +125,22 @@ export default {
           text: error.message
         };
         eventBus.emit("error", errorObject);
+      } finally{
+        this.isLoadingDatas = false
       }
     },
 
     onKeyup(event) {
       // Atualiza o termo de busca ao pressionar uma tecla
       this.searchTerm = event.target.value.toLowerCase();
+    }
+  },
+
+  setup(){
+    const isLoadingDatas = ref(true)
+
+    return{
+      isLoadingDatas
     }
   },
 

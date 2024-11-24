@@ -11,13 +11,17 @@
         <h1>Cursos</h1>
         <SearchBar @key-up="onKeyup"></SearchBar>
 
-        <div class="users-list">
+        <div class="users-list" v-if="!isLoadingDatas">
           <List1 v-for="curso in filteredData" :key="curso.id"
           :text1="curso.name" 
           :subtext="'Cood: ' + curso?.coordinator?.name"
           :text2="curso.period"
           :link="curso.link"
           ></List1>
+        </div>
+
+        <div v-else>
+          <SpinnerScreen/>
         </div>
 
         <div class="div-buttons" v-if="user.user_type == 'coordinator' || user.user_type == 'admin'">
@@ -41,6 +45,8 @@ import eventBus from '../../eventBus'
 import { getToken, getUser } from '@/utils/auth'
 import Message from '@/components/Message.vue'
 import Breadcrumb from "@/components/Breadcrumb.vue"
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
+import { ref } from 'vue'
 
 export default {
   name: 'Cursos',
@@ -52,7 +58,8 @@ export default {
     List1,
     AddButton,
     Message,
-    Breadcrumb
+    Breadcrumb,
+    SpinnerScreen
   },
 
   data() {
@@ -121,6 +128,8 @@ export default {
           text: error.message
         };
         eventBus.emit("error", errorObject);
+      } finally{
+        this.isLoadingDatas = false
       }
     },
 
@@ -135,6 +144,14 @@ export default {
     console.log(getUser());
     
     this.fetchData(); // Busca estudantes ao montar o componente
+  },
+
+  setup(){
+    const isLoadingDatas = ref(true)
+
+    return{
+      isLoadingDatas
+    }
   },
 }
 </script>

@@ -10,7 +10,7 @@
         <h1>Coordenadores</h1>
         <SearchBar @key-up="onKeyup" />
         
-        <div class="users-list">
+        <div class="users-list" v-if="!isLoadingDatas">
           <List1 
             v-for="orienador in filteredData" 
             :key="orienador.id" 
@@ -21,6 +21,11 @@
             :link="orienador.link"
           />
         </div>
+
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
+
         <div class="div-buttons">
           <AddButton
             href="/AddCoordenadores"
@@ -44,6 +49,8 @@ import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { getToken } from '@/utils/auth'
 import Breadcrumb from "@/components/Breadcrumb.vue"
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
+import { ref } from 'vue'
 
 export default {
   name: 'Coordenadores',
@@ -55,7 +62,8 @@ export default {
     List1,
     AddButton,
     Message,
-    Breadcrumb
+    Breadcrumb,
+    SpinnerScreen
   },
 
   data() {
@@ -115,6 +123,8 @@ export default {
           text: error.message
         };
         eventBus.emit("error", errorObject);
+      } finally{
+        this.isLoadingDatas = false
       }
     },
 
@@ -126,6 +136,14 @@ export default {
 
   mounted() {
     this.fetchData(); // Busca professores ao montar o componente
+  },
+
+  setup(){
+    const isLoadingDatas = ref(true)
+
+    return{
+      isLoadingDatas
+    }
   },
 }
 </script>
