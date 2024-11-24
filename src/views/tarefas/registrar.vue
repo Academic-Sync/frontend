@@ -11,7 +11,7 @@
         
         <h1>{{titleText}}</h1>
 
-        <form @submit="handleSubmit"  v-if="!isLoadingDatas">
+        <form @submit="handleSubmit" v-if="!isLoadingDatas">
           <input v-model="id" type="hidden" name="id" id="id">
 
           <div class="Form">
@@ -68,12 +68,35 @@
 
               <div class="div-buttons" style="margin-top: 50px">
                 <RemoveButton :isLoading="isLoadingDelete" v-if="activity.id" @click="handleDelete" type="button" ButtonText="Apagar Tarefa" />
+                <AddButton v-if="activity.id" target="_blank" :href="'/tarefas/visualizar/' +activity.id " ButtonText="Visualizar como Aluno"></AddButton>
                 <AddButton :isLoading="isLoadingInsert" :ButtonText="titleText"></AddButton>
               </div>
           </div>
         </form>
 
-        <div v-else>
+        <div class="Form" v-if="!isLoadingDatas && activity?.activities_delivered?.length > 0">
+          <h1>Entregas</h1>
+
+          <div class="files-container">
+            <div v-for="(entrega, index) in entregas" :key="index" class="file-card">
+              <div class="file-component">
+                <div class="div-text-atividade">
+                  <img src="@/assets/tasks-icon.png" alt="Ícone de arquivo" class="file-icon" style="filter: invert(100%);" />
+                  <span class="file-name">Aluno: {{ entrega.student.name }}</span>
+                </div>
+
+                <div class="div-button-atividade">
+                  <!-- Link de download para cada arquivo -->
+                  <button @click="downloadZip(activity.id, entrega.student.id, entrega.student.name)" class="download-zip-button">
+                    <img src="@/assets/downloads.png" height="20" class="img-download" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+        <div v-if="isLoadingDatas">
           <SpinnerScreen/>
         </div>
 
@@ -98,6 +121,7 @@ import { ref, onMounted } from 'vue'
 import { getToken } from '@/utils/auth'
 import Breadcrumb from "@/components/Breadcrumb.vue"
 import SpinnerScreen from '@/components/SpinnerScreen.vue'
+import axios from 'axios'
 
 export default {
   name: 'Turmas',
@@ -343,7 +367,37 @@ export default {
       }
     },
 
+
+  async downloadZip(activityId, studentId, name) {
+      try {
+        // Chamada à API com o token de autenticação
+        // eslint-disable-next-line
+        const response = await axios.get(`${process.env.VUE_APP_API_URL}/activities/download-zip/${activityId}/${studentId}`,
+          {
+            responseType: 'blob', // Importante para arquivos binários
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}` // Adicione o token
+            }
+          }
+        );
+
+        // Cria um link de download para o arquivo ZIP
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `tarefa de ${name} - ${activityId}.zip`);
+        document.body.appendChild(link);
+        link.click();
+
+        // Remove o link após o uso
+        link.parentNode.removeChild(link);
+      } catch (error) {
+        console.error('Erro ao baixar o ZIP:', error);
+        alert('Não foi possível baixar as atividades. Tente novamente mais tarde.');
+      }
   },
+  },
+
 
   setup() {
     const route = useRoute()
@@ -361,18 +415,20 @@ export default {
     const textSemestre = ref("Semestre")
     const disabled = ref(false)
     const files = ref([])
+    const entregas = ref([])
     const isLoadingDatas = ref(true)
     const isLoadingInsert = ref(false)
     const isLoadingDelete = ref(false)
+    const url = ref("")
 
     const fetchData = async (activityId) => {
         try {
           // eslint-disable-next-line
-          const url = process.env.VUE_APP_API_URL;
+          url.value = process.env.VUE_APP_API_URL;
           const token = getToken();
 
           const [response] = await Promise.all([
-            fetch(`${url}/activities/${activityId}`, {
+            fetch(`${url.value}/activities/${activityId}`, {
               method: 'GET',
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -389,8 +445,10 @@ export default {
           if (!activityData && activityId)
             throw new Error("Tarefa não encontrada");
 
-          if(activityId != 0)
+          if(activityId != 0){
             activity.value =  activityData;
+            entregas.value = activity.value.activities_delivered
+          }
             
           titleText.value = 'Salvar Tarefa';
 
@@ -399,8 +457,6 @@ export default {
           }
 
         } catch (error) {
-          console.log(error);
-          
           disabled.value = true;
           console.error("Erro ao buscar dados:", error); // Log do erro
           const errorObject = {
@@ -426,7 +482,7 @@ export default {
     })
 
     return {
-      activity, titleText, id, disabled, professores, cursos, textSemestre, files, isLoadingDatas, isLoadingDelete, isLoadingInsert
+      activity, titleText, id, disabled, professores, cursos, textSemestre, files, isLoadingDatas, isLoadingDelete, isLoadingInsert, entregas, url
     }
   }
 }
@@ -477,6 +533,11 @@ export default {
 .file-name {
     font-size: 1.5rem;
 
+}
+
+.download-zip-button{
+  border: 0;
+  background: transparent;
 }
 
 .img-download{
