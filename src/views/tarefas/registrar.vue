@@ -367,7 +367,6 @@ export default {
       }
     },
 
-
   async downloadZip(activityId, studentId, name) {
       try {
         // Chamada à API com o token de autenticação
@@ -397,7 +396,6 @@ export default {
       }
   },
   },
-
 
   setup() {
     const route = useRoute()
