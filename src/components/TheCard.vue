@@ -1,15 +1,13 @@
 <template>
-
-<div class="action-buttons">
-    <a :href="href">
-      <div class="card">
-        <img width="100%" :src="image" :alt="alt_image">
-        <h3>{{ Titulo }}</h3>
-        <p>{{ text }}</p>
-      </div>
-    </a>
+  <div class="action-buttons">
+    <router-link :to="href" class="card">
+      <img width="100%" :src="image" :alt="alt_image">
+      <h3>{{ Titulo }}</h3>
+      <p>{{ text }}</p>
+    </router-link>
   </div>
 </template>
+
 
 <script>
 export default {

@@ -12,6 +12,7 @@
           Titulo="Professores" 
           text="Gerencie professores no sistema" 
         />
+
         <TheCard 
           href="/Coordenadores"
           alt_image="Coordenadores"
@@ -37,7 +38,6 @@
 import TheNavbar from '../components/TheNavbar.vue'
 import TheFooter from '../components/TheFooter.vue'
 import TheCard from '../components/TheCard.vue'
-
 
 export default {
   name: 'HomeAdmin',

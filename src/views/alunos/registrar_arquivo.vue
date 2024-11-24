@@ -154,7 +154,7 @@ export default {
                   eventBus.emit("success", successObject)
 
                   setTimeout(()=>{
-                    window.location.href = `/Alunos`
+                    this.$router.push("/alunos");
                   }, 1000);
               } catch (error) {
                 console.error(error);

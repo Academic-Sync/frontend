@@ -150,7 +150,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Orientadores"
+            this.$router.push(`/Orientadores`);
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -243,7 +243,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Orientadores/editar/${result.advisor.id}`
+            this.$router.push(`/orientadores/editar/${result.advisor.id}`);
           }, 1000);
 
       } catch (error) {

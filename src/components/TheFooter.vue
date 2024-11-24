@@ -11,29 +11,29 @@
                 <ul>
                     <h4>MAPA DO SITE</h4>
                     <!-- Acessibilidade -->
-                    <li><a href="/Acessibilidade">Acessibilidade</a></li>
+                    <li><router-link to="/Acessibilidade">Acessibilidade</router-link></li>
 
                     <!-- Páginas Públicas -->
-                    <li><a href="/">Página Inicial</a></li>
+                    <li><router-link to="/">Página Inicial</router-link></li>
 
                     <!-- Rotas com Permissão de Acesso para Diversos Usuários -->
                     <span v-if="userType == 'teacher' || userType == 'coordinator' || userType == 'admin'">
-                        <li><a href="/Turmas">Turmas</a></li>
-                        <li><a href="/Cursos">Cursos</a></li>
-                        <li><a href="/Alunos">Alunos</a></li>
+                        <li><router-link to="/Turmas">Turmas</router-link></li>
+                        <li><router-link to="/Cursos">Cursos</router-link></li>
+                        <li><router-link to="/Alunos">Alunos</router-link></li>
                     </span>
                     
 
                     <!-- Páginas Restritas a Professores -->
-                    <div v-if="userType == 'teacher' || userType == 'student'">
-                        <li><a href="/Tarefas">Tarefas</a></li>
+                    <div v-if="userType == 'teacher' || userType == 'student' || userType == 'admin'">
+                        <li><router-link to="/Tarefas">Tarefas</router-link></li>
                     </div>
 
                     <!-- Páginas Restritas a Administradores -->
                     <div v-if="userType == 'admin'">
-                        <li><a href="/Professores">Professores</a></li>
-                        <li><a href="/Orientadores">Orientadores</a></li>
-                        <li><a href="/Coordenadores">Coordenadores</a></li>
+                        <li><router-link to="/Professores">Professores</router-link></li>
+                        <li><router-link to="/Orientadores">Orientadores</router-link></li>
+                        <li><router-link to="/Coordenadores">Coordenadores</router-link></li>
                     </div>
                 </ul>
             </div>
@@ -49,10 +49,10 @@
             <div class="footer-column">
                 <ul>
                     <h4>PRECISA DE SUPORTE?</h4>
-                    <li><a href="#">Chat online</a></li>
-                    <li><a href="#">E-mail</a></li>
-                    <li><a href="#">Fale conosco</a></li>
-                    <li><a href="#">Fóruns</a></li>
+                    <li><router-link to="#">Chat online</router-link></li>
+                    <li><router-link to="#">E-mail</router-link></li>
+                    <li><router-link to="#">Fale conosco</router-link></li>
+                    <li><router-link to="#">Fóruns</router-link></li>
                 </ul>
             </div>
         </div>

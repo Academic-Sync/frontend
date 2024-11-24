@@ -188,7 +188,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Tarefas"
+          this.$router.push(`/tarefas`);
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -240,7 +240,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Tarefas"
+          this.$router.push(`/tarefas`);
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -352,7 +352,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Tarefas`
+            this.$router.push(`/tarefas`);
           }, 1000);
 
       } catch (error) {

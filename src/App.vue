@@ -290,5 +290,28 @@ input[role="textbox"] {
     accent-color: var(--Azul); 
 }
 
+/* transicao */
+/* Transição genérica */
+.transition-fade {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* Estado inicial (escondido) */
+.hidden {
+  display: none;
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* Estado final (visível) */
+.visible {
+  display: block;
+  opacity: 1;
+  transform: scale(1);
+}
+
+
 
 </style>

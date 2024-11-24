@@ -102,7 +102,7 @@ export default {
           localStorage.setItem('token', result.token);
           localStorage.setItem('user', JSON.stringify(result.user));
 
-          window.location.href = "/";
+          this.$router.push("/");
 
       } catch (error) {
         console.error(error);

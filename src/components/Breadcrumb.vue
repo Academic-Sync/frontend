@@ -8,7 +8,7 @@
           :class="{ active: index === items.length - 1 }"
         >
           <template v-if="index !== items.length - 1">
-            <a :href="item.href">{{ item.label }}</a>
+            <router-link :to="item.href">{{ item.label }}</router-link>
           </template>
           <template v-else>
             {{ item.label }}

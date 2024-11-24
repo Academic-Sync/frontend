@@ -128,7 +128,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Turmas"
+          this.$router.push("/turmas");
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -234,7 +234,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Turmas/editar/${result.class.id}`
+          this.$router.push(`/turmas/editar/${result.class.id}`);
           }, 1000);
 
       } catch (error) {
