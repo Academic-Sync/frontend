@@ -7,7 +7,7 @@
         <!-- Botão customizado -->
         <label for="actual-btn" class="custom-file-upload">Escolher Arquivo</label>
         <span style="display: none;">
-          <input multiple type="file" name="files[]" id="actual-btn" @change="fileSelected" hidden />
+          <input :multiple="!isNotMultiple" type="file" name="files[]" id="actual-btn" @change="fileSelected" hidden />
         </span>
       </div>
     </label>
@@ -36,6 +36,13 @@
 <script>
 
 export default {
+  props: {
+    isNotMultiple: {
+      type: Boolean,
+      required: false
+    }
+  },
+
   data() {
     return {
       files: [], // Lista de arquivos selecionados
@@ -59,10 +66,18 @@ export default {
 
     fileSelected(event) {
       const newFiles = Array.from(event.target.files); // Converte os arquivos selecionados em um array
-      this.files = [...this.files, ...newFiles]; // Adiciona os novos arquivos à lista existente
-      this.updateInputFiles(); // Atualiza o conteúdo do campo de entrada
-      this.$emit("updateFiles", this.files);
-    },
+
+        if (!this.isNotMultiple) {
+          // Quando permitir múltiplos arquivos
+          this.files = [...this.files, ...newFiles]; // Adiciona os novos arquivos à lista existente
+        } else {
+          // Quando não permitir múltiplos arquivos
+          this.files = [newFiles[0]]; // Substitui o array com apenas o primeiro arquivo
+        }
+
+        this.updateInputFiles(); // Atualiza o conteúdo do campo de entrada
+        this.$emit("updateFiles", this.files); // Emite os arquivos selecionados
+      },
 
     removeFile(index) {
       this.files.splice(index, 1); // Remove o arquivo da lista pelo índice
@@ -71,8 +86,14 @@ export default {
     },
 
     addFile(file) {
-      if (!this.files.some(existingFile => existingFile.name === file.name)) {
-        this.files.push(file); // Adiciona o arquivo à lista
+      if(!this.isNotMultiple){
+        if (!this.files.some(existingFile => existingFile.name === file.name)) {
+          this.files.push(file); // Adiciona o arquivo à lista
+          this.updateInputFiles(); // Atualiza o conteúdo do campo de entrada
+          this.$emit("updateFiles", this.files);
+        }
+      }else{
+        this.files = file; // Adiciona o arquivo à lista
         this.updateInputFiles(); // Atualiza o conteúdo do campo de entrada
         this.$emit("updateFiles", this.files);
       }
