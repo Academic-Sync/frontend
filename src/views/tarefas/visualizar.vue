@@ -21,9 +21,9 @@
 
             </div>
           </div>
-          <h2>
-            {{ activity.description }}
-          </h2>
+
+          <h2 v-html="formatDescription(activity.description)"></h2>
+
           <div class="arquives_text" v-if="files.length > 0">
               <h2>ARQUIVOS DA TAREFA</h2>
           </div>
@@ -158,6 +158,13 @@ export default {
   },
 
   methods: {
+    formatDescription(description) {
+      if (!description) return '';
+      // Substituir quebras de linha (\n) por <br>
+      // return description.replace(/\n/g, '<br>');
+      return description.replace(/\n/g, '<br>');
+    },
+    
     formatDate(date) {
       try {
         const parsedDate = new Date(`${date}T00:00:00`); // Garante compatibilidade com o formato "YYYY-MM-DD"
