@@ -33,6 +33,10 @@
             href="/AddAlunos"
             ButtonText="Adicionar Alunos"
           />
+          <AddButton
+            href="/AddAlunosArquivo"
+            ButtonText="Adicionar Por Arquivo"
+          />
         </div>
       </main>
     </div>

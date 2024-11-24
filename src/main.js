@@ -30,6 +30,7 @@ import VisuTarefas from './views/tarefas/visualizar.vue'
 import NotFound from '@/views/erros/NotFound.vue';
 import AccessDenied from '@/views/erros/AccessDenied.vue';
 import Conta from './views/Conta.vue'
+import AddAlunosArquivo from './views/alunos/registrar_arquivo.vue'
 
 
 // Defina as rotas da aplicação
@@ -107,11 +108,8 @@ const routes = [
     component: AddAlunos,
     meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] }
   },
-  {
-    path: '/AddAlunos',
-    component: AddAlunos,
-    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] }
-  },
+  { path: '/AddAlunos', component: AddAlunos, meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] } },
+  { path: '/AddAlunosArquivo', component: AddAlunosArquivo, meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] } },
 
   { path: '/Usuarios', component: HomeAdmin, meta: { requiresAuth: true, requiredUserType: 'admin' } },
 
