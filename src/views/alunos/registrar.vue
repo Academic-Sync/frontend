@@ -188,7 +188,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Alunos"
+          this.$router.push("/alunos");
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -279,7 +279,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Alunos/editar/${result.student.id}`
+            this.$router.push(`/Alunos/editar/${result.student.id}`);
           }, 1000);
 
       } catch (error) {

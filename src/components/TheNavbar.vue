@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="icon-button">
-      <a href="/"><img src="../assets/logo.png" alt="Logo"></a>
+      <router-link to="/"><img src="../assets/logo.png" alt="Logo"></router-link>
     </div>
     <div class="header-icons">
       <div 
@@ -14,18 +14,20 @@
         <img src="../assets/notifi.png" alt="Notificações">
 
         <div v-if="showModal" class="notification-modal">
-          <a href="/conta">
-            <div class="notification">
-              <p>Insira seu email</p>
-            </div>
-          </a>
+          <!-- <a href="/conta"> -->
+            <router-link to="/conta">
+              <div class="notification">
+                <p>Insira seu email</p>
+              </div>
+            </router-link>
+          <!-- </a> -->
         </div>
 
       </div>
       <div class="icon-button">
-        <a href="/conta">
+        <router-link to="/conta">
           <img src="../assets/user.png" alt="Perfil">
-        </a>
+        </router-link>
       </div>
       <div @click="handleLogout" class="cursor-pointer icon-button">
         <p>Sair</p>

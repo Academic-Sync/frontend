@@ -33,7 +33,6 @@
           Titulo="Curso" 
           text="Acompanhe o relatório do andamento dos trabalhos" 
         />
-
       </div>
       </div>
     </article>
@@ -44,7 +43,6 @@
 import TheNavbar from '../components/TheNavbar.vue'
 import TheFooter from '../components/TheFooter.vue'
 import TheCard from '../components/TheCard.vue'
-
 
 export default {
   name: 'HomeCoord',
@@ -60,6 +58,7 @@ export default {
     userTypeVerified: false, // controle de exibição da tela
     };
   },
+
   mounted() {
     const user = localStorage.getItem('user');
     if (user) {
@@ -67,24 +66,25 @@ export default {
       
       switch (parsedUser.user_type) {
         case 'admin':
-          window.location.href = "/Admin";
+          this.$router.push("/Admin");
           break;
         case 'student':
-          window.location.href = "/Aluno";
+          this.$router.push("/Aluno");
           break;
         case 'teacher':
         case 'advisor':
-          window.location.href = "/Professor";
+          this.$router.push("/Professor");
           break;
         default:
           this.name = parsedUser.name || 'Coordenador';
       }
       
-    // Marcar que a verificação está completa
-    if(parsedUser.user_type == "coordinator") this.userTypeVerified = true;
+      // Marcar que a verificação está completa
+      if(parsedUser.user_type == "coordinator") this.userTypeVerified = true;
+      // this.isLoadingData = false
     }
 
-  }
+  },
 
 }
 </script>

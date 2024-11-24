@@ -2,33 +2,61 @@
   <aside class="sidebar">
     <nav>
       <ul>
-        <a href="/professores" v-if="userType == 'admin'">
-          <li><img class="invert-color-image" src="../assets/professor-no-quadro.png" alt="Professores"> <div class="text">Professores</div>  </li>
-        </a>
-        
-        <a href="/coordenadores" v-if="userType == 'admin'">
-          <li><img class="invert-color-image" src="../assets/coordenacao.png" alt="Coordenadores"> <div class="text">Coordenador</div>  </li>
-        </a>
+        <router-link to="/professores" v-if="userType == 'admin'">
+          <li>
+            <img class="invert-color-image" src="../assets/professor-no-quadro.png" alt="Professores">
+            <div class="text">Professores</div>
+          </li>
+        </router-link>
 
-        <a href="/alunos" v-if="userType == 'admin' || userType == 'teacher' || userType == 'coordinator'">
-          <li><img src="../assets/students-icon.png" alt="Alunos"> <div class="text">Alunos</div>  </li>
-        </a>
+        <router-link to="/coordenadores" v-if="userType == 'admin'">
+          <li>
+            <img class="invert-color-image" src="../assets/coordenacao.png" alt="Coordenadores">
+            <div class="text">Coordenador</div>
+          </li>
+        </router-link>
 
-        <!-- <a href="#" v-if="userType == 'student' || userType == 'teacher' || userType == 'coordinator'">
-          <li><img src="../assets/groups-icon.png" alt="Grupos"> <div class="text">Grupos</div> </li>
-        </a> -->
-        <a href="#" v-if="userType == 'admin'">
-          <li><img src="../assets/report.png" alt="Relatório"> <div class="text">Relatório</div></li>
-        </a>
-        <a href="/turmas" v-if="userType == 'teacher' || userType == 'coordinator'">
-          <li><img class="invert-color-image" src="../assets/aulas.png" alt="Plano Adaptativo"> <div class="text">Turmas</div></li>
-        </a>
-        <!-- <a href="#" v-if="userType == 'teacher' || userType == 'student'">
-          <li><img src="../assets/plan-icon.png" alt="Plano Adaptativo"> <div class="text">Plano Adaptativo</div></li>
-        </a> -->
-        <a href="/tarefas" v-if="userType == 'teacher' || userType == 'student'">
-          <li><img src="../assets/tasks-icon.png" alt="Tarefas"> <div class="text">Tarefas</div></li>
-        </a>
+        <router-link to="/alunos" v-if="userType == 'admin' || userType == 'teacher' || userType == 'coordinator'">
+          <li>
+            <img src="../assets/students-icon.png" alt="Alunos">
+            <div class="text">Alunos</div>
+          </li>
+        </router-link>
+
+        <!-- <router-link to="#" v-if="userType == 'student' || userType == 'teacher' || userType == 'coordinator'">
+          <li>
+            <img src="../assets/groups-icon.png" alt="Grupos">
+            <div class="text">Grupos</div>
+          </li>
+        </router-link> -->
+
+        <router-link to="#" v-if="userType == 'admin'">
+          <li>
+            <img src="../assets/report.png" alt="Relatório">
+            <div class="text">Relatório</div>
+          </li>
+        </router-link>
+
+        <router-link to="/turmas" v-if="userType == 'teacher' || userType == 'coordinator'">
+          <li>
+            <img class="invert-color-image" src="../assets/aulas.png" alt="Plano Adaptativo">
+            <div class="text">Turmas</div>
+          </li>
+        </router-link>
+
+        <!-- <router-link to="#" v-if="userType == 'teacher' || userType == 'student'">
+          <li>
+            <img src="../assets/plan-icon.png" alt="Plano Adaptativo">
+            <div class="text">Plano Adaptativo</div>
+          </li>
+        </router-link> -->
+
+        <router-link to="/tarefas" v-if="userType == 'teacher' || userType == 'student'">
+          <li>
+            <img src="../assets/tasks-icon.png" alt="Tarefas">
+            <div class="text">Tarefas</div>
+          </li>
+        </router-link>
       </ul>
     </nav>
   </aside>

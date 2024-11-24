@@ -161,7 +161,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Professores"
+            this.$router.push(`/professores`);
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -254,7 +254,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Professores/editar/${result.teacher.id}`
+            this.$router.push(`/Professores/editar/${result.teacher.id}`);
           }, 1000);
 
       } catch (error) {

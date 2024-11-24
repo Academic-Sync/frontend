@@ -148,7 +148,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Coordenadores"
+            this.$router.push(`/coordenadores`);
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -241,7 +241,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Coordenadores/editar/${result.coordinator.id}`
+            this.$router.push(`/Coordenadores/editar/${result.coordinator.id}`);
           }, 1000);
 
       } catch (error) {
