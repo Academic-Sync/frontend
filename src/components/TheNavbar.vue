@@ -9,7 +9,9 @@
               <img src="../assets/notifi.png" alt="Notificações">
             </div>
             <div class="icon-button">
+             <a href="/conta">
               <img src="../assets/user.png" alt="Perfil">
+             </a>
             </div>
             <div @click="handleLogout" class="cursor-pointer icon-button">
               <p>Sair</p>

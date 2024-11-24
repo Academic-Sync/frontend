@@ -6,7 +6,9 @@
         
         <!-- Botão customizado -->
         <label for="actual-btn" class="custom-file-upload">Escolher Arquivo</label>
-        <input multiple type="file" name="files[]" id="actual-btn" @change="fileSelected" hidden />
+        <span style="display: none;">
+          <input multiple type="file" name="files[]" id="actual-btn" @change="fileSelected" hidden />
+        </span>
       </div>
     </label>
 
@@ -144,6 +146,7 @@ input[type="file"] {
 
 .actual-btn{
   width: 100%;
+  display: none!important;
 }
 
 .file-card {
