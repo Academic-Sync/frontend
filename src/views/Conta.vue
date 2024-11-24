@@ -59,7 +59,7 @@
   import eventBus from '@/eventBus'
   import { ref, onMounted } from 'vue'
   import RemoveButton from '@/components/RemoveButton.vue'
-  import { getToken } from '@/utils/auth'
+  import { getToken, getUser } from '@/utils/auth'
   import Breadcrumb from "@/components/Breadcrumb.vue"
   import SpinnerScreen from '@/components/SpinnerScreen.vue'
   
@@ -126,6 +126,7 @@
               text: "Informe o email"
             };
             eventBus.emit("error", errorObject);
+            this.isLoadingInsert = false
             return;
         }
   
@@ -157,12 +158,22 @@
             if (!response.ok) {
               throw new Error(result.error); // Tratamento de erro
             }
+
+
+            let updatedUser = getUser();
+            updatedUser.email = data.email
+
+            localStorage.setItem('user', JSON.stringify(updatedUser))
+
   
             const successObject = {
               title: "",
               text: result.message
             }
             eventBus.emit("success", successObject)
+            setTimeout(()=>{
+              window.location.reload(true);
+            }, 1000);
   
         } catch (error) {
             const errorObject = {

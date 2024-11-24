@@ -111,16 +111,14 @@ export default {
     },
 
     async handleFileUpload (event) {
-      this.isLoadingInsert = true
       const token = getToken();
 
       try {
         event.preventDefault()
+        this.isLoadingInsert = true
+        
         const formData = new FormData(event.target);
         const file = formData.get('files[]');
-
-        console.log(formData.get('class_id'));
-        
 
         if (!formData.get('class_id') || formData.get('class_id') == 0) {
           throw new Error("Insira a turma");
@@ -178,15 +176,15 @@ export default {
                     throw new Error(result.error); // Tratamento de erro
                   }
 
-                  console.log(students.length);
-                  console.log(result);
-                  
-
                   const successObject = {
                     title: "",
                     text: result.message
                   }
                   eventBus.emit("success", successObject)
+
+                  setTimeout(()=>{
+                    window.location.href = `/Alunos`
+                  }, 1000);
               } catch (error) {
                 console.error(error);
                 const errorObject = {

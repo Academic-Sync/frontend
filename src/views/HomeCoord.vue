@@ -2,7 +2,7 @@
   <TheNavbar></TheNavbar>
     <article v-if="userTypeVerified">
       <div class="container">
-        <h1>Bem-vindo, {{ name }}</h1>
+        <h1>Bem-vindo(a), {{ name.split(" ")[0] }}</h1>
         <p>O que deseja realizar?</p>
         <div class="action-buttons">
         <TheCard 

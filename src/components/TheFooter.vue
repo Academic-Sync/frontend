@@ -17,13 +17,15 @@
                     <li><a href="/">Página Inicial</a></li>
 
                     <!-- Rotas com Permissão de Acesso para Diversos Usuários -->
-                    <li><a href="/Turmas">Turmas</a></li>
-                    <li><a href="/Cursos">Cursos</a></li>
-                    <li><a href="/Alunos">Alunos</a></li>
+                    <span v-if="userType == 'teacher' || userType == 'coordinator' || userType == 'admin'">
+                        <li><a href="/Turmas">Turmas</a></li>
+                        <li><a href="/Cursos">Cursos</a></li>
+                        <li><a href="/Alunos">Alunos</a></li>
+                    </span>
                     
 
                     <!-- Páginas Restritas a Professores -->
-                    <div v-if="userType == 'teacher'">
+                    <div v-if="userType == 'teacher' || userType == 'student'">
                         <li><a href="/Tarefas">Tarefas</a></li>
                     </div>
 
