@@ -29,6 +29,7 @@ import { hasPermission, isAuthenticated } from './utils/auth'
 import VisuTarefas from './views/tarefas/visualizar.vue'
 import NotFound from '@/views/erros/NotFound.vue';
 import AccessDenied from '@/views/erros/AccessDenied.vue';
+import Conta from './views/Conta.vue'
 
 
 // Defina as rotas da aplicação
@@ -113,6 +114,8 @@ const routes = [
   },
 
   { path: '/Usuarios', component: HomeAdmin, meta: { requiresAuth: true, requiredUserType: 'admin' } },
+
+  { path: '/Conta', component: Conta, meta: { requiresAuth: true } },
 
   { path: '/Professores', component: Professores, meta: { requiresAuth: true, requiredUserType: 'admin' } },
   { path: '/Professores/editar/:id', component: AddProfessor, meta: { requiresAuth: true, requiredUserType: 'admin' } },
