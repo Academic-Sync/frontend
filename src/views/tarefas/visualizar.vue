@@ -231,19 +231,20 @@ export default {
 
     validateDate(e){
       const formData = new FormData(e.target);
+      formData.append('activity_id', this.activity.id);
 
       this.files.forEach((file) => {
         formData.append('files[]', file);
       });
       
-      if(!formData.get('files')){
-        const errorObject = {
-          title: "",
-          text: "Envie um arquivo"
-        }
-        eventBus.emit("error", errorObject)
-        return 0;
-      }    
+      // if(!this.files.value){
+      //   const errorObject = {
+      //     title: "",
+      //     text: "Envie um arquivo"
+      //   }
+      //   eventBus.emit("error", errorObject)
+      //   return 0;
+      // }    
 
       return formData;
     },
