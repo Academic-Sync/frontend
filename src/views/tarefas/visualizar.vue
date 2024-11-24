@@ -24,7 +24,7 @@
           <h2>
             {{ activity.description }}
           </h2>
-          <div class="arquives_text">
+          <div class="arquives_text" v-if="files.length > 0">
               <h2>ARQUIVOS DA TAREFA</h2>
           </div>
           
