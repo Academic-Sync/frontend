@@ -12,7 +12,7 @@
 
         <h1>{{titleText}}</h1>
 
-        <form @submit="handleSubmit">
+        <form @submit="handleSubmit" v-if="!isLoadingDatas">
           <div class="Form">
             <input v-model="studentId" type="hidden" name="id" id="id">
 
@@ -46,10 +46,14 @@
           </div>
 
           <div class="div-buttons">
-            <RemoveButton v-if="student.id" @click="handleDelete" type="button" ButtonText="Apagar aluno" />
-            <AddButton :ButtonText="titleText" />
+            <RemoveButton :isLoading="isLoadingDelete" v-if="student.id" @click="handleDelete" type="button" ButtonText="Apagar aluno" />
+            <AddButton :isLoading="isLoadingInsert" :ButtonText="titleText" />
           </div>
         </form>
+
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
       </main>
     </div>
 
@@ -69,6 +73,7 @@ import { ref, onMounted } from 'vue'
 import RemoveButton from '@/components/RemoveButton.vue'
 import { getToken } from '../../utils/auth'
 import Breadcrumb from "@/components/Breadcrumb.vue"
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
 
 export default {
   name: 'Turmas',
@@ -79,7 +84,8 @@ export default {
     AddButton,
     RemoveButton,
     Message,
-    Breadcrumb
+    Breadcrumb,
+    SpinnerScreen
   },
 
   data() {
@@ -94,7 +100,9 @@ export default {
 
   methods: {
     async handleSubmit(e){
+      this.isLoadingInsert = true
       e.preventDefault();
+
       if(!this.validateEmail())
         return
 
@@ -136,9 +144,6 @@ export default {
           return;
       }
 
-      console.log(data);
-      
-
       // Validação para verificar se o código tem 13 caracteres numéricos
       const isValidCode = /^\d{13}$/.test(data.code);
 
@@ -154,6 +159,7 @@ export default {
     },
 
     async handleDelete(){
+      this.isLoadingDelete = true
       try {
         const studentId = document.querySelector("#id")
         const token = getToken();
@@ -190,6 +196,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingDelete = false
       }
     },
 
@@ -202,7 +210,6 @@ export default {
           if(!data)
             return;
  
-
           // eslint-disable-next-line
           const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${studentId.value}`, {
             method: "PUT",
@@ -233,6 +240,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingInsert = false
       }
     },
 
@@ -279,6 +288,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingInsert = false
       }
     }
   },
@@ -292,6 +303,9 @@ export default {
     const studentId = ref(0)
     const disabled = ref(false)
     const classes = ref([{}])
+    const isLoadingDatas = ref(true)
+    const isLoadingInsert = ref(false)
+    const isLoadingDelete = ref(false)
 
     const fetchAluno = async (id) => {
       const token = getToken();
@@ -351,6 +365,8 @@ export default {
           text: error.message
         }
         eventBus.emit("error", errorObject)
+      } finally{
+        isLoadingDatas.value = false
       }
     }
 
@@ -358,13 +374,15 @@ export default {
       const routeId = route.params.id;
       if (routeId) {
         studentId.value = routeId;
+      } else{
+        isLoadingDatas.value = false
       }
 
       fetchAluno(studentId.value)
     })
 
     return {
-      student, titleText, studentId, disabled, classes
+      student, titleText, studentId, disabled, classes, isLoadingDatas, isLoadingDelete, isLoadingInsert
     }
   }
 }

@@ -21,11 +21,12 @@
             :text2="turma.semester" >
           </List1>
         </div>
-
-        <AddButton
-        href="/AddTurmas"
-        ButtonText="Adicionar Turmas"
-        ></AddButton>
+        <div class="div-buttons">
+          <AddButton
+          href="/AddTurmas"
+          ButtonText="Adicionar Turmas"
+          ></AddButton>
+          </div>
       </main>
     </div>
 

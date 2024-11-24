@@ -4,7 +4,10 @@
           <a :href="href"><button>{{ButtonText}}</button></a>
         </span>
         <span v-else>
-          <button :type="type">{{ButtonText}}</button>
+          <button :type="type" :disabled="isLoading">
+            <span v-if="isLoading" class="spinner"></span>
+            <span v-else>{{ ButtonText }}</span>
+          </button>
         </span>
     </div>
 </template>
@@ -22,6 +25,10 @@ export default {
     },
     type: {
       type: String,
+      required: false
+    },
+    isLoading: {
+      type: Boolean,
       required: false
     }
   }
@@ -45,6 +52,13 @@ export default {
     font-size: 2rem;
     transition: background-color 0.3s;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.233);
+}
+
+
+
+.removeButton button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 .removeButton button:hover {

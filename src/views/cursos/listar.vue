@@ -20,7 +20,7 @@
           ></List1>
         </div>
 
-        <div class="div-buttons" v-if="user.user_type == 'coordinator'">
+        <div class="div-buttons" v-if="user.user_type == 'coordinator' || user.user_type == 'admin'">
           <AddButton href="/AddCursos" ButtonText="Adicionar Curso" ></AddButton>
         </div>
       </main>

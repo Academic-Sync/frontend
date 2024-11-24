@@ -22,12 +22,14 @@
           :Nota="activity.note"
           :link="activity.link"
         ></Tarefa>
-
-        <AddButton
-        v-if="permissaoAdd"
-        href="/AddTarefas"
-        ButtonText="Adicionar Tarefas"
-        ></AddButton>
+        
+        <div class="div-buttons">
+          <AddButton
+          v-if="permissaoAdd"
+          href="/AddTarefas"
+          ButtonText="Adicionar Tarefas"
+          ></AddButton>
+        </div>
       </main>
     </div>
 

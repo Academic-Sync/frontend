@@ -9,58 +9,65 @@
         
         <Message />
 
-        <div class="grid-cont">
-          <div class="iten"><h1> {{ activity.name }} </h1></div>
-          <div class="iten">
-            <div class="side_tarefa_info">
-              <h2>Entrega: {{ formatDate(activity.date) }} às {{ activity.time }}</h2>
-              <h2>Nota Maxima: {{ activity.maximum_grade }}</h2>
-            </div>
+        <div class="w-100" v-if="!isLoadingDatas">
 
-          </div>
-        </div>
-        <h2>
-          {{ activity.description }}
-        </h2>
-        <div class="arquives_text">
-           <h2>ARQUIVOS DA TAREFA</h2>
-        </div>
-        
-        <!-- <AttArquive/> -->
-        <div v-if="files.length > 0" class="files-container w-100">
-          <div v-for="(file, index) in files" :key="index" class="file-card w-100">
-            <div class="file-component">
-              <div class="div-text-atividade">
-                <img src="@/assets/tasks-icon.png" alt="Ícone de arquivo" class="file-icon" style="filter: invert(100%);	" />
-                <span class="file-name">{{file.split("----")[file.split("----").length-1]}}</span>
+          <div class="grid-cont">
+            <div class="iten"><h1> {{ activity.name }} </h1></div>
+            <div class="iten">
+              <div class="side_tarefa_info">
+                <h2>Entrega: {{ formatDate(activity.date) }} às {{ activity.time }}</h2>
+                <h2>Nota Maxima: {{ activity.maximum_grade }}</h2>
               </div>
 
-              <div class="div-button-atividade">
-                <a :href="linkDownload + 'activity/' + file.split('/')[file.split('/').length - 1]" 
-                  :download="file.split('/')[file.split('/').length - 1]" 
-                  target="_blank" 
-                  rel="noopener noreferrer">
-                    <img src="@/assets/downloads.png" height="20" class="img-download">
-                </a>
+            </div>
+          </div>
+          <h2>
+            {{ activity.description }}
+          </h2>
+          <div class="arquives_text">
+              <h2>ARQUIVOS DA TAREFA</h2>
+          </div>
+          
+          <!-- <AttArquive/> -->
+          <div v-if="files.length > 0" class="files-container w-100">
+            <div v-for="(file, index) in files" :key="index" class="file-card w-100">
+              <div class="file-component">
+                <div class="div-text-atividade">
+                  <img src="@/assets/tasks-icon.png" alt="Ícone de arquivo" class="file-icon" style="filter: invert(100%);	" />
+                  <span class="file-name">{{file.split("----")[file.split("----").length-1]}}</span>
+                </div>
+
+                <div class="div-button-atividade">
+                  <a :href="linkDownload + 'activity/' + file.split('/')[file.split('/').length - 1]" 
+                    :download="file.split('/')[file.split('/').length - 1]" 
+                    target="_blank" 
+                    rel="noopener noreferrer">
+                      <img src="@/assets/downloads.png" height="20" class="img-download">
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        
-        <form @submit="handleSubmit">
-            <div class="arquives_text">
-            <h2>MEUS ARQUIVOS</h2>
-          </div>
-          <div class="Form">
-              <label for="Arquivo">Arquivo</label>
-              <Dropdown :files="files" @updateFiles="updateFiles"/>
-          </div>
+          
+          <form @submit="handleSubmit">
+              <div class="arquives_text">
+              <h2>MEUS ARQUIVOS</h2>
+            </div>
+            <div class="Form">
+                <label for="Arquivo">Arquivo</label>
+                <Dropdown :files="files" @updateFiles="updateFiles"/>
+            </div>
 
-              <AddButton
-              href="/AddTarefas"
-              ButtonText="Enviar Tarefa"
-              ></AddButton>
-        </form>
+                <AddButton :isLoading="isLoadingInsert"
+                href="/AddTarefas"
+                ButtonText="Enviar Tarefa"
+                ></AddButton>
+          </form>
+        </div>
+
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
         
       </main>
     </div>
@@ -82,6 +89,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import Message from '@/components/Message.vue'
 import Dropdown from '@/components/Dropdown.vue'
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
 
 export default {
   name: 'VisuTarefas',
@@ -92,7 +100,8 @@ export default {
     AddButton,
     Breadcrumb,
     Message,
-    Dropdown
+    Dropdown,
+    SpinnerScreen
   },
 
   data() {
@@ -240,6 +249,7 @@ export default {
     },
 
     async create(e){
+      this.isLoadingInsert = true
       try {
           const data = this.validateDate(e);
           const token = getToken();
@@ -297,6 +307,9 @@ export default {
     })
     const id = ref(0)
     const files = ref([])
+    const isLoadingDatas = ref(true)
+    const isLoadingInsert = ref(true)
+    const isLoadingDelete = ref(false)
 
     const fetchData = async (activityId) => {
         try {
@@ -336,6 +349,8 @@ export default {
             text: error.message
           };
           eventBus.emit("error", errorObject);
+        } finally{
+          isLoadingDatas.value = false
         }
     };
 
@@ -351,7 +366,7 @@ export default {
     })
 
     return {
-      activity, id, files
+      activity, id, files, isLoadingDatas, isLoadingDelete, isLoadingInsert
     }
   }
 }
