@@ -100,8 +100,8 @@ export default {
 
   methods: {
     async handleSubmit(e){
-      this.isLoadingInsert = true
       e.preventDefault();
+      this.isLoadingInsert = true
 
       if(!this.validateEmail())
         return
