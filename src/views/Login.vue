@@ -229,4 +229,23 @@ export default {
   }
 }
 
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 3px solid #000;
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: block;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 </style>
