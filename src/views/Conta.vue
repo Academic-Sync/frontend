@@ -109,6 +109,7 @@
             };
             this.isLoadingDatas = false
             eventBus.emit("error", errorObject);
+            this.isLoadingInsert = false
             return 0;
           }
         }
