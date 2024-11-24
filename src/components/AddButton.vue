@@ -1,7 +1,7 @@
 <template>
     <div class="AddButton">
         <span v-if="href">
-          <a :href="href"><button>{{ButtonText}}</button></a>
+          <a :href="href"><button type="button">{{ButtonText}}</button></a>
         </span>
         <span v-else>
           <button :type="type" :disabled="isLoading">

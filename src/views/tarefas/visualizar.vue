@@ -58,14 +58,52 @@
                 <Dropdown :files="files" @updateFiles="updateFiles"/>
             </div>
 
-                <AddButton :isLoading="isLoadingInsert"
-                href="/AddTarefas"
+                <AddButton v-if="activity?.activities_delivered?.length <= 0 && user.user_type == 'student'" :isLoading="isLoadingInsert"
                 ButtonText="Enviar Tarefa"
                 ></AddButton>
           </form>
         </div>
 
-        <div v-else>
+        <div class="arquives_text" v-if="entregas?.file_path?.length > 0">
+          <h2>MINHA ENTREGA</h2>
+        </div>
+
+        <div class="Form" v-if="!isLoadingDatas && filesDelivered?.length > 0">
+          <div class="files-container">
+            <div v-for="(entrega, indexEntrega) in filesDelivered" :key="indexEntrega" class="file-card">
+              <div class="file-component" >
+                <div class="div-text-atividade">
+                  <img src="@/assets/tasks-icon.png" alt="Ícone de arquivo" class="file-icon" style="filter: invert(100%);" />
+                  <span class="file-name">
+                    {{ entrega.split("/")[entrega.split("/").length-1].split("----")[entrega.split("----").length-1] }}
+                  </span>
+                </div>
+
+                <div class="div-button-atividade">
+                  <!-- Link de download para cada arquivo -->
+                  <a 
+                    :href="linkDownload + 'activity/' + entrega.split('/')[entrega.split('/').length - 1]" 
+                    :download="entrega.split('/')[entrega.split('/').length - 1]" 
+                    class="download-link"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    <img src="@/assets/downloads.png" height="20" class="img-download" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="div-buttons">
+          <form @submit="handleDelete">
+            <RemoveButton v-if="activity?.activities_delivered?.length > 0 && user.user_type == 'student'" :isLoading="isLoadingDelete"
+                ButtonText="Remover Entrega"
+                ></RemoveButton>
+          </form>
+        </div>
+
+        <div v-if="isLoadingDatas">
           <SpinnerScreen/>
         </div>
         
@@ -83,13 +121,14 @@ import TheFooter from '@/components/TheFooter.vue'
 import SideBar from '@/components/SideBar.vue'
 import AddButton from '@/components/AddButton.vue'
 import Breadcrumb from "@/components/Breadcrumb.vue"
-import { getToken } from '@/utils/auth'
+import { getToken, getUser } from '@/utils/auth'
 import eventBus from '@/eventBus'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import Message from '@/components/Message.vue'
 import Dropdown from '@/components/Dropdown.vue'
 import SpinnerScreen from '@/components/SpinnerScreen.vue'
+import RemoveButton from '../../components/RemoveButton.vue'
 
 export default {
   name: 'VisuTarefas',
@@ -101,7 +140,8 @@ export default {
     Breadcrumb,
     Message,
     Dropdown,
-    SpinnerScreen
+    SpinnerScreen,
+    RemoveButton
   },
 
   data() {
@@ -189,13 +229,14 @@ export default {
         await this.create(e);
     },
 
-    async handleDelete(){
+    async handleDelete(e){
+      this.isLoadingDelete = true;
       try {
-        const id = document.querySelector("#id")
+        e.preventDefault()
         const token = getToken();
 
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/activities/${id.value}`, {
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/activities/remove/submit`, {
           method: "DELETE",
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -217,15 +258,17 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Tarefas"
+          window.location.reload(true);
         }, 1000);
       } catch (error) {
           console.error(error);
           const errorObject = {
-            title: "Erro ao listar: ",
+            title: "Erro ao remover: ",
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingDelete = false;
       }
     },
 
@@ -282,7 +325,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Tarefas`
+            window.location.reload(true);
           }, 1000);
 
       } catch (error) {
@@ -292,6 +335,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally {
+        this.isLoadingInsert = false
       }
     },
 
@@ -309,8 +354,11 @@ export default {
     const id = ref(0)
     const files = ref([])
     const isLoadingDatas = ref(true)
-    const isLoadingInsert = ref(true)
+    const isLoadingInsert = ref(false)
     const isLoadingDelete = ref(false)
+    const entregas = ref([])
+    const filesDelivered = ref([])
+    const user = ref({})
 
     const fetchData = async (activityId) => {
         try {
@@ -336,8 +384,14 @@ export default {
           if (!activityData || !activityId)
             throw new Error("Tarefa não encontrada");
 
-          if(activityId != 0)
+          if(activityId != 0){
             activity.value =  activityData;
+            entregas.value = activity.value.activities_delivered[0]
+          }
+
+          if(entregas?.value?.file_path){
+            filesDelivered.value = JSON.parse(entregas?.value?.file_path)
+          }
             
           if (activityData?.file_path) {
               files.value = JSON.parse(activityData?.file_path); // Supondo que a lista de arquivos seja 'files'
@@ -359,6 +413,7 @@ export default {
 
     onMounted(() => {
       const routeId = route.params.id ?? 0
+      user.value = getUser();
       
       if (routeId) {
         id.value = routeId;
@@ -367,7 +422,7 @@ export default {
     })
 
     return {
-      activity, id, files, isLoadingDatas, isLoadingDelete, isLoadingInsert
+      activity, id, files, isLoadingDatas, isLoadingDelete, isLoadingInsert, entregas, user, filesDelivered
     }
   }
 }
