@@ -125,6 +125,7 @@ export default {
             text: "O email precisa ser do domínio @fatec.sp.gov.br"
           };
           eventBus.emit("error", errorObject);
+          this.isLoadingInsert = false
           return 0;
         }
       }

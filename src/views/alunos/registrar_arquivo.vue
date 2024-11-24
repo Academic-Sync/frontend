@@ -82,8 +82,8 @@ export default {
 
   methods: {
     async handleSubmit(e){
-      this.isLoadingInsert = true
       e.preventDefault();
+      this.isLoadingInsert = true
 
       if(!this.validateEmail())
         return
@@ -111,11 +111,11 @@ export default {
     },
 
     async handleFileUpload (event) {
+      event.preventDefault()
+      this.isLoadingInsert = true
       const token = getToken();
 
       try {
-        event.preventDefault()
-        this.isLoadingInsert = true
         
         const formData = new FormData(event.target);
         const file = formData.get('files[]');
@@ -159,6 +159,7 @@ export default {
 
               // Enviar o JSON para o backend
               try {
+                this.isLoadingInsert = true
                   // eslint-disable-next-line
                   const response = await fetch(`${process.env.VUE_APP_API_URL}/students/store-by-file`, {
                       method: 'POST',
@@ -170,6 +171,7 @@ export default {
                       body: JSON.stringify({ students }),
                   });
 
+                  
                   const result = await response.json();
 
                   if (!response.ok) {
@@ -192,6 +194,8 @@ export default {
                   text: error.message
                 }
                 eventBus.emit("error", errorObject)
+              } finally{
+                this.isLoadingInsert = false
               }
           };
 
