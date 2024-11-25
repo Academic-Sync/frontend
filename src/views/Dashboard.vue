@@ -18,7 +18,7 @@
                             <SpinnerScreen/>
                         </div>
                     </div>
-                    <div class="box trabalhos" v-if="!isLoadingDatas">
+                    <div class="box trabalhos">
                         <span v-if="!isLoadingDatas">
                             <h2>Número de Trabalhos</h2>
                             <p>{{ dashboardDatas.activitiesCount }}</p>
@@ -27,7 +27,7 @@
                             <SpinnerScreen/>
                         </div>
                     </div>
-                    <div class="box cursos" v-if="!isLoadingDatas">
+                    <div class="box cursos">
                         <span v-if="!isLoadingDatas">
                             <h2>Número de Cursos</h2>
                             <p>{{ dashboardDatas.coursesCount }}</p>
