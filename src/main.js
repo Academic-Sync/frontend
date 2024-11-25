@@ -31,6 +31,8 @@ import NotFound from '@/views/erros/NotFound.vue';
 import AccessDenied from '@/views/erros/AccessDenied.vue';
 import Conta from './views/Conta.vue'
 import AddAlunosArquivo from './views/alunos/registrar_arquivo.vue'
+import Dashboard from './views/Dashboard.vue'
+import DashboardUser from './views/DashboardUser.vue'
 
 
 // Defina as rotas da aplicação
@@ -42,6 +44,18 @@ const routes = [
   {
     path: '/403',
     component: AccessDenied,
+  },
+
+  {
+    path: '/Dashboard',
+    component: Dashboard,
+    meta: { requiresAuth: false }
+  },
+
+  {
+    path: '/DashboardUsuarios',
+    component: DashboardUser,
+    meta: { requiresAuth: false }
   },
 
   { path: '/Coordenador',

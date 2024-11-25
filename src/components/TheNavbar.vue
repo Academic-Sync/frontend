@@ -3,13 +3,13 @@
     <div class="icon-button">
       <router-link to="/"><img src="../assets/logo.png" alt="Logo"></router-link>
     </div>
-    <div class="header-icons">
-      <div 
-        class="icon-button notification-container"
-        @mouseover="showModal = true" 
-        @mouseleave="showModal = false"
-      >
-        <div class="has-notification" v-if="!user.email"></div>
+    <div class="header-icons" v-if="user?.email">
+        <div 
+          class="icon-button notification-container"
+          @mouseover="showModal = true" 
+          @mouseleave="showModal = false"
+        >
+        <div class="has-notification" v-if="!user?.email"></div>
 
         <img src="../assets/notifi.png" alt="Notificações">
 
@@ -33,6 +33,11 @@
         <p>Sair</p>
       </div>
     </div>
+    <div v-else>
+      <div @click="handleLogin" class="cursor-pointer icon-button">
+        <p>Login</p>
+      </div>
+    </div>
   </header>
 </template>
 
@@ -53,6 +58,9 @@ export default {
   methods: {
     handleLogout (){
       logout();
+    },
+    handleLogin (){
+      this.$router.push("/login")
     },
   },
 

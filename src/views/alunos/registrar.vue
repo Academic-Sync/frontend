@@ -6,7 +6,6 @@
       
       <main class="content">
         <Breadcrumb :items="breadcrumbItems" />
-
         <Message />
         
 
