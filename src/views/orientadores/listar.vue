@@ -92,7 +92,7 @@ export default {
         return (
           orientador.name.toLowerCase().includes(this.searchTerm) || 
           orientador.email.toLowerCase().includes(this.searchTerm) ||
-          orientador.code.toLowerCase().includes(this.searchTerm)
+          orientador?.code?.toLowerCase().includes(this.searchTerm)
         );
       });
     }
