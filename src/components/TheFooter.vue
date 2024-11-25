@@ -10,6 +10,8 @@
             <div class="footer-column">
                 <ul>
                     <h4>MAPA DO SITE</h4>
+                    <li><router-link to="/Dashboard">Dashboard</router-link></li>
+
                     <!-- Acessibilidade -->
                     <li><router-link to="/Acessibilidade">Acessibilidade</router-link></li>
 
