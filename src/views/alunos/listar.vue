@@ -97,7 +97,7 @@ export default {
         student.link = `/Alunos/editar/${student.id}`
         return (
           student.name.toLowerCase().includes(this.searchTerm) || 
-          student.email.toLowerCase().includes(this.searchTerm) ||
+          student.email?.toLowerCase().includes(this.searchTerm) ||
           student.code.toLowerCase().includes(this.searchTerm)
         );
       });
