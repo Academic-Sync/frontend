@@ -158,20 +158,17 @@ export default {
 
     async removeFile(file_name) {
       try {
-        console.log(file_name);
-        
         const id = document.querySelector("#id")
         const token = getToken();
 
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/activities/${id.value}`, {
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/activities/file/${id.value}/${encodeURIComponent(file_name)}`, {
         method: "DELETE",
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: file_name
       });
 
 
@@ -188,7 +185,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          this.$router.push(`/tarefas`);
+          window.location.reload();
         }, 1000);
       } catch (error) {
           console.error(error);

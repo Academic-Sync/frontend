@@ -137,7 +137,7 @@ export default {
                           'Content-Type': 'application/json',
                           'Accept': 'application/json'
                       },
-                      body: JSON.stringify({ students }),
+                      body: JSON.stringify({ students, class_id: formData.get('class_id') }),
                   });
 
                   
