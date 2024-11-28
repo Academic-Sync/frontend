@@ -15,11 +15,14 @@
 
         <div v-if="showModal" class="notification-modal">
           <!-- <a href="/conta"> -->
-            <router-link to="/conta">
+            <router-link to="/conta" v-if="!user.email">
               <div class="notification">
                 <p>Insira seu email</p>
               </div>
             </router-link>
+            <div class="notification" v-else>
+                <p>Nenhuma notificação</p>
+              </div>
           <!-- </a> -->
         </div>
 
