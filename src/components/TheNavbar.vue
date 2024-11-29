@@ -3,7 +3,7 @@
     <div class="icon-button">
       <router-link to="/"><img src="../assets/logo.png" alt="Logo"></router-link>
     </div>
-    <div class="header-icons" v-if="user?.email">
+    <div class="header-icons" v-if="user?.id">
         <div 
           class="icon-button notification-container"
           @mouseover="showModal = true" 
