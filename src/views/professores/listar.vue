@@ -4,12 +4,13 @@
     <div class="layout">
       <SideBar />
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
         <Message />
 
         <h1>Professores</h1>
         <SearchBar @key-up="onKeyup" />
         
-        <div class="users-list">
+        <div class="users-list" v-if="!isLoadingDatas">
           <List1 
             v-for="professor in filteredData" 
             :key="professor.id" 
@@ -20,6 +21,11 @@
             :link="professor.link"
           />
         </div>
+
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
+
         <div class="div-buttons">
           <AddButton
             href="/AddProfessores"
@@ -42,6 +48,9 @@ import AddButton from '../../components/AddButton.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { getToken } from '@/utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
+import { ref } from 'vue'
 
 export default {
   name: 'Professores',
@@ -53,10 +62,16 @@ export default {
     List1,
     AddButton,
     Message,
+    Breadcrumb,
+    SpinnerScreen
   },
 
   data() {
     return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Professores", href: "/professores" },
+      ],
       allTeacher: [{
         id: 0,
         code: "",
@@ -108,6 +123,8 @@ export default {
           text: error.message
         };
         eventBus.emit("error", errorObject);
+      } finally{
+        this.isLoadingDatas = false
       }
     },
 
@@ -119,6 +136,14 @@ export default {
 
   mounted() {
     this.fetchStudents(); // Busca professores ao montar o componente
+  },
+
+  setup(){
+    const isLoadingDatas = ref(true)
+
+    return{
+      isLoadingDatas
+    }
   },
 }
 </script>

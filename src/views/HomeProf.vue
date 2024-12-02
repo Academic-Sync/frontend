@@ -2,7 +2,7 @@
   <TheNavbar></TheNavbar>
     <article>
       <div class="container">
-        <h1>Bem-vindo, {{ name }}</h1>
+        <h1>Bem-vindo(a), {{ name.split(" ")[0] }}</h1>
         <p>O que deseja realizar?</p>
         <div class="action-buttons">
         <TheCard 
@@ -22,7 +22,7 @@
         <TheCard 
           href="/Turmas"
           alt_image="Turmas"
-          :image="require('../assets/grupo.png')" 
+          :image="require('../assets/aulas.png')" 
           Titulo="Turmas" 
           text="Gerencie suas turmas ou adicione novas" 
         />

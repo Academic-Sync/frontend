@@ -2,13 +2,13 @@
   <TheNavbar></TheNavbar>
     <article>
       <div class="container">
-        <h1>Bem-vindo, {{ name }}</h1>
+        <h1>Bem-vindo(a), {{ name.split(" ")[0] }}</h1>
         <p>O que deseja realizar?</p>
         <div class="action-buttons">
           <TheCard 
           href="/Tarefas"
           alt_image="Tarefas"
-          :image="require('../assets/grupo.png')" 
+          :image="require('../assets/Relatorio.png')" 
           Titulo="Tarefas" 
           text="Visualize as suas tarefas" 
         />
@@ -57,6 +57,7 @@ export default {
   text-align: center;
   color: var(--preto);
 }
+
 
 .container {
     margin: 2rem auto;

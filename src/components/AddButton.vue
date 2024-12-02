@@ -1,10 +1,13 @@
 <template>
     <div class="AddButton">
         <span v-if="href">
-          <a :href="href"><button>{{ButtonText}}</button></a>
+          <a :href="href"><button type="button">{{ButtonText}}</button></a>
         </span>
         <span v-else>
-          <button :type="type">{{ButtonText}}</button>
+          <button :type="type" :disabled="isLoading">
+            <span v-if="isLoading" class="spinner"></span>
+            <span v-else>{{ ButtonText }}</span>
+          </button>
         </span>
     </div>
 </template>
@@ -22,6 +25,10 @@ export default {
     },
     type: {
       type: String,
+      required: false
+    },
+    isLoading: {
+      type: Boolean,
       required: false
     }
   }
@@ -48,6 +55,11 @@ export default {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.233);
 }
 
+.AddButton button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
 .AddButton button:hover {
     background-color: var(--AzulHover);
 }
@@ -57,7 +69,26 @@ export default {
     font-size: 1.5rem;
     padding: 1.2rem 1.5rem;
 
+  }
 }
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 3px solid white;
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: block;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 </style>

@@ -4,11 +4,15 @@
     <div class="layout">
       <SideBar />
       <main class="content">
+
+        <Breadcrumb :items="breadcrumbItems" />
+
         <Message />
+
         <h1>Alunos</h1>
         <SearchBar @key-up="onKeyup" />
         
-        <div class="users-list">
+        <div class="users-list" v-if="!isLoadingDatas">
           <List1 
             v-for="student in filteredStudents" 
             :key="student.id" 
@@ -19,10 +23,19 @@
             :link="student.link"
           />
         </div>
+        
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
+
         <div class="div-buttons">
           <AddButton
             href="/AddAlunos"
             ButtonText="Adicionar Alunos"
+          />
+          <AddButton
+            href="/AddAlunosArquivo"
+            ButtonText="Adicionar Por Arquivo"
           />
         </div>
       </main>
@@ -40,7 +53,11 @@ import List1 from '../../components/List1.vue'
 import AddButton from '../../components/AddButton.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
-import { getToken } from '../../utils/auth'; // Importa a função de logout
+import { getToken } from '../../utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
+import { ref } from 'vue'
+
 export default {
   name: 'Turmas',
   components: {
@@ -51,10 +68,17 @@ export default {
     List1,
     AddButton,
     Message,
+    Breadcrumb,
+    SpinnerScreen
   },
 
   data() {
     return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Alunos", href: "/alunos" },
+      ],
+
       allStudents: [{
         id: 0,
         code: "",
@@ -73,7 +97,7 @@ export default {
         student.link = `/Alunos/editar/${student.id}`
         return (
           student.name.toLowerCase().includes(this.searchTerm) || 
-          student.email.toLowerCase().includes(this.searchTerm) ||
+          student.email?.toLowerCase().includes(this.searchTerm) ||
           student.code.toLowerCase().includes(this.searchTerm)
         );
       });
@@ -89,26 +113,38 @@ export default {
         // eslint-disable-next-line
         const response = await fetch(`${process.env.VUE_APP_API_URL}/students`, {
           headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
         });
+        const data = await response.json();
+
         if (!response.ok) {
-          throw new Error('Erro ao buscar estudantes'); // Tratamento de erro
+          throw new Error(data.error); // Tratamento de erro
         }
-        this.allStudents = await response.json(); // Define todos os estudantes
+        this.allStudents = data; // Define todos os estudantes
       } catch (error) {
         const errorObject = {
           title: "Erro ao listar: ",
           text: error.message
         };
         eventBus.emit("error", errorObject);
+      } finally{
+        this.isLoadingDatas = false
       }
     },
 
     onKeyup(event) {
       // Atualiza o termo de busca ao pressionar uma tecla
       this.searchTerm = event.target.value.toLowerCase();
+    }
+  },
+
+  setup(){
+    const isLoadingDatas = ref(true)
+
+    return{
+      isLoadingDatas
     }
   },
 

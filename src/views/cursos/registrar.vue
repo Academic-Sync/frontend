@@ -5,10 +5,11 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
         <Message />
 
         <h1>{{titleText}}</h1>
-        <form @submit="handleSubmit">
+        <form @submit="handleSubmit" v-if="!isLoadingDatas">
           <div class="Form">
             <input v-model="id" type="hidden" name="id" id="id">
 
@@ -49,10 +50,13 @@
           </div>
 
           <div class="div-buttons">
-            <RemoveButton v-if="curso.id" @click="handleDelete" type="button" ButtonText="Apagar Curso" />
-            <AddButton :ButtonText="titleText" ></AddButton>
+            <RemoveButton :isLoading="isLoadingDelete" v-if="curso.id" @click="handleDelete" type="button" ButtonText="Apagar Curso" />
+            <AddButton :isLoading="isLoadingInsert" :ButtonText="titleText" ></AddButton>
           </div>
         </form>
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
       </main>
     </div>
 
@@ -72,6 +76,8 @@ import eventBus from '../../eventBus'
 import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { getToken } from '@/utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
 
 export default {
   name: 'Turmas',
@@ -81,11 +87,24 @@ export default {
     SideBar,
     AddButton,
     RemoveButton,
-    Message
+    Message,
+    Breadcrumb,
+    SpinnerScreen
+  },
+
+  data(){
+    return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Cursos", href: "/cursos" },
+        { label: "Adicionar Cursos", href: "/cursos" },
+      ],
+    }
   },
 
   methods: {
     async handleSubmit(e){
+      this.isLoadingInsert = true
       e.preventDefault();
       const id = document.querySelector("#id")
       if(id.value != 0)
@@ -95,6 +114,7 @@ export default {
     },
 
     async handleDelete(){
+      this.isLoadingDelete = true
       try {
         const studentId = document.querySelector("#id")
         const token = getToken();
@@ -122,7 +142,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Cursos"
+          this.$router.push(`/cursos`);
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -131,6 +151,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingDelete = false
       }
     },
 
@@ -188,6 +210,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingInsert = false
       }
     },
 
@@ -224,7 +248,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Cursos/editar/${result.course.id}`
+          this.$router.push(`/cursos/editar/${result.course.id}`);
           }, 1000);
 
       } catch (error) {
@@ -234,6 +258,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      }  finally{
+        this.isLoadingInsert = false
       }
     }
   },
@@ -247,6 +273,9 @@ export default {
     const titleText = ref("Adicionar Curso")
     const id = ref(0)
     const disabled = ref(false)
+    const isLoadingDatas = ref(true)
+    const isLoadingInsert = ref(false)
+    const isLoadingDelete = ref(false)
 
     const fetchData = async (cursoId) => {
       try {
@@ -300,6 +329,8 @@ export default {
           text: error.message
         }
         eventBus.emit("error", errorObject)
+      }finally{
+        isLoadingDatas.value = false
       }
     }
 
@@ -307,7 +338,10 @@ export default {
       const routeId = route.params.id
       if (routeId) {
         id.value = routeId;
+      } else{
+        isLoadingDatas.value = false
       }
+
       fetchData(id.value).then(() => {
         /* eslint-disable */
         // $("#coordinator_id").select2();
@@ -320,7 +354,7 @@ export default {
     })
 
     return {
-      curso, titleText, id, disabled, coordenadores
+      curso, titleText, id, disabled, coordenadores, isLoadingDatas, isLoadingDelete, isLoadingInsert
     }
   }
 }

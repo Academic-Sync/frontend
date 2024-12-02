@@ -1,12 +1,19 @@
 <template>
     <div class="file-component">
       <img src="@/assets/tasks-icon.png" alt="Ícone de arquivo" class="file-icon" style="filter: invert(100%);	" />
-      <span class="file-name">Arquivo de video.mp4</span>
+      <span class="file-name">{{name}}</span>
     </div>
-  </template>
+</template>
   
 <script>
-
+export default {
+  props: {
+    name: {
+      type: String,
+      required: false
+    },
+  }
+}
 </script>
 <style scoped>
 .file-component {
@@ -20,9 +27,10 @@
 }
 
 .file-icon {
-  width: 40px; /* Ajustar o tamanho do ícone */
-  height: 40px;
+  width: 30px; /* Ajustar o tamanho do ícone */
+  height: 30px;
   margin-right: 10px;
+  margin-left: 10px;
 }
 
 .file-name {

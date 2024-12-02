@@ -5,11 +5,13 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
+        
         <Message />
 
         <h1>{{titleText}}</h1>
 
-        <form @submit="handleSubmit">
+        <form @submit="handleSubmit" v-if="!isLoadingDatas">
           <div class="Form">
             <input v-model="id" type="hidden" name="id" id="id">
 
@@ -35,10 +37,14 @@
           </div>
 
           <div class="div-buttons">
-            <RemoveButton v-if="teacher.id" @click="handleDelete" type="button" ButtonText="Apagar Orientador" />
-            <AddButton :ButtonText="titleText" />
+            <RemoveButton :isLoading="isLoadingDelete" v-if="teacher.id" @click="handleDelete" type="button" ButtonText="Apagar Orientador" />
+            <AddButton :isLoading="isLoadingInsert" :ButtonText="titleText" />
           </div>
         </form>
+
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
       </main>
     </div>
 
@@ -58,6 +64,8 @@ import { ref, onMounted } from 'vue'
 import RemoveButton from '@/components/RemoveButton.vue'
 import { getToken } from '@/utils/auth'
 import { validateEmailDominian } from '@/utils/user'
+import Breadcrumb from "@/components/Breadcrumb.vue"
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
 
 export default {
   name: 'Professores',
@@ -67,12 +75,25 @@ export default {
     SideBar,
     AddButton,
     RemoveButton,
-    Message
+    Message,
+    Breadcrumb,
+    SpinnerScreen
+  },
+
+  data(){
+    return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Orientadores", href: "/orientadores" },
+        { label: "Adicionar Orientadores", href: "/orientadores" },
+      ],
+    }
   },
 
   methods: {
     async handleSubmit(e){
       e.preventDefault();
+      this.isLoadingInsert = true
 
       const id = document.querySelector("#id")
       if(id.value != 0)
@@ -101,6 +122,7 @@ export default {
     },
 
     async handleDelete(){
+      this.isLoadingDelete = true
       try {
         const id = document.querySelector("#id")
         const token = getToken();
@@ -128,7 +150,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Orientadores"
+            this.$router.push(`/Orientadores`);
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -137,6 +159,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingDelete = false
       }
     },
 
@@ -181,6 +205,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingInsert = false
       }
     },
 
@@ -217,7 +243,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Orientadores/editar/${result.advisor.id}`
+            this.$router.push(`/orientadores/editar/${result.advisor.id}`);
           }, 1000);
 
       } catch (error) {
@@ -227,6 +253,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingInsert = false
       }
     }
   },
@@ -237,6 +265,9 @@ export default {
     const titleText = ref("Adicionar Orientador")
     const id = ref(0)
     const disabled = ref(false)
+    const isLoadingDatas = ref(true)
+    const isLoadingInsert = ref(false)
+    const isLoadingDelete = ref(false)
 
     const fetchData = async (teacherId) => {
       try {
@@ -267,6 +298,8 @@ export default {
           text: error.message
         }
         eventBus.emit("error", errorObject)
+      } finally{
+        isLoadingDatas.value = false
       }
     }
 
@@ -274,11 +307,13 @@ export default {
       if (route.params.id) {
         id.value = route.params.id;
         fetchData(id.value)
+      }else{
+        isLoadingDatas.value = false
       }
     })
 
     return {
-      teacher, titleText, id, disabled
+      teacher, titleText, id, disabled, isLoadingDatas, isLoadingDelete, isLoadingInsert
     }
   }
 }

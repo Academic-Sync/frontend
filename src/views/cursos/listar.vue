@@ -5,12 +5,13 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
         <Message />
 
         <h1>Cursos</h1>
         <SearchBar @key-up="onKeyup"></SearchBar>
 
-        <div class="users-list">
+        <div class="users-list" v-if="!isLoadingDatas">
           <List1 v-for="curso in filteredData" :key="curso.id"
           :text1="curso.name" 
           :subtext="'Cood: ' + curso?.coordinator?.name"
@@ -19,7 +20,11 @@
           ></List1>
         </div>
 
-        <div class="div-buttons" v-if="user.user_type == 'coordinator'">
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
+
+        <div class="div-buttons" v-if="user.user_type == 'coordinator' || user.user_type == 'admin'">
           <AddButton href="/AddCursos" ButtonText="Adicionar Curso" ></AddButton>
         </div>
       </main>
@@ -39,6 +44,9 @@ import AddButton from '../../components/AddButton.vue'
 import eventBus from '../../eventBus'
 import { getToken, getUser } from '@/utils/auth'
 import Message from '@/components/Message.vue'
+import Breadcrumb from "@/components/Breadcrumb.vue"
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
+import { ref } from 'vue'
 
 export default {
   name: 'Cursos',
@@ -49,11 +57,18 @@ export default {
     SearchBar,
     List1,
     AddButton,
-    Message
+    Message,
+    Breadcrumb,
+    SpinnerScreen
   },
 
   data() {
     return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Cursos", href: "/cursos" },
+      ],
+
       cursos: [{
         id: 0,
         name: "",
@@ -113,6 +128,8 @@ export default {
           text: error.message
         };
         eventBus.emit("error", errorObject);
+      } finally{
+        this.isLoadingDatas = false
       }
     },
 
@@ -127,6 +144,14 @@ export default {
     console.log(getUser());
     
     this.fetchData(); // Busca estudantes ao montar o componente
+  },
+
+  setup(){
+    const isLoadingDatas = ref(true)
+
+    return{
+      isLoadingDatas
+    }
   },
 }
 </script>

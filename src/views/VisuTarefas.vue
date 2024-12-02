@@ -5,6 +5,8 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
+
         <div class="grid-cont">
           <div class="iten"><h1>Criação do Pré-Projeto</h1></div>
           <div class="iten">
@@ -22,7 +24,9 @@
         <div class="arquives_text">
            <h2>ARQUIVOS DA TAREFA</h2>
         </div>
+        
         <AttArquive/>
+
         <div class="arquives_text">
            <h2>Adcionar Arquivos</h2>
         </div>
@@ -45,6 +49,7 @@ import TheFooter from '../components/TheFooter.vue'
 import SideBar from '../components/SideBar.vue'
 import AddButton from '../components/AddButton.vue'
 import AttArquive from '../components/AttArquive.vue'
+import Breadcrumb from "@/components/Breadcrumb.vue"
 
 export default {
   name: 'Turmas',
@@ -54,7 +59,19 @@ export default {
     SideBar,
     AddButton,
     AttArquive,
-  }
+    Breadcrumb,
+  },
+
+  data() {
+    return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Tarefas", href: "/tarefas" },
+        { label: "Ver Tarefa", href: "/tarefas" },
+      ],
+    }
+  },
+
 }
 </script>
 

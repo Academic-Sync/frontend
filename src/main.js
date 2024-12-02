@@ -25,23 +25,37 @@ import Tarefas from './views/tarefas/listar.vue'
 import AddTarefas from './views/tarefas/registrar.vue'
 import HomeProf from './views/HomeProf.vue'
 import HomeAluno from './views/HomeAluno.vue'
-import { hasPermission, isAuthenticated, getUserType } from './utils/auth'
-import VisuTarefas from './views/VisuTarefas.vue'
+import { hasPermission, isAuthenticated } from './utils/auth'
+import VisuTarefas from './views/tarefas/visualizar.vue'
+import NotFound from '@/views/erros/NotFound.vue';
+import AccessDenied from '@/views/erros/AccessDenied.vue';
+import Conta from './views/Conta.vue'
+import AddAlunosArquivo from './views/alunos/registrar_arquivo.vue'
 import Dashboard from './views/Dashboard.vue'
+import DashboardUser from './views/DashboardUser.vue'
 
 
 // Defina as rotas da aplicação
 const routes = [
-  { 
-    path: '/visualizarTarefas', 
-    component: VisuTarefas,
-    meta: { requiresAuth: true, requiredUserType: 'student' }
+  {
+    path: '/404',
+    component: NotFound,
+  },
+  {
+    path: '/403',
+    component: AccessDenied,
   },
 
-  { 
-    path: '/Dashbard', 
+  {
+    path: '/Dashboard',
     component: Dashboard,
-    meta: { requiresAuth: true, requiredUserType: 'admin' }
+    meta: { requiresAuth: false }
+  },
+
+  {
+    path: '/DashboardUsuarios',
+    component: DashboardUser,
+    meta: { requiresAuth: false }
   },
 
   { path: '/Coordenador',
@@ -108,13 +122,12 @@ const routes = [
     component: AddAlunos,
     meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] }
   },
-  {
-    path: '/AddAlunos',
-    component: AddAlunos,
-    meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] }
-  },
+  { path: '/AddAlunos', component: AddAlunos, meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] } },
+  { path: '/AddAlunosArquivo', component: AddAlunosArquivo, meta: { requiresAuth: true, requiredUserType: ['teacher', 'coordinator', 'advisor'] } },
 
   { path: '/Usuarios', component: HomeAdmin, meta: { requiresAuth: true, requiredUserType: 'admin' } },
+
+  { path: '/Conta', component: Conta, meta: { requiresAuth: true } },
 
   { path: '/Professores', component: Professores, meta: { requiresAuth: true, requiredUserType: 'admin' } },
   { path: '/Professores/editar/:id', component: AddProfessor, meta: { requiresAuth: true, requiredUserType: 'admin' } },
@@ -131,6 +144,11 @@ const routes = [
   { path: '/Tarefas', component: Tarefas, meta: { requiresAuth: true } },
   { path: '/Tarefas/editar/:id', component: AddTarefas, meta: { requiresAuth: true, requiredUserType: 'teacher' } },
   { path: '/AddTarefas', component: AddTarefas, meta: { requiresAuth: true, requiredUserType: 'teacher' } },
+  { path: '/Tarefas/visualizar/:id', component: VisuTarefas, meta: { requiresAuth: true, requiredUserType: ['student', 'teacher'] } },
+  {
+    path: '/:catchAll(.*)', // Rota curinga para capturar todas as rotas inválidas
+    redirect: '/404',
+  },
 ]
 
 // Crie o router e defina o modo de histórico
@@ -148,41 +166,19 @@ router.beforeEach((to, from, next) => {
           next({ path: '/Login' });
       } else {
           if (to.meta.requiredUserType && !hasPermission(to.meta.requiredUserType)) {
-              // Verifique se o tipo de usuário tem permissão para acessar a rota
-              next({ path: '/' }); // Redireciona para a página inicial ou uma página de acesso negado
+              next("/403");
           } else {
               // Está autenticado, prossiga
               next();
           }
       }
   } else {
-      // Verifique se o usuário está autenticado e redirecione para a página correspondente
-      const userType = getUserType();
+    if (to.matched.length === 0) {
       
-      if (isAuthenticated() && userType) {
-          switch (userType) {
-              case 'admin':
-                  next({ path: '/Admin' });
-                  break;
-              case 'student':
-                  next({ path: '/Tarefas' });
-                  break;
-              case 'teacher':
-                  next({ path: '/Professor' });
-                  break;
-              case 'coordinator':
-                  next({ path: '/Coordenador' });
-                  break;
-              case 'advisor':
-                  next({ path: '/Professor' });
-                  break;
-              default:
-                  next(); // Se o tipo de usuário não corresponder a nenhuma condição, prossiga normalmente
-                  break;
-          }
-      } else {
-          next(); // Se não estiver autenticado, prossiga para a página inicial
-      }
+      next(false); // Cancela a navegação
+    } else {
+      next(); // Prossegue normalmente
+    }
   }
 });
 

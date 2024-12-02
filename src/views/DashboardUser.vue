@@ -2,17 +2,19 @@
     <article>
         <TheNavbar></TheNavbar>
         <div class="layout">
-            <main class="content">
+            <main  class="content">
+                
                 <div class="dashboard">
                     <div class="breadcrumb">
                         <Breadcrumb :items="breadcrumbItems" />
                     </div>
 
                     <Message />
-                    <div class="box usuarios" @click="dashboardUser" style="cursor: pointer;">
+
+                    <div class="box usuarios">
                         <span v-if="!isLoadingDatas">
-                            <h2>Número de Usuários</h2>
-                            <p>{{ dashboardDatas.usersCount }}</p>
+                            <h2>Alunos</h2>
+                            <p>{{ dashboardDatas.studentsCount }}</p>
                         </span>
                         <div v-else>
                             <SpinnerScreen/>
@@ -20,8 +22,8 @@
                     </div>
                     <div class="box trabalhos">
                         <span v-if="!isLoadingDatas">
-                            <h2>Número de Trabalhos</h2>
-                            <p>{{ dashboardDatas.activitiesCount }}</p>
+                            <h2>Professores</h2>
+                            <p>{{ dashboardDatas.teachersCount }}</p>
                         </span>
                         <div v-else>
                             <SpinnerScreen/>
@@ -29,8 +31,8 @@
                     </div>
                     <div class="box cursos">
                         <span v-if="!isLoadingDatas">
-                            <h2>Número de Cursos</h2>
-                            <p>{{ dashboardDatas.coursesCount }}</p>
+                            <h2>Coordenadores</h2>
+                            <p>{{ dashboardDatas.coordinatorsCount }}</p>
                         </span>
                         <div v-else>
                             <SpinnerScreen/>
@@ -38,8 +40,8 @@
                     </div>
                     <div class="box turmas">
                         <span v-if="!isLoadingDatas">
-                            <h2>Número de Turmas</h2>
-                            <p>{{ dashboardDatas.classesCount }}</p>
+                            <h2>Orientadores</h2>
+                            <p>{{ dashboardDatas.advisorsCount }}</p>
                         </span>
                         <div v-else>
                             <SpinnerScreen/>
@@ -68,23 +70,18 @@ export default {
         TheFooter,
         Message,
         Breadcrumb,
-        SpinnerScreen,
+        SpinnerScreen
     },
-
-    methods: {
-        dashboardUser(){
-            this.$router.push("/DashboardUsuarios")
-        }
-    },
-
+    
     data() {
         return {
-        breadcrumbItems: [
-            { label: "Home", href: "/" },
-            { label: "Dashboard", href: "/Dashboard" },
-        ],
-    }
-  },    
+            breadcrumbItems: [
+                { label: "Home", href: "/" },
+                { label: "Dashboard", href: "/Dashboard" },
+                { label: "Dashboard de Usuários", href: "/DashboardUsuarios" },
+            ],
+        }
+    },
 
     setup() {
         const isLoadingDatas = ref(true)
@@ -153,10 +150,6 @@ export default {
     }
     .content{
         min-height: 90vh;
-    }
-
-    .fas{
-        width: 10px;
     }
 
     /* Estilos das caixas de informações */

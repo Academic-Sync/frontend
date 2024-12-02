@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- Exibe o componente correspondente à rota atual -->
-    <router-view />
+    <router-view/>
   </div>
 </template>
 
@@ -28,6 +28,14 @@
 h2{
   text-align: start!important;
   font-weight: normal;
+}
+
+.w-100{
+  width: 100%;
+}
+
+.invert-color-image{
+  filter: invert(100%);
 }
 
 .cursor-pointer{
@@ -157,7 +165,7 @@ body .uwy .uai, body .uwy .ulsti{
 .content p {
     font-size: 2rem;
     color: var(--Cinza);
-    margin-bottom: 2rem;
+    /* margin-bottom: 2rem; */
 }
 
 @media (max-width: 550px) {
@@ -281,6 +289,29 @@ input[role="textbox"] {
     margin: 0;
     accent-color: var(--Azul); 
 }
+
+/* transicao */
+/* Transição genérica */
+.transition-fade {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* Estado inicial (escondido) */
+.hidden {
+  display: none;
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* Estado final (visível) */
+.visible {
+  display: block;
+  opacity: 1;
+  transform: scale(1);
+}
+
 
 
 </style>

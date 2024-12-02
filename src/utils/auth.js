@@ -19,7 +19,6 @@ export function getUser() {
 // Função para verificar se o usuário tem permissão
 export function hasPermission(requiredUserType) {
     const userType = getUserType();
-    // return userType === requiredUserType; // Retorna true se o tipo de usuário corresponder
     return requiredUserType.includes(userType) || userType == 'admin'
 }
 

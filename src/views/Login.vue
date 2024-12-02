@@ -28,6 +28,7 @@
 
         <AddButton
           ButtonText="Fazer Login"
+          :isLoading="isLoading"
         ></AddButton>
       </div>
     </div>
@@ -50,7 +51,8 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      isLoading: false
     };
   },
 
@@ -71,9 +73,11 @@ export default {
     },
 
     async handleLogin(event) {
+      this.isLoading = true;
+
       try {
         event.preventDefault();
-        
+
         const data = this.validateData(event);
         if(!data)
           return;
@@ -86,7 +90,8 @@ export default {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
-          });
+        });
+        
 
           const result = await response.json();
 
@@ -97,7 +102,7 @@ export default {
           localStorage.setItem('token', result.token);
           localStorage.setItem('user', JSON.stringify(result.user));
 
-          window.location.href = "/";
+          this.$router.push("/");
 
       } catch (error) {
         console.error(error);
@@ -106,7 +111,10 @@ export default {
           text: error.message
         }
         eventBus.emit("error", errorObject)
+      } finally {
+        this.isLoading = false;
       }
+
     }
   }
 }
@@ -217,6 +225,25 @@ export default {
 @media screen and (max-width: 900px) {
   .login-image{
     display: none;
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 3px solid #000;
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: block;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 

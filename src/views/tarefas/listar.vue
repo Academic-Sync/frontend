@@ -5,27 +5,37 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
+
         <Message />
 
         <h1>Tarefas</h1>
          <SearchBar @key-up="onKeyup" />
 
-        <Tarefa
-          v-for="activity in filteredData" 
-          :key="activity.id" 
-          :image="require('../../assets/Relatorio.png')" 
-          alt_img="atividade imagem" 
-          :Nome="activity.name" 
-          :Entrega="activity.date_formatted"
-          :Nota="activity.note"
-          :link="activity.link"
-        ></Tarefa>
+        <span class="w-100" v-if="!isLoadingDatas">
+          <Tarefa 
+            v-for="activity in filteredData" 
+            :key="activity.id" 
+            :image="require('../../assets/Relatorio.png')" 
+            alt_img="atividade imagem" 
+            :Nome="activity.name" 
+            :Entrega="activity.date_formatted"
+            :Nota="activity.note"
+            :link="activity.link"
+          ></Tarefa>
+        </span>
 
-        <AddButton
-        v-if="permissaoAdd"
-        href="/AddTarefas"
-        ButtonText="Adicionar Tarefas"
-        ></AddButton>
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
+        
+        <div class="div-buttons">
+          <AddButton
+          v-if="permissaoAdd"
+          href="/AddTarefas"
+          ButtonText="Adicionar Tarefas"
+          ></AddButton>
+        </div>
       </main>
     </div>
 
@@ -43,6 +53,10 @@ import Tarefa from '../../components/Tarefa.vue'
 import Message from '../../components/Message.vue'
 import eventBus from '../../eventBus'
 import { getToken } from '@/utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
+import { getUserType } from '@/utils/auth'
+import { ref } from 'vue'
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
 
 export default {
   name: 'Turmas',
@@ -53,10 +67,16 @@ export default {
     SearchBar,
     AddButton,
     Tarefa,
-    Message
+    Message,
+    Breadcrumb,
+    SpinnerScreen
   },
   data() {
     return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Tarefas", href: "/tarefas" },
+      ],
       allActivities: [{
         id: 0,
         name: "",
@@ -75,7 +95,7 @@ export default {
       const parsedUser = JSON.parse(user);
       
       return this.allActivities.filter(activity => {
-        activity.link = parsedUser.user_type == 'student' ? "/visualizarTarefas" : `/Tarefas/editar/${activity.id}`;
+        activity.link = parsedUser.user_type == 'student' ? `/tarefas/visualizar/${activity.id}`: `/tarefas/editar/${activity.id}`;
         activity.note = `Nota Máxima: ${activity.maximum_grade}`
 
         const date = new Date(activity.date);
@@ -98,8 +118,12 @@ export default {
       const token = getToken();
       
       try {
+        const userType = getUserType();
+        
         // eslint-disable-next-line
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/activities`, {
+        const link = userType ? `${process.env.VUE_APP_API_URL}/activities` : `${process.env.VUE_APP_API_URL}/activities`
+
+        const response = await fetch(link, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -118,6 +142,8 @@ export default {
           text: error.message
         };
         eventBus.emit("error", errorObject);
+      } finally{
+        this.isLoadingDatas = false
       }
     },
 
@@ -133,6 +159,14 @@ export default {
     this.permissaoAdd = parsedUser.user_type == 'teacher';
     this.fetchData(); // Busca professores ao montar o componente
   },
+
+  setup(){
+    const isLoadingDatas = ref(true)
+
+    return{
+      isLoadingDatas
+    }
+  }
 }
 </script>
 

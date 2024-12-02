@@ -5,10 +5,12 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
+
         <h1>Turmas</h1>
         <SearchBar  @key-up="onKeyup"></SearchBar>
 
-        <div class="users-list">
+        <div class="users-list" v-if="!isLoadingDatas">
           <List1 
             :key="turma.id" 
             v-for="turma in filteredData" 
@@ -20,10 +22,16 @@
           </List1>
         </div>
 
-        <AddButton
-        href="/AddTurmas"
-        ButtonText="Adicionar Turmas"
-        ></AddButton>
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
+
+        <div class="div-buttons">
+          <AddButton
+          href="/AddTurmas"
+          ButtonText="Adicionar Turmas"
+          ></AddButton>
+          </div>
       </main>
     </div>
 
@@ -40,6 +48,9 @@ import List1 from '../../components/List1.vue'
 import AddButton from '../../components/AddButton.vue'
 import eventBus from '../../eventBus'
 import { getToken } from '@/utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
+import { ref } from 'vue'
 
 export default {
   name: 'Turmas',
@@ -50,10 +61,17 @@ export default {
     SearchBar,
     List1,
     AddButton,
+    Breadcrumb,
+    SpinnerScreen
   },
 
   data() {
     return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Turmas", href: "/turmas" },
+      ],
+
       turmas: [{
         id: 0,
         semester: 0,
@@ -115,6 +133,8 @@ export default {
           text: error.message
         };
         eventBus.emit("error", errorObject);
+      } finally{
+        this.isLoadingDatas = false
       }
     },
 
@@ -126,6 +146,14 @@ export default {
 
   mounted() {
     this.fetchData(); // Busca estudantes ao montar o componente
+  },
+
+  setup(){
+    const isLoadingDatas = ref(true)
+
+    return{
+      isLoadingDatas
+    }
   },
 }
 </script>

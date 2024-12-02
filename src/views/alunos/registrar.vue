@@ -5,17 +5,19 @@
       <SideBar /> 
       
       <main class="content">
+        <Breadcrumb :items="breadcrumbItems" />
         <Message />
+        
 
         <h1>{{titleText}}</h1>
 
-        <form @submit="handleSubmit">
+        <form @submit="handleSubmit" v-if="!isLoadingDatas">
           <div class="Form">
             <input v-model="studentId" type="hidden" name="id" id="id">
 
               <div class="mb-3 text-start">
                   <label for="name" class="form-label">Nome:</label>
-                  <input :disabled="disabled" v-model="student.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
+                  <input v-model="student.name" type="text" name="name" class="form-control" id="name" placeholder="Nome">
               </div>
 
               <div class="mb-3 text-start">
@@ -29,16 +31,28 @@
               </div>
 
               <div class="mb-3 text-start">
+                  <label for="course_id" class="form-label">Turma:</label>
+                  <select v-model="student.class_id" name="class_id" id="class_id">
+                    <option value="0">Selecione a Turma</option> 
+                    <option v-for="thisClass in classes" :key="thisClass.id" :value="thisClass.id">{{ thisClass?.semester + "º" + " - " + thisClass?.course?.name  }}</option>
+                  </select>
+              </div>
+
+              <div class="mb-3 text-start">
                   <label for="code" class="form-label">RA:</label>
                   <input v-model="student.code" type="text" name="code" class="form-control" id="code" placeholder="RA">
               </div>
           </div>
 
           <div class="div-buttons">
-            <RemoveButton v-if="student.id" @click="handleDelete" type="button" ButtonText="Apagar aluno" />
-            <AddButton :ButtonText="titleText" />
+            <RemoveButton :isLoading="isLoadingDelete" v-if="student.id" @click="handleDelete" type="button" ButtonText="Apagar aluno" />
+            <AddButton :isLoading="isLoadingInsert" :ButtonText="titleText" />
           </div>
         </form>
+
+        <div v-else>
+          <SpinnerScreen/>
+        </div>
       </main>
     </div>
 
@@ -56,7 +70,9 @@ import { useRoute } from 'vue-router'
 import eventBus from '../../eventBus'
 import { ref, onMounted } from 'vue'
 import RemoveButton from '@/components/RemoveButton.vue'
-import { getToken } from '../../utils/auth'; // Importa a função de logout
+import { getToken } from '../../utils/auth'
+import Breadcrumb from "@/components/Breadcrumb.vue"
+import SpinnerScreen from '@/components/SpinnerScreen.vue'
 
 export default {
   name: 'Turmas',
@@ -66,12 +82,26 @@ export default {
     SideBar,
     AddButton,
     RemoveButton,
-    Message
+    Message,
+    Breadcrumb,
+    SpinnerScreen
+  },
+
+  data() {
+    return {
+      breadcrumbItems: [
+        { label: "Home", href: "/" },
+        { label: "Listar Alunos", href: "/alunos" },
+        { label: "Adicionar Aluno", href: "/alunos" },
+      ],
+    }
   },
 
   methods: {
     async handleSubmit(e){
       e.preventDefault();
+      this.isLoadingInsert = true
+
       if(!this.validateEmail())
         return
 
@@ -94,6 +124,7 @@ export default {
             text: "O email precisa ser do domínio @fatec.sp.gov.br"
           };
           eventBus.emit("error", errorObject);
+          this.isLoadingInsert = false
           return 0;
         }
       }
@@ -104,7 +135,7 @@ export default {
     validateData(e){
       const data = Object.fromEntries(new FormData(e.target).entries());
 
-      if(!data.name || !data.code){
+      if(!data.name || !data.code || !data.class_id){
           const errorObject = {
             title: "",
             text: "Informe todos os campos"
@@ -128,6 +159,7 @@ export default {
     },
 
     async handleDelete(){
+      this.isLoadingDelete = true
       try {
         const studentId = document.querySelector("#id")
         const token = getToken();
@@ -155,7 +187,7 @@ export default {
         eventBus.emit("success", successObject)
 
         setTimeout(()=>{
-          window.location.href = "/Alunos"
+          this.$router.push("/alunos");
         }, 1000);
       } catch (error) {
           console.error(error);
@@ -164,6 +196,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingDelete = false
       }
     },
 
@@ -176,7 +210,6 @@ export default {
           if(!data)
             return;
  
-
           // eslint-disable-next-line
           const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${studentId.value}`, {
             method: "PUT",
@@ -207,6 +240,8 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingInsert = false
       }
     },
 
@@ -243,7 +278,7 @@ export default {
           eventBus.emit("success", successObject)
 
           setTimeout(()=>{
-            window.location.href = `/Alunos/editar/${result.student.id}`
+            this.$router.push(`/Alunos/editar/${result.student.id}`);
           }, 1000);
 
       } catch (error) {
@@ -253,39 +288,75 @@ export default {
             text: error.message
           }
           eventBus.emit("error", errorObject)
+      } finally{
+        this.isLoadingInsert = false
       }
     }
   },
 
   setup() {
     const route = useRoute()
-    const student = ref({})
+    const student = ref({
+      class_id: 0,
+    })
     const titleText = ref("Adicionar Aluno")
     const studentId = ref(0)
     const disabled = ref(false)
+    const classes = ref([{}])
+    const isLoadingDatas = ref(true)
+    const isLoadingInsert = ref(false)
+    const isLoadingDelete = ref(false)
 
     const fetchAluno = async (id) => {
       const token = getToken();
+
+      // eslint-disable-next-line 
+      const url = process.env.VUE_APP_API_URL
       try {
-        // eslint-disable-next-line 
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
-        })
+        // const response = await fetch(`${process.env.VUE_APP_API_URL}/students/${id}`, {
+        //   headers: {
+        //     "Authorization": `Bearer ${token}`,
+        //     "Content-Type": "application/json"
+        //   }
+        // })
+
+        const [response, responseCurso] = await Promise.all([
+          fetch(`${url}/students/${id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }),
+          fetch(`${url}/classes`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+        ]);
 
         const aluno = await response.json()
+        const cursosData = await responseCurso.json()
+
+        classes.value = cursosData;
 
         if (!response.ok)
           throw new Error(aluno.error)
+
+          
+        if (!responseCurso.ok)
+          throw new Error(cursosData.error)
         
-        if (!aluno)
+        if (!aluno && id)
           throw new Error('Aluno não encontrado')
 
-        student.value = aluno
-        studentId.value = id
-        titleText.value = 'Salvar Aluno';
+        if(id){
+          student.value = aluno
+          studentId.value = id
+          titleText.value = 'Salvar Aluno';
+          student.value.class_id = student.value.classes[0]?.id
+        }
+        
 
       } catch (error) {
         disabled.value = true
@@ -294,18 +365,24 @@ export default {
           text: error.message
         }
         eventBus.emit("error", errorObject)
+      } finally{
+        isLoadingDatas.value = false
       }
     }
 
     onMounted(() => {
-      if (route.params.id) {
-        studentId.value = route.params.id;
-        fetchAluno(studentId.value)
+      const routeId = route.params.id;
+      if (routeId) {
+        studentId.value = routeId;
+      } else{
+        isLoadingDatas.value = false
       }
+
+      fetchAluno(studentId.value)
     })
 
     return {
-      student, titleText, studentId, disabled
+      student, titleText, studentId, disabled, classes, isLoadingDatas, isLoadingDelete, isLoadingInsert
     }
   }
 }
