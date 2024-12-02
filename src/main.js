@@ -27,6 +27,7 @@ import HomeProf from './views/HomeProf.vue'
 import HomeAluno from './views/HomeAluno.vue'
 import { hasPermission, isAuthenticated, getUserType } from './utils/auth'
 import VisuTarefas from './views/VisuTarefas.vue'
+import Dashboard from './views/Dashboard.vue'
 
 
 // Defina as rotas da aplicação
@@ -35,6 +36,12 @@ const routes = [
     path: '/visualizarTarefas', 
     component: VisuTarefas,
     meta: { requiresAuth: true, requiredUserType: 'student' }
+  },
+
+  { 
+    path: '/Dashbard', 
+    component: Dashboard,
+    meta: { requiresAuth: true, requiredUserType: 'admin' }
   },
 
   { path: '/Coordenador',
