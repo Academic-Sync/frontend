@@ -35,7 +35,6 @@
             </div>
   
             <div class="div-buttons">
-              <RemoveButton :isLoading="isLoadingDelete" v-if="conta.id" @click="handleDelete" type="button" ButtonText="Apagar aluno" />
               <AddButton :isLoading="isLoadingInsert" ButtonText="Atualizar" />
             </div>
           </form>
@@ -58,7 +57,6 @@
   import Message from '@/components/Message.vue'
   import eventBus from '@/eventBus'
   import { ref, onMounted } from 'vue'
-  import RemoveButton from '@/components/RemoveButton.vue'
   import { getToken, getUser } from '@/utils/auth'
   import Breadcrumb from "@/components/Breadcrumb.vue"
   import SpinnerScreen from '@/components/SpinnerScreen.vue'
@@ -70,7 +68,6 @@
       TheFooter,
       SideBar,
       AddButton,
-      RemoveButton,
       Message,
       Breadcrumb,
       SpinnerScreen
